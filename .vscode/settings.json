@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "functional": "c",
+        "iterator": "c"
+    }
+}

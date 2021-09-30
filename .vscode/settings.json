@@ -2,6 +2,7 @@
     "files.associations": {
         "stdlib.h": "c",
         "functional": "c",
-        "iterator": "c"
+        "iterator": "c",
+        "image.h": "c"
     }
 }

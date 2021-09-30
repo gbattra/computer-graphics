@@ -103,7 +103,12 @@ float image_getz(Image *src, int i, int j)
 
 void image_setf(Image *src, int i, int j, FPixel val)
 {
-    src->data[(i * src->cols) + j] = val;
+    FPixel *pix = &src->data[(i * src->cols) + j];
+    pix->rgb[0] = val.rgb[0];
+    pix->rgb[1] = val.rgb[1];
+    pix->rgb[2] = val.rgb[2];
+    pix->a = val.a;
+    pix->z = val.z;
 }
 
 void image_seta(Image *src, int i, int j, float val)

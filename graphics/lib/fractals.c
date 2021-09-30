@@ -11,14 +11,14 @@
 
 #define IN_SET 1.0
 #define OUT_SET 0.0
-#define MAX_ITER 1000
+#define MAX_ITER 100
 #define C1 0.7454054
 #define C2 0.1130063
 
 
 void mandelbrot(Image *dst, float x0, float y0, float dx)
 {
-    float dy = (float) dst->rows / (float) (dst->cols / dx);
+    float dy = (float) dst->rows / (float) (((float) dst->cols) / dx);
     float x1 = x0 + dx;
     float y1 = y0 + dy;
     float scale_cols = dx / (float) dst->cols;
@@ -43,7 +43,8 @@ void mandelbrot(Image *dst, float x0, float y0, float dx)
                 iter++;
             }
 
-            float scale_color = iter % MAX_ITER;
+            float scale_color = 1.0;
+            if (iter == MAX_ITER) scale_color = 0.0;
             float color[3] = {0.4 * scale_color, 0.6 * scale_color, 0.8 * scale_color};
 
             FPixel *pix = &dst->data[(i * dst->cols) + j];
@@ -57,25 +58,28 @@ void mandelbrot(Image *dst, float x0, float y0, float dx)
 
 void julia(Image *dst, float x0, float y0, float dx)
 {
-    float dy = (float) dst->rows / (float) (dst->cols / dx);
-    float x1 = x0 + dx;
-    float y1 = y0 + dy;
-    float scale_cols = dx / (float) dst->cols;
-    float scale_rows = dy / (float) dst->rows;
+    float cx = -0.7;
+    float cy = 0.27015;
+    float moveX = 0.0;
+    float moveY = 0.0;
+
     for (int i = 0; i < dst->rows; i++)
     {
         for (int j = 0; j < dst->cols; j++)
         {
+            float zx = 1.5 * (j - ((float) dst->cols/2.0)) / (0.5 * (float) dst->cols) + moveX;
+            float zy = 1.0 * (i - ((float) dst->rows/2.0)) / (0.5 * (float) dst->rows) + moveY;
             int iter = 0;
-            float z = sqrtf((x0*x0) + (y0*y0) + 0.00001);
-            while (z < 2 && iter < MAX_ITER)
+            while ((zx * zx) + (zy*zy) < 4 && iter < MAX_ITER)
             {
-                printf("%i\n", iter);
-                z = (z*z) - (C1 + i * C2);
+                float tmp = (zx * zx) - (zy * zy) + cx;
+                zy = 2.0 * zx * zy + cy;
+                zx = tmp;
                 iter++;
             }
 
-            float scale_color = iter % MAX_ITER;
+            float scale_color = 1.0;
+            if (iter == MAX_ITER) scale_color = 0.0;
             float color[3] = {0.4 * scale_color, 0.6 * scale_color, 0.8 * scale_color};
 
             FPixel *pix = &dst->data[(i * dst->cols) + j];

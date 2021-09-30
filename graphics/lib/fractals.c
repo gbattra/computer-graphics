@@ -18,9 +18,6 @@
 
 void mandelbrot(Image *dst, float x0, float y0, float dx)
 {
-    float moveX = x0;
-    float moveY = y0;
-    float zoom = 1.0;
     float dy = (float) dst->rows / (float) (((float) dst->cols) / dx);
     float y1 = y0 + dy;
     float scale_cols = dx / (float) dst->cols;
@@ -32,7 +29,6 @@ void mandelbrot(Image *dst, float x0, float y0, float dx)
         {
             float zx = 0;
             float zy = 0;
-            float z = 0;
             float cx = scale_cols * j + x0;
             float cy = -scale_rows * i + y1;
             int iter = 0;
@@ -61,9 +57,6 @@ void julia(Image *dst, float x0, float y0, float dx)
 {
     float cx = -0.7;
     float cy = 0.27015;
-    float moveX = x0;
-    float moveY = y0;
-    float zoom = 1.0;
     float dy = (float) dst->rows / (float) (((float) dst->cols) / dx);
     float y1 = y0 + dy;
     float scale_cols = dx / (float) dst->cols;

@@ -38,13 +38,14 @@ EXECUTABLES = ppmtest \
 			  composite \
 			  image_api \
 			  fractalstest \
+			  fractalmain \
 			  perlinnoise
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
 				   composite
 
-LAB2_EXECUTABLES = image_api fractalstest perlinnoise
+LAB2_EXECUTABLES = image_api fractalstest perlinnoise fractalmain
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -91,6 +92,9 @@ image_api: $(ODIR)/image_api.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 fractalstest: $(ODIR)/fractalstest.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+fractalmain: $(ODIR)/fractalmain.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 perlinnoise: $(ODIR)/perlinnoise.o

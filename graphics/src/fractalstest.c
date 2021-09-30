@@ -20,9 +20,7 @@ int main(int argc, char *argv[])
     image_write( src, "output/lab2/mandelbrot-full.ppm");
     mandelbrot( src, 1.755, -0.02, 0.02);
     image_write( src, "output/lab2/mandelbrot.ppm");
-    // julia( src, -1.8, -1.8*0.75, 3.6);
-
-    julia( src, -1.5, -1.5, 4);
+    julia( src, -1.8, -1.8*0.75, 3.6);
     image_write( src, "output/lab2/julia.ppm");
     image_free( src );
     return(0);

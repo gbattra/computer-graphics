@@ -18,28 +18,29 @@
 
 void mandelbrot(Image *dst, float x0, float y0, float dx)
 {
+    float moveX = x0;
+    float moveY = y0;
+    float zoom = 1.0;
     float dy = (float) dst->rows / (float) (((float) dst->cols) / dx);
-    float x1 = x0 + dx;
     float y1 = y0 + dy;
     float scale_cols = dx / (float) dst->cols;
     float scale_rows = dy / (float) dst->rows;
+
     for (int i = 0; i < dst->rows; i++)
     {
         for (int j = 0; j < dst->cols; j++)
         {
-            int iter = 0;
             float zx = 0;
             float zy = 0;
             float z = 0;
             float cx = scale_cols * j + x0;
             float cy = -scale_rows * i + y1;
-            while (sqrtf(z) < 2 && iter < MAX_ITER)
+            int iter = 0;
+            while ((zx * zx) + (zy*zy) < 4 && iter < MAX_ITER)
             {
-                float zx_n = (zx * zx) - (zy * zy) + cx;
-                float zy_n = 2 * zx * zy - cy;
-                zx = zx_n;
-                zy = zy_n;
-                z = (zx*zx) + (zy*zy);
+                float tmp = (zx * zx) - (zy * zy) + cx;
+                zy = 2.0 * zx * zy + cy;
+                zx = tmp;
                 iter++;
             }
 
@@ -60,15 +61,20 @@ void julia(Image *dst, float x0, float y0, float dx)
 {
     float cx = -0.7;
     float cy = 0.27015;
-    float moveX = 0.0;
-    float moveY = 0.0;
+    float moveX = x0;
+    float moveY = y0;
+    float zoom = 1.0;
+    float dy = (float) dst->rows / (float) (((float) dst->cols) / dx);
+    float y1 = y0 + dy;
+    float scale_cols = dx / (float) dst->cols;
+    float scale_rows = dy / (float) dst->rows;
 
     for (int i = 0; i < dst->rows; i++)
     {
         for (int j = 0; j < dst->cols; j++)
         {
-            float zx = 1.5 * (j - ((float) dst->cols/2.0)) / (0.5 * (float) dst->cols) + moveX;
-            float zy = 1.0 * (i - ((float) dst->rows/2.0)) / (0.5 * (float) dst->rows) + moveY;
+            float zx = scale_cols * j + x0;
+            float zy = -scale_rows * i + y1;
             int iter = 0;
             while ((zx * zx) + (zy*zy) < 4 && iter < MAX_ITER)
             {

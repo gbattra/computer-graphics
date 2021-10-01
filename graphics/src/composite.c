@@ -14,7 +14,7 @@
  */
 char *usage_str =
     "Usage:\n"
-    "> composite <foreground ppm image> <background ppm image> <mask ppm file> <output ppm file>";
+    "> composite <foreground ppm image> <background ppm image> <mask ppm file> <output ppm file> <dx> <dy>";
 
 /**
  * Reads in the foreground, background and mask images, and builds a composite.
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 5)
     {
-        printf(usage_str);
+        printf("%s\n", usage_str);
         exit(-1);
     }
 

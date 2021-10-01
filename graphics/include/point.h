@@ -5,6 +5,9 @@
  * Header file for Point struct and API.
  */
 
+#ifndef POINT
+#define POINT
+
 #include "stdio.h"
 #include "image.h"
 #include <stdio.h>
@@ -90,3 +93,5 @@ void point_draw(Point *p, Image *src, FPixel c);
  * @return void
  */
 void point_print(Point *p, FILE *fp);
+
+#endif

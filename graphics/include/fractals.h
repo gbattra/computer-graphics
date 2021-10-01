@@ -5,6 +5,9 @@
  * Header for the Julia set functions
  */
 
+#ifndef FRACTALS
+#define FRACTALS
+
 #include "image.h"
 
 /**
@@ -31,3 +34,4 @@ void julia(Image *dst, float x0, float y0, float dx);
  */
 void mandelbrot( Image *dst, float x0, float y0, float dx);
 
+#endif

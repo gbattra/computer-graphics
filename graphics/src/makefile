@@ -26,7 +26,7 @@ LIBS = -lm -limageIO
 LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here
-_DEPS = ppmIO.h image.h fractals.h noise.h
+_DEPS = ppmIO.h image.h fractals.h noise.h line.h point.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
@@ -39,13 +39,16 @@ EXECUTABLES = ppmtest \
 			  image_api \
 			  fractalstest \
 			  fractalmain \
-			  perlinnoise
+			  perlinnoise \
+			  test3d
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
 				   composite
 
 LAB2_EXECUTABLES = image_api fractalstest perlinnoise fractalmain
+
+LAB3_EXECUTABLES = test3d
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -98,6 +101,9 @@ fractalmain: $(ODIR)/fractalmain.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 perlinnoise: $(ODIR)/perlinnoise.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test3d: $(ODIR)/test3d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

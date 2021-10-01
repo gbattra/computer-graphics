@@ -5,11 +5,14 @@
  * Header file for Line struct and API.
  */
 
+#ifndef LINE
+#define LINE
+
 #include "point.h"
 
 typedef struct
 {
-    int zBuffer = 1;
+    int zBuffer;
     Point a;
     Point b;
 } Line;
@@ -77,3 +80,5 @@ void line_copy(Line *to, Line *from);
  * @return void
  */
 void line_draw(Line *l, Image *src, Color c);
+
+#endif

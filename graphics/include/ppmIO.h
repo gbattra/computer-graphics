@@ -1,5 +1,4 @@
 #ifndef PPMIO_H
-
 #define PPMIO_H
 
 typedef struct {

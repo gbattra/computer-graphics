@@ -8,6 +8,7 @@
 #include "elipse.h"
 #include "point.h"
 #include "image.h"
+#include "line.h"
 
 /**
  * Sets the point on the image given x and y in Cartesian coords.
@@ -25,6 +26,35 @@ static void set_pixel(int x, int y, Image *src, FPixel pix)
     p.val[0] = x;
     p.val[1] = y;
     point_draw(&p, src, pix);
+}
+
+/**
+ * Fill the row given the start and endpoint.
+ * 
+ * @param x0 the start x
+ * @param y0 the start y
+ * @param x1 the end x
+ * @param y1 the end y
+ * @param c the color to draw
+ * @param src the image to draw on
+ * 
+ * @return void
+ */
+static void fill_row(int x0, int y0, int x1, int y1, Color c, Image *src)
+{
+    Line l;
+    l.a.val[0] = x0;
+    l.a.val[1] = y1;
+    l.b.val[0] = x1;
+    l.b.val[1] = y1;
+
+    line_draw(&l, src, c);
+}
+
+static void fill_reflections(int cx, int cy, int dx, int dy, Image *src, Color c)
+{
+    fill_row(cx - dx, cy + dy, cx + dx, cy + dy, c, src);
+    fill_row(cx - dx, cy - dy, cx + dx, cy - dy, c, src);
 }
 
 
@@ -51,7 +81,7 @@ void elipse_set(Elipse *el, Point center, double ra, double rb, double a)
 }
 
 // inspired by Prof. Maxwell's notes: CS5310-F21-Lectures.pdf
-void elipse_draw(Elipse *el, Image *src, Color c)
+static void draw_elipse(Elipse *el, Image *src, Color c, int fill)
 {
     int cx = el->c.val[0];
     int cy = el->c.val[1];
@@ -68,6 +98,7 @@ void elipse_draw(Elipse *el, Image *src, Color c)
     int p = (ry * ry) - (rx * rx * ry) + (rx * rx) / 4 + (ry*ry) + px;
 
     plot_reflections(cx, cy, dx, dy, src, c);
+    if (fill) fill_reflections(cx, cy, dx, dy, src, c);
 
     while (px < py)
     {
@@ -84,6 +115,7 @@ void elipse_draw(Elipse *el, Image *src, Color c)
             p += ry * ry + px - py;
         }
         plot_reflections(cx, cy, dx, dy, src, c);
+        if (fill) fill_reflections(cx, cy, dx, dy, src, c);
     }
 
     p = ry * ry * (dx * dx + dx) + rx * rx * (dy * dy - 2 * dy + 1) - rx * rx * ry * ry + rx * rx - py;
@@ -103,5 +135,16 @@ void elipse_draw(Elipse *el, Image *src, Color c)
             p += rx * rx - py + px;
         }
         plot_reflections(cx, cy, dx, dy, src, c);
+        if (fill) fill_reflections(cx, cy, dx, dy, src, c);
     }
+}
+
+void elipse_draw(Elipse *el, Image *src, Color c)
+{
+    draw_elipse(el, src, c, 0);
+}
+
+void elipse_drawFill(Elipse *el, Image *src, Color c)
+{
+    draw_elipse(el, src, c, 1);
 }

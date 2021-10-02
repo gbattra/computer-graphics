@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     image_write(src, "output/lab3/elipse_outline.ppm");
 
     image_reset(src);
-    // elipse_drawFill(&el, src, color);
+    elipse_drawFill(&el, src, color);
 
-    // image_write(src, "output/lab3/circle_fill.ppm");
+    image_write(src, "output/lab3/elipse_fill.ppm");
 }

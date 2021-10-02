@@ -38,3 +38,14 @@ void elipse_set(Elipse *el, Point c, double ra, double rb, double a);
  */
 void elipse_draw(Elipse *el, Image *src, Color c);
 
+/**
+ * Draw and fill an elipse.
+ * 
+ * @param el the elipse to draw
+ * @param src the image to draw on
+ * @param c the color of the elipse
+ * 
+ * @return void
+ */
+void elipse_drawFill(Elipse *el, Image *src, Color c);
+

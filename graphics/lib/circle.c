@@ -14,13 +14,6 @@
 
 #define MAX_ITER 10000
 
-
-void circle_set(Circle *circle, Point tp, double tr)
-{
-    circle->center = tp;
-    circle->radius = tr;
-}
-
 /**
  * Sets the point on the image given x and y in Cartesian coords.
  * 
@@ -149,6 +142,12 @@ static void draw_circle(Circle *cl, Image *src, Color c, int fill)
     }
 
     if (fill) fill_row(xc - r, yc, xc + r, yc, c, src);
+}
+
+void circle_set(Circle *circle, Point tp, double tr)
+{
+    circle->center = tp;
+    circle->radius = tr;
 }
 
 // Implementatin inspired by circleMidpoint.c

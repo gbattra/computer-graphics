@@ -26,7 +26,7 @@ LIBS = -lm -limageIO
 LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here
-_DEPS = ppmIO.h image.h fractals.h noise.h line.h point.h circle.h
+_DEPS = ppmIO.h image.h fractals.h noise.h line.h point.h circle.h elipse.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
@@ -41,7 +41,8 @@ EXECUTABLES = ppmtest \
 			  fractalmain \
 			  perlinnoise \
 			  test3d \
-			  circletest
+			  circletest \
+			  elipsetest
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -49,7 +50,7 @@ LAB1_EXECUTABLES = lab1 \
 
 LAB2_EXECUTABLES = image_api fractalstest perlinnoise fractalmain
 
-LAB3_EXECUTABLES = test3d circletest
+LAB3_EXECUTABLES = test3d circletest elipsetest
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -108,6 +109,9 @@ test3d: $(ODIR)/test3d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 circletest: $(ODIR)/circletest.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+elipsetest: $(ODIR)/elipsetest.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

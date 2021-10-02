@@ -24,5 +24,10 @@ int main(int argc, char *argv[])
 
     circle_draw(&c, src, color);
 
-    image_write(src, "output/lab3/circle.ppm");
+    image_write(src, "output/lab3/circle_outline.ppm");
+
+    image_reset(src);
+    circle_drawFill(&c, src, color);
+
+    image_write(src, "output/lab3/circle_fill.ppm");
 }

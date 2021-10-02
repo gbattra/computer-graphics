@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
     Circle c;
     c.radius = 50.0;
-    point_set2D(&c.center, 200, 400);
+    point_set2D(&c.center, 400, 200);
 
     Color color;
     color_set(&color, 1.0, 1.0, 1.0);

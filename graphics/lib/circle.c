@@ -20,69 +20,55 @@ void circle_set(Circle *circle, Point tp, double tr)
     circle->radius = tr;
 }
 
-static void reflect_eight(int xc, int yc, int dx, int dy, FPixel pix, Image *src)
+static void set_pixel(int x, int y, Image *src, FPixel pix)
 {
     Point p;
-    p.val[0] = xc + dx;
-    p.val[1] = yc + dy;
+    p.val[0] = x;
+    p.val[1] = y;
     point_draw(&p, src, pix);
-
-    // p.val[0] = xc + dx;
-    // p.val[1] = yc - dy;
-    // point_draw(&p, src, pix);
-
-    // p.val[0] = xc - dx;
-    // p.val[1] = yc + dy;
-    // point_draw(&p, src, pix);
-
-    // p.val[0] = xc - dx;
-    // p.val[1] = yc - dy;
-    // point_draw(&p, src, pix);
-
-    // p.val[0] = xc + dy;
-    // p.val[1] = yc + dx;
-    // point_draw(&p, src, pix);
-
-    // p.val[0] = xc + dy;
-    // p.val[1] = yc - dx;
-    // point_draw(&p, src, pix);
-
-    // p.val[0] = xc - dy;
-    // p.val[1] = yc + dx;
-    // point_draw(&p, src, pix);
-
-    // p.val[0] = xc - dy;
-    // p.val[1] = yc - dx;
-    // point_draw(&p, src, pix);
 }
 
+static void reflect_eight(int xc, int yc, int dx, int dy, FPixel pix, Image *src)
+{
+    set_pixel(xc + dx, yc + dy, src, pix);
+    set_pixel(xc - dx, yc + dy, src, pix);
+    set_pixel(xc + dx, yc - dy, src, pix);
+    set_pixel(xc - dx, yc - dy, src, pix);
+
+    set_pixel(xc + dy, yc + dx, src, pix);
+    set_pixel(xc - dy, yc + dx, src, pix);
+    set_pixel(xc + dy, yc - dx, src, pix);
+    set_pixel(xc - dy, yc - dx, src, pix);
+}
+
+// Implementatin inspired by circleMidpoint.c
 void circle_draw(Circle *circle, Image *src, Color c)
 {
+    FPixel pix;
+    pix.rgb[0] = c.c[0];
+    pix.rgb[1] = c.c[1];
+    pix.rgb[2] = c.c[2];
+
     double r = circle->radius;
     int xc = circle->center.val[0];
     int yc = circle->center.val[1];
-    int x0 = xc;
-    int y0 = yc + r;
-    double m = 0;
-    int i = 0;
-    while (m < 1 || i < MAX_ITER)
+    int dx = 0;
+    int dy = r;
+    int e = 1 - r;
+    reflect_eight(xc, yc, dx, dy, pix, src);
+
+    while (dx < dy)
     {
-        int x1 = x0 + 1;
-        int y1 = yc + sqrtf(((r*r) - ((xc - x1)*(xc-x1))));
-        printf("x: %i , y: %i\n", x1, y1);
-        m = abs((y1 - y0)) / abs((x1 - x0));
-
-        // FPixel pix;
-        // pix.rgb[0] = c.c[0];
-        // pix.rgb[1] = c.c[1];
-        // pix.rgb[2] = c.c[2];
-
-        // int dx = x1 - xc;
-        // int dy = y1 - yc;
-        // reflect_eight(xc, yc, dx, dy, pix, src);
-        
-        y0 = y1;
-        x0 = x1;
-        i++;
+        dx++;
+        if (e < 0)
+        {
+            e += 2 * dx + 1;
+        }
+        else
+        {
+            dy--;
+            e += 2 * (dx - dy) + 1;
+        }
+        reflect_eight(xc, yc, dx, dy, pix, src);
     }
 }

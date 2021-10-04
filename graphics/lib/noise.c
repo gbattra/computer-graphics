@@ -40,6 +40,7 @@ void perlin(Image *dst, int n_octaves)
                 float blend_y = (float) (i - sample_y) / (float) y_pitch;
                 float sample_1 = (1.0-blend_x) * seed[sample_y * dst->cols + sample_x] + blend_x * seed[sample_y * dst->cols + sample_x2];
                 float sample_2 = (1.0-blend_x) * seed[sample_y2 * dst->cols + sample_x] + blend_x * seed[sample_y2 * dst->cols + sample_x2];
+                
                 noise += scale * (blend_y * (sample_2 - sample_1) + sample_1);
                 scale_acc += scale;
                 scale /= 2.0;

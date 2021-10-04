@@ -122,4 +122,4 @@ void polyline_normalize(Polyline *pline);
  * 
  * @return void
  */
-void polyline_draw(Polyline *pline, Image *src, Color *c);
+void polyline_draw(Polyline *pline, Image *src, Color c);

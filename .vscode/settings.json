@@ -4,6 +4,8 @@
         "functional": "c",
         "iterator": "c",
         "image.h": "c",
-        "circle.h": "c"
+        "circle.h": "c",
+        "polyline.h": "c",
+        "point.h": "c"
     }
 }

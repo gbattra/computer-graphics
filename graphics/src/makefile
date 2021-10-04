@@ -45,7 +45,8 @@ EXECUTABLES = ppmtest \
 			  elipsetest \
 			  test3a \
 			  test3b \
-			  test3c
+			  test3c \
+			  illustration
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -53,7 +54,7 @@ LAB1_EXECUTABLES = lab1 \
 
 LAB2_EXECUTABLES = image_api fractalstest perlinnoise fractalmain
 
-LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c
+LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c illustration
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -124,6 +125,9 @@ test3b: $(ODIR)/test3b.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test3c: $(ODIR)/test3c.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+illustration: $(ODIR)/illustration.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

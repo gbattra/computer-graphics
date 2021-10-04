@@ -97,11 +97,12 @@ void polyline_normalize(Polyline *pline)
 
 void polyline_draw(Polyline *pline, Image *src, Color c)
 {
-    for (int i = 0; i < pline->numVertex; i++)
+    for (int i = 1; i < pline->numVertex; i++)
     {
         Line l;
-        Point *p = &pline->vertex[i];
-        line_set2D(&l, p->val[0], p->val[1], 0, 0);
+        Point *p1 = &pline->vertex[i - 1];
+        Point *p2 = &pline->vertex[i];
+        line_set2D(&l, p1->val[0], p1->val[1], p2->val[0], p2->val[1]);
         line_draw(&l, src, c);
     }
 }

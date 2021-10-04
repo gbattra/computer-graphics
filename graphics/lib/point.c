@@ -46,7 +46,7 @@ void point_copy(Point *to, Point *from)
 
 void point_draw(Point *p, Image *src, FPixel c)
 {
-    image_setf(src, (int) src->rows - p->val[1], (int) p->val[0], c);
+    image_setf(src, (int) p->val[1], (int) p->val[0], c);
 }
 
 void point_print(Point *p, FILE *fp)

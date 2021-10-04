@@ -22,7 +22,7 @@ typedef struct
  * 
  * @return allocated polyline pointer
  */
-Polyline *polyline_create();
+Polyline *polyline_create(void);
 
 /**
  * Returns an allocated Polyline pointer with the vertex list initialized

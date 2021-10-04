@@ -11,9 +11,9 @@
 #include "stdlib.h"
 
 
-Polyline *polyline_create()
+Polyline *polyline_create(void)
 {
-    Polyline *pline;
+    Polyline *pline = (Polyline *) malloc(sizeof(Polyline));
     pline->zBuffer = 1;
     pline->numVertex = 0;
     pline->vertex = NULL;
@@ -22,7 +22,7 @@ Polyline *polyline_create()
 
 Polyline *polyline_createp(int numV, Point *vlist)
 {
-    Polyline *pline;
+    Polyline *pline = (Polyline *) malloc(sizeof(Polyline));
     pline->zBuffer = 1;
     pline->numVertex = numV;
     pline->vertex = (Point *) malloc(sizeof(Point) * numV);
@@ -99,10 +99,10 @@ void polyline_draw(Polyline *pline, Image *src, Color c)
 {
     for (int i = 0; i < pline->numVertex; i++)
     {
-        Line *l;
+        Line l;
         Point *p = &pline->vertex[i];
-        line_set2D(l, p->val[0], p->val[1], 0, 0);
-        line_draw(l, src, c);
+        line_set2D(&l, p->val[0], p->val[1], 0, 0);
+        line_draw(&l, src, c);
     }
 }
 

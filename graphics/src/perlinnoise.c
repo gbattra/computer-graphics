@@ -17,4 +17,6 @@ int main(int argc, char *argv[])
     src = image_create(600, 1000);
     perlin(src, 9);
     image_write(src, "output/lab2/perlin.ppm");
+
+    image_free(src);
 }

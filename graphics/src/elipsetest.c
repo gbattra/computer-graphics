@@ -31,4 +31,6 @@ int main(int argc, char *argv[])
     elipse_drawFill(&el, src, color);
 
     image_write(src, "output/lab3/elipse_fill.ppm");
+
+    image_free(src);
 }

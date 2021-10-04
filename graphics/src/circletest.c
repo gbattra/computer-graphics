@@ -30,4 +30,6 @@ int main(int argc, char *argv[])
     circle_drawFill(&c, src, color);
 
     image_write(src, "output/lab3/circle_fill.ppm");
+
+    image_free(src);
 }

@@ -12,7 +12,7 @@
 
 typedef struct
 {
-    int zBuffer;
+    int zBuffer = 1;
     Point a;
     Point b;
 } Line;

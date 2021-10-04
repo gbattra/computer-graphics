@@ -51,13 +51,36 @@ static void fill_row(int x0, int y0, int x1, int y1, Color c, Image *src)
     line_draw(&l, src, c);
 }
 
+/**
+ * Draw horizontal lines between the reflection points.
+ * 
+ * @param cx the center x coord
+ * @param cy the center y coord
+ * @param dx the delta in x
+ * @param dy the delta in y
+ * @param src the image to draw on
+ * @param c the color of the lines
+ * 
+ * @return void
+ */
 static void fill_reflections(int cx, int cy, int dx, int dy, Image *src, Color c)
 {
     fill_row(cx - dx, cy + dy, cx + dx, cy + dy, c, src);
     fill_row(cx - dx, cy - dy, cx + dx, cy - dy, c, src);
 }
 
-
+/**
+ * Plot the reflection points on the elipse.
+ * 
+ * @param cx the center x coord
+ * @param cy the center y coord
+ * @param dx the delta in x
+ * @param dy the delta in y
+ * @param src the image to draw on
+ * @param c the color of the points
+ * 
+ * @return void
+ */
 static void plot_reflections(int cx, int cy, int dx, int dy, Image *src, Color c)
 {
     FPixel pix;

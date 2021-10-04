@@ -77,7 +77,7 @@ static void line_draw1(Image *src, int x0, int y0, int x1, int y1, Color c)
     int x = x0;
     for (int i = 0; i < abs(dx); i++)
     {
-        image_setColor(src, src->rows - y, x, c);
+        image_setColor(src, y, x, c);
         if (e > 0)
         {
             e -= 2*dx;
@@ -98,7 +98,7 @@ static void line_draw2(Image *src, int x0, int y0, int x1, int y1, Color c)
     int y = y0;
     for (int i = 0; i < abs(dy); i++)
     {
-        image_setColor(src, src->rows - y, x, c);
+        image_setColor(src, y, x, c);
         if (e > 0)
         {
             e -= 2*dy;
@@ -127,7 +127,7 @@ static void line_draw3(Image *src, int x0, int y0, int x1, int y1, Color c)
         e += 2*dx;
         y++;
         
-        image_setColor(src, src->rows - y, x, c);
+        image_setColor(src, y, x, c);
     }
     
 }
@@ -150,7 +150,7 @@ static void line_draw4(Image *src, int x0, int y0, int x1, int y1, Color c)
         e -= 2*dy;
         x--;
 
-        image_setColor(src, src->rows - y, x, c);
+        image_setColor(src, y, x, c);
     }
 }
 

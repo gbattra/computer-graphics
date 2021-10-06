@@ -22,6 +22,9 @@ void floodfill(Image *src, Point start, Color col)
     {
         Point current;
         stack_pop(stack, &current);
+        if (current.val[0] < 0 || current.val[1] < 0
+            || current.val[0] > src->cols || current.val[1] > src->rows) continue;
+            
         Color curr_col = image_getColor(src, current.val[1], current.val[0]);
 
         if (color_compare(&curr_col, &start_col) > 0) continue;

@@ -6,17 +6,11 @@
  */
 
 #include "floodfill.h"
-
-typedef struct
-{
-    int capacity;
-    int item_size;
-    int top;
-    void *items;
-};
-
+#include "stack.h"
 
 void flood(Image *src, Point start, Color col)
 {
-
+    Stack *stack;
+    stack = stack_create(src->rows * src->cols, sizeof(Point));
+    stack_push(stack, &start);
 }

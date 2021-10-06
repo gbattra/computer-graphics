@@ -291,4 +291,14 @@ void image_setColor(Image *src, int i, int j, Color val);
  */
 Color image_getColor(Image *src, int i, int j);
 
+/**
+ * Compoare two colors to see if they match.
+ * 
+ * @param one first color
+ * @param two second color
+ * 
+ * @return 0 if match, 1 otherwise
+ */
+int color_compare(Color *one, Color *two);
+
 #endif

@@ -229,3 +229,16 @@ Color image_getColor(Image *src, int i, int j)
 
     return color;
 }
+
+int color_compare(Color *one, Color *two)
+{
+    printf("one: %f - %f - %f\n", one->c[0], one->c[1], one->c[2]);
+    printf("two: %f - %f - %f\n", two->c[0], two->c[1], two->c[2]);
+    if (one->c[0] == two->c[0]
+        && one->c[1] == two->c[1]
+        && one->c[2] == two->c[2])
+    {
+        return 0;
+    }
+    return 1;
+}

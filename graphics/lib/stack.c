@@ -31,7 +31,7 @@ void stack_pop(Stack *stack, void *target)
 {
     void *source = (char *) stack->items+(stack->top * stack->item_size);
     stack->top--;
-    memcpy(source, target, stack->item_size);
+    memcpy(target, source, stack->item_size);
 }
 
 int stack_size(Stack *stack)

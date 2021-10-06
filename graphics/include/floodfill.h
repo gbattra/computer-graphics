@@ -18,4 +18,4 @@
  *
  * @return void
  */
-void flood(Image *src, Point start, Color col);
+void floodfill(Image *src, Point start, Color col);

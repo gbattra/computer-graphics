@@ -13,6 +13,8 @@
 int main(int argc, char *argv[])
 {
     Color white = {1.0, 1.0, 1.0};
+    Color red = {1.0, 0.0, 0.0};
+
     Image *src;
     src = image_create(400, 600);
     
@@ -36,6 +38,11 @@ int main(int argc, char *argv[])
 
     polyline_draw(pline, src, white);
     polyline_free(pline);
+
+    Point start;
+    point_set2D(&start, src->cols/2, src->rows/2);
+
+    floodfill(src, start, red);
 
     image_write(src, "output/lab3/floodfill.ppm");
     image_free(src);

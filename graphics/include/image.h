@@ -8,6 +8,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include <stdio.h>
+
 /**
  * Structure representing a pixel in an image.
  */

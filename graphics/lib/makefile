@@ -36,7 +36,7 @@ DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of all the object files (with .o endings)
 _COMMON = ppmIO.o image.o fractals.o noise.o point.o line.o circle.o elipse.o polyline.o stack.o floodfill.o \
-		  polygon.o
+		  geometry.o polygon.o
 
 # convert them to point to the right place
 COMMON = $(patsubst %,$(ODIR)/%,$(_COMMON))

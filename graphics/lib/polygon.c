@@ -6,6 +6,7 @@
  */
 
 #include "polygon.h"
+#include "line.h"
 #include <stdlib.h>
 
 Polygon *polygon_create(void)
@@ -144,6 +145,16 @@ void polygon_normalize(Polygon *pgon)
     }
 }
 
-void polygon_draw(Polygon *pgon, Image *src, Color c);
+void polygon_draw(Polygon *pgon, Image *src, Color c)
+{
+    for (int i = 1; i < pgon->nVertex; i++)
+    {
+        Point *a = &pgon->vlist[i-1];
+        Point *b = &pgon->vlist[i];
+        Line l;
+        line_set2D(&l, a->val[0], a->val[1], b->val[0], b->val[1]);
+        line_draw(&l, src, c);
+    }
+}
 
 void polygon_drawFill(Polygon *pgon, Image *src, Color c);

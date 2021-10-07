@@ -5,6 +5,9 @@
  * Header file defining polyline API.
  */
 
+#ifndef POLYLINE
+#define POLYLINE
+
 #include "point.h"
 #include "image.h"
 
@@ -123,3 +126,5 @@ void polyline_normalize(Polyline *pline);
  * @return void
  */
 void polyline_draw(Polyline *pline, Image *src, Color c);
+
+#endif

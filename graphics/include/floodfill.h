@@ -5,6 +5,9 @@
  * Header file defining flood file API
  */
 
+#ifndef FLOODFILL
+#define FLOODFILL
+
 #include "image.h"
 #include "point.h"
 
@@ -19,3 +22,5 @@
  * @return void
  */
 void floodfill(Image *src, Point start, Color col);
+
+#endif

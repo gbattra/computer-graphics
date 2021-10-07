@@ -242,3 +242,8 @@ int color_compare(Color *one, Color *two)
     }
     return 1;
 }
+
+void color_print(Color *color, FILE *fp)
+{
+    fprintf(fp, "%f\n%f\n%f\n", color->c[0], color->c[1], color->c[2]);
+}

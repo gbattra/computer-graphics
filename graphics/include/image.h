@@ -301,4 +301,14 @@ Color image_getColor(Image *src, int i, int j);
  */
 int color_compare(Color *one, Color *two);
 
+/**
+ * Print the color to the filepointer.
+ * 
+ * @param color the color to print
+ * @param fp the file to print to
+ * 
+ * @return void
+ */
+void color_print(Color *color, FILE *fp);
+
 #endif

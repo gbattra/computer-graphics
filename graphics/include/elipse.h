@@ -5,6 +5,9 @@
  * Defines the Elipse object and API.
  */
 
+#ifndef ELIPSE
+#define ELIPSE
+
 #include "point.h"
 
 typedef struct
@@ -49,3 +52,4 @@ void elipse_draw(Elipse *el, Image *src, Color c);
  */
 void elipse_drawFill(Elipse *el, Image *src, Color c);
 
+#endif

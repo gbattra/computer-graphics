@@ -6,6 +6,9 @@
  * Inspired by http://jiten-thakkar.com/posts/writing-generic-stack-in-c
  */
 
+#ifndef STACK
+#define STACK
+
 typedef struct
 {
     int capacity;
@@ -61,3 +64,5 @@ int stack_size(Stack *stack);
  * @return void
  */
 void stack_free(Stack *stack);
+
+#endif

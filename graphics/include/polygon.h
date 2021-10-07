@@ -5,8 +5,12 @@
  * Definition of the polygon API.
  */
 
+#ifndef POLYGON
+#define POLYGON
+
 #include "image.h"
 #include "point.h"
+#include "geometry.h"
 #include <stdlib.h>
 
 typedef struct
@@ -14,9 +18,9 @@ typedef struct
     int oneSided;
     int nVertex;
     int zBuffer;
-    Point *vertex;
-    Color *color;
-    Vector *normal;
+    Point *vlist;
+    Color *clist;
+    Vector *nlist;
 } Polygon;
 
 /**
@@ -194,3 +198,5 @@ void polygon_drawFill(Polygon *pgon, Image *src, Color c);
 // void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
 
 // void polygon_shade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
+
+#endif

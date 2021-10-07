@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   polyline_set( &thing1, 20, &( p[42] ) );
 
   printf("Polyline create\n");
-	thing2 = polyline_createp( 10, &(p[105] ) );
+  thing2 = polyline_createp( 10, &(p[105] ) );
 	//  thing2 = polyline_createp( 2, &(p[105] ) );
 	//	polyline_print(thing2, stdout);
   

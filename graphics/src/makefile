@@ -80,7 +80,6 @@ $(ODIR)/%.o: %.C $(DEPS)
 $(ODIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-
 all:
 	for i in $(EXECUTABLES); do (make $$i) ; done
 

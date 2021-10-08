@@ -82,16 +82,16 @@ void polygon_setColors(Polygon *pgon, int numV, Color *clist)
     }
 }
 
-// void polygon_setNormals(Polygon *pgon, int numV, Vector *nlist)
-// {
-//     pgon->nVertex = numV;
-//     free(pgon->nlist);
-//     pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
-//     for (int i = 0; i < numV; i++)
-//     {
-//         vector_copy(&pgon->nlist[i], &nlist[i]);
-//     }
-// }
+void polygon_setNormals(Polygon *pgon, int numV, Vector *nlist)
+{
+    pgon->nVertex = numV;
+    free(pgon->nlist);
+    pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
+    for (int i = 0; i < numV; i++)
+    {
+        vector_copy(&pgon->nlist[i], &nlist[i]);
+    }
+}
 
 void polygon_zBuffer(Polygon *pgon, int flag)
 {
@@ -133,7 +133,7 @@ void polygon_print(Polygon *pgon, FILE *fp)
     {
         point_print(&pgon->vlist[i], fp);
         color_print(&pgon->clist[i], fp);
-        // vector_print(&pgon->nlist[i], fp);
+        vector_print(&pgon->nlist[i], fp);
     }
 }
 
@@ -155,6 +155,13 @@ void polygon_draw(Polygon *pgon, Image *src, Color c)
         line_set2D(&l, a->val[0], a->val[1], b->val[0], b->val[1]);
         line_draw(&l, src, c);
     }
+    
+    // connect final vertex back to first vertex
+    Point *a = &pgon->vlist[pgon->nVertex - 1];
+    Point *b = &pgon->vlist[0];
+    Line l;
+    line_set2D(&l, a->val[0], a->val[1], b->val[0], b->val[1]);
+    line_draw(&l, src, c);
 }
 
-void polygon_drawFill(Polygon *pgon, Image *src, Color c);
+// void polygon_drawFill(Polygon *pgon, Image *src, Color c);

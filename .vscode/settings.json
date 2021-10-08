@@ -8,6 +8,8 @@
         "polyline.h": "c",
         "point.h": "c",
         "stack.h": "c",
-        "floodfill.h": "c"
+        "floodfill.h": "c",
+        "polygon.h": "c",
+        "line.h": "c"
     }
 }

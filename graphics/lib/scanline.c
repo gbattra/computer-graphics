@@ -90,13 +90,17 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	// the lower half of the pixel above it.  In other words, round the
 	// start y value to the nearest integer and assign it to
 	// edge->yStart.
-	edge->yStart = (int) edge->y0;
+	float deltaY0 = edge->y0 - floor(edge->y0);
+	if (deltaY0 > 0.5) edge->yStart = floor(edge->y0) + 1;
+	else edge->yStart = floor(edge->y0);
 
 	// Turn off the edge if it starts in the lower half or the top half
 	// of the next pixel.  In other words, round the end y value to the
 	// nearest integer and subtract 1, assigning the result to
 	// edge->yEnd.
-	edge->yEnd = (int) edge->y1 - 1;
+	float deltaY1 = edge->y1 - floor(edge->y1);
+	if (deltaY1 > 0.5) edge->yEnd = floor(edge->y1);
+	else edge->yEnd = floor(edge->y1) - 1;
 
 	// Clip yEnd to the number of rows-1.
 	if (edge->yEnd > src->rows) edge->yEnd = src->rows - 1;
@@ -107,8 +111,9 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	// Calculate xIntersect, adjusting for the fraction of the point in the pixel.
 	// Scanlines go through the middle of pixels
 	// Move the edge to the first scanline it crosses
-	double m = dscan / (edge->x1 - edge->x0);
-    edge->xIntersect = (0.5 * edge->dxPerScan) + (edge->y0 / m) + edge->x0;
+	float mod = (0.5 * (floor(start.val[1]) - start.val[1])) * edge->dxPerScan;
+	if (start.val[1] - floor(start.val[1]) > 0.5) mod = (1.0 - (floor(start.val[1]) - start.val[1]) + 0.5) * edge->dxPerScan;
+    edge->xIntersect = mod + edge->x0;
 
 	// adjust if the edge starts above the image
 	// move the intersections down to scanline zero
@@ -120,14 +125,15 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 
 	if (edge->y0 < 0)
 	{
-		edge->xIntersect = (0.5 * edge->dxPerScan) + (fabsf(edge->y0) / m) + edge->x0;
+		edge->xIntersect = mod + (fabsf(edge->y0) / edge->dxPerScan) + edge->x0;
 		edge->y0 = 0;
 		edge->x0 = edge->xIntersect;
 		edge->yStart = (int) edge->y0;
 	}
 
 	// check for really bad cases with steep slopes where xIntersect has gone beyond the end of the edge
-	if (edge->xIntersect > edge->x1) edge->xIntersect = edge->x1;
+	// if (edge->dxPerScan > 0 && edge->xIntersect > edge->x1) edge->xIntersect = edge->x1;
+	// if (edge->dxPerScan < 0 && edge->xIntersect > edge->x0) edge->xIntersect = edge->x0;
 
 	// return the newly created edge data structure
 	return( edge );

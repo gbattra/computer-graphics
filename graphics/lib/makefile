@@ -28,7 +28,7 @@ LIBDIR =.
 BINDIR =../bin
 
 # put all of the relevant include files here
-_DEPS = ppmIO.h image.h fractals.h noise.h point.h line.h circle.h elipse.h polyline.h stack.h floodfill.h \
+_DEPS = ppmIO.h graphics.h image.h fractals.h noise.h point.h line.h circle.h elipse.h polyline.h stack.h floodfill.h \
 		geometry.h polygon.h list.h
 
 # convert them to point to the right place

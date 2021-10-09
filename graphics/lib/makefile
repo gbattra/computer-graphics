@@ -29,14 +29,14 @@ BINDIR =../bin
 
 # put all of the relevant include files here
 _DEPS = ppmIO.h image.h fractals.h noise.h point.h line.h circle.h elipse.h polyline.h stack.h floodfill.h \
-		geometry.h polygon.h
+		geometry.h polygon.h list.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of all the object files (with .o endings)
 _COMMON = ppmIO.o image.o fractals.o noise.o point.o line.o circle.o elipse.o polyline.o stack.o floodfill.o \
-		  geometry.o polygon.o
+		  geometry.o polygon.o list.o scanline.o
 
 # convert them to point to the right place
 COMMON = $(patsubst %,$(ODIR)/%,$(_COMMON))

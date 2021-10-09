@@ -155,13 +155,6 @@ void polygon_draw(Polygon *pgon, Image *src, Color c)
         line_set2D(&l, a->val[0], a->val[1], b->val[0], b->val[1]);
         line_draw(&l, src, c);
     }
-    
-    // connect final vertex back to first vertex
-    Point *a = &pgon->vlist[pgon->nVertex - 1];
-    Point *b = &pgon->vlist[0];
-    Line l;
-    line_set2D(&l, a->val[0], a->val[1], b->val[0], b->val[1]);
-    line_draw(&l, src, c);
 }
 
 // void polygon_drawFill(Polygon *pgon, Image *src, Color c);

@@ -10,6 +10,7 @@
         "stack.h": "c",
         "floodfill.h": "c",
         "polygon.h": "c",
-        "line.h": "c"
+        "line.h": "c",
+        "algorithm": "c"
     }
 }

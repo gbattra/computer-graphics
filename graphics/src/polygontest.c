@@ -7,6 +7,7 @@
 
 #include "image.h"
 #include "polygon.h"
+#include "line.h"
 #include "point.h"
 
 
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
     src = image_create(600, 900);
 
     Color white = {1.0, 1.0, 1.0};
+    Color red = {1.0, 0.0, 0.0};
 
     Point one;
     point_set2D(&one, src->cols / 3, src->rows / 3);
@@ -35,12 +37,14 @@ int main(int argc, char *argv[])
         one.val[0] / 2,
         (one.val[1] + three.val[1]) / 2);
 
-    Point vlist[5] = {one, two, three, four, five};
+    Point vlist[6] = {one, two, three, four, five, one};
 
     Polygon *pgon;
-    pgon = polygon_createp(5, vlist);
+    pgon = polygon_createp(6, vlist);
 
     polygon_draw(pgon, src, white);
+
+    polygon_drawFill(pgon, src, red);
 
     image_write(src, "output/lab4/polygon_outline.ppm");
 

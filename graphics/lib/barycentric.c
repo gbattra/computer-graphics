@@ -59,13 +59,13 @@ void polygon_drawFillB(Polygon *pgon, Image *src, Color color)
 
         for (int j = minX; j < maxX; j++)
         {   
-            double x = (double) j;
-            double y = (double) i;
+            double x = ((double) j) + 0.5;
+            double y = ((double) i) + 0.5;
             double beta = barycentric_coord(x, y, c, a, b);
             double gamma = barycentric_coord(x, y, a, b, c);
             double alpha = 1.0 - beta - gamma;
 
-            if (0 <= alpha <= 1 && 0 <= beta <= 1 && 0 <= gamma <= 1)
+            if ((0 <= alpha) && (alpha <= 1) && (0 <= beta) && (beta <= 1) && (0 <= gamma) && (gamma <= 1))
             {
                 FPixel *pix = &row[j];
                 pix->rgb[0] = color.c[0];

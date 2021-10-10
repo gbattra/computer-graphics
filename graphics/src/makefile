@@ -52,7 +52,8 @@ EXECUTABLES = ppmtest \
 			  floodfilltest \
 			  polygontest \
 			  test4a \
-			  test4c
+			  test4c \
+			  test4b
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -62,7 +63,7 @@ LAB2_EXECUTABLES = image_api fractalstest perlinnoise fractalmain
 
 LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c illustration testbench floodfilltest
 
-LAB4_EXECUTABLES = polygontest test4a test4c
+LAB4_EXECUTABLES = polygontest test4a test4c test4b
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -153,6 +154,9 @@ polygontest: $(ODIR)/polygontest.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test4a: $(ODIR)/test4a.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test4b: $(ODIR)/test4b.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test4c: $(ODIR)/test4c.o

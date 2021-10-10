@@ -61,8 +61,8 @@ void polygon_set(Polygon *pgon, int numV, Point *vlist)
 void polygon_clear(Polygon *pgon)
 {
     free(pgon->vlist);
-    free(pgon->clist);
-    free(pgon->vlist);
+    // free(pgon->clist);
+    // free(pgon->vlist);
     polygon_init(pgon);
 }
 
@@ -108,8 +108,8 @@ void polygon_setAll(
     int oneSided)
 {
     polygon_set(pgon, numV, vlist);
-    polygon_setColors(pgon, numV, clist);
-    polygon_setNormals(pgon, numV, nlist);
+    // polygon_setColors(pgon, numV, clist);
+    // polygon_setNormals(pgon, numV, nlist);
     polygon_zBuffer(pgon, zBuffer);
     polygon_setSided(pgon, oneSided);
 }
@@ -128,12 +128,12 @@ void polygon_copy(Polygon *to, Polygon *from)
 
 void polygon_print(Polygon *pgon, FILE *fp)
 {
-    fprintf(fp, "%i\n%i\n$%i\n", pgon->zBuffer, pgon->oneSided, pgon->nVertex);
+    fprintf(fp, "%i\n%i\n%i\n", pgon->zBuffer, pgon->oneSided, pgon->nVertex);
     for (int i = 0; i < pgon->nVertex; i++)
     {
         point_print(&pgon->vlist[i], fp);
-        color_print(&pgon->clist[i], fp);
-        vector_print(&pgon->nlist[i], fp);
+        // color_print(&pgon->clist[i], fp);
+        // vector_print(&pgon->nlist[i], fp);
     }
 }
 

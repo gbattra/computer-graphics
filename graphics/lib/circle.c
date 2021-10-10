@@ -26,6 +26,8 @@
  */
 static void set_pixel(int x, int y, Image *src, FPixel pix)
 {
+    if (y < 0 || y >= src->rows || x < 0 || x >= src->cols) return;
+    
     Point p;
     p.val[0] = x;
     p.val[1] = y;
@@ -75,7 +77,7 @@ static void reflect_eight(int xc, int yc, int dx, int dy, Color c, Image *src)
  * @return void
  */
 static void fill_row(int x0, int y0, int x1, int y1, Color c, Image *src)
-{
+{   
     Line l;
     l.a.val[0] = x0;
     l.a.val[1] = y1;

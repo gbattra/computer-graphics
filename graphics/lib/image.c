@@ -213,6 +213,7 @@ void color_set(Color *to, float r, float g, float b)
 
 void image_setColor(Image *src, int i, int j, Color val)
 {
+    if (i < 0 || i >= src->rows || j < 0 || j >= src->cols) return;
     FPixel *pix = &src->data[(i * src->cols) + j];
     pix->rgb[0] = val.c[0];
     pix->rgb[1] = val.c[1];

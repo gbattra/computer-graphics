@@ -195,6 +195,17 @@ void polygon_draw(Polygon *pgon, Image *src, Color c);
  */
 void polygon_drawFill(Polygon *pgon, Image *src, Color c);
 
+/**
+ * Draws and fills the polygon using the barycentric coordinates.
+ * 
+ * @param pgon the polygon to draw
+ * @param src the image to draw
+ * @param color the color to use
+ * 
+ * @return void
+ */
+void polygon_drawFillB(Polygon *pgon, Image *src, Color color);
+
 // void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
 
 // void polygon_shade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);

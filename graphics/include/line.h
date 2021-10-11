@@ -81,4 +81,16 @@ void line_copy(Line *to, Line *from);
  */
 void line_draw(Line *l, Image *src, Color c);
 
+/**
+ * Draws a line with a color gradient from ca to cb.
+ * 
+ * @param l the line to draw
+ * @param src the image to draw on
+ * @param ca the start color
+ * @param cb the end color
+ * 
+ * @return void
+ */
+void line_drawG(Line *l, Image *src, Color ca, Color cb);
+
 #endif

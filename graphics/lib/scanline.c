@@ -344,8 +344,7 @@ void polygon_drawFill(Polygon *pgon, Image *src, Color c) {
 
 	// clean up
 	ll_delete( edges, (void (*)(const void *))free );
-
-    free(llist);
+	ll_delete( llist, (void (*)(const void *))free );
 
 	return;
 }
@@ -364,10 +363,25 @@ void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
 	// process the edge list (should be able to take an arbitrary edge list)
 	processEdgeList( edges, src, llist);
 
+    Line *l;
+    l = ll_pop(llist);
+    int i = 0;
+    int size = llist->size;
+    while (l)
+    {
+        if (vert) line_drawG(l, src, ca, cb);
+        else
+        {
+            Color c;
+            color_interpolate(&c, &ca, &cb, ((double) i) / ((double) size));
+            line_draw(l, src, c);
+        }
+        l = ll_pop(llist);
+        i++;
+    }
 	// clean up
 	ll_delete( edges, (void (*)(const void *))free );
-
-    free(llist);
+	ll_delete( llist, (void (*)(const void *))free );
 
 	return;
 }

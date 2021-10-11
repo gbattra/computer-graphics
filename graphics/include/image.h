@@ -313,4 +313,16 @@ int color_compare(Color *one, Color *two);
  */
 void color_print(Color *color, FILE *fp);
 
+/**
+ * Interpolates between two colors given the alpha.
+ * 
+ * @param target the target color after interpolation
+ * @param start the start color
+ * @param end the end color
+ * @param alpha the factor to interpolate by
+ * 
+ * @return void
+ */
+void color_interpolate(Color *target, Color *start, Color *end, double alpha);
+
 #endif

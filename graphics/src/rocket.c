@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
     Polygon *shipbody_pgon;
     shipbody_pgon = polygon_createp(5, shipbody);
-    polygon_drawFill(shipbody_pgon, src, gray);
+    polygon_drawFillG(shipbody_pgon, src, gray, black, 1);
     polygon_free(shipbody_pgon);
 
     Point leftwing[4];

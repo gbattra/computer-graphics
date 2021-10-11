@@ -246,3 +246,10 @@ void color_print(Color *color, FILE *fp)
 {
     fprintf(fp, "%f\n%f\n%f\n", color->c[0], color->c[1], color->c[2]);
 }
+
+void color_interpolate(Color *target, Color *start, Color *end, double alpha)
+{
+    target->c[0] = (1.0 - alpha) * start->c[0] + alpha * end->c[0];
+    target->c[1] = (1.0 - alpha) * start->c[1] + alpha * end->c[1];
+    target->c[2] = (1.0 - alpha) * start->c[2] + alpha * end->c[2];
+}

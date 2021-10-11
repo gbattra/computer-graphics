@@ -219,6 +219,24 @@ void polygon_drawFillB(Polygon *pgon, Image *src, Color color);
  */
 void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert);
 
+/**
+ * Gets the furthest point right.
+ * 
+ * @param pgon the polygon to search
+ * 
+ * @return the furthest right point
+ */
+Point *polygon_maxX(Polygon *pgon);
+
+/**
+ * Gets the furthest point left.
+ * 
+ * @param pgon the polygon to search
+ * 
+ * @return the furthest left point
+ */
+Point *polygon_minX(Polygon *pgon);
+
 // void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
 
 // void polygon_shade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);

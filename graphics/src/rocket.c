@@ -11,7 +11,7 @@
 int main(int argc, char *argv[])
 {
     Color white = {1.0, 1.0, 1.0};
-    Color gray = {0.85, 0.85, 0.85};
+    Color gray = {81.0/255.0, 88.0/255.0, 93.0/255.0};
     Color black = {21.0/255.0, 28.0/255.0, 33.0/255.0};
     Image *src;
     src = image_create(900, 500);
@@ -44,7 +44,30 @@ int main(int argc, char *argv[])
         thresh += 0.001;
     }
 
-    // draw exhaust
+    // draw back exhaust
+    Circle bcircles[15];
+    double extra_rad = 10.0;
+    Point bp[15];
+    point_set2D(&bp[0], (src->cols / 2), 455);
+    circle_set(&bcircles[0], bp[0], 10.0 + extra_rad);
+    point_set2D(&bp[1], (src->cols / 2), 475);
+    circle_set(&bcircles[1], bp[1], 15.0 + extra_rad);
+    point_set2D(&bp[2], (src->cols / 2), 515);
+    circle_set(&bcircles[2], bp[2], 30.0 + extra_rad);
+    point_set2D(&bp[3], (src->cols / 2), 585);
+    circle_set(&bcircles[3], bp[3], 60.0 + extra_rad);
+    point_set2D(&bp[4], (src->cols / 2), 660);
+    circle_set(&bcircles[4], bp[4], 90.0 + extra_rad);
+    point_set2D(&bp[5], (src->cols / 2), 800);
+    circle_set(&bcircles[5], bp[5], 160.0 + extra_rad);
+    point_set2D(&bp[6], (src->cols / 2), 1030);
+    circle_set(&bcircles[6], bp[6], 300.0 + extra_rad);
+    for (int i = 0; i < 15; i++)
+    {
+        circle_drawFill(&bcircles[i], src, white);
+    }
+
+    // draw front exhaust
     Circle circles[15];
     Point p[15];
     point_set2D(&p[0], (src->cols / 2), 455);
@@ -85,7 +108,7 @@ int main(int argc, char *argv[])
 
     Polygon *shipbody_pgon;
     shipbody_pgon = polygon_createp(5, shipbody);
-    polygon_drawFillG(shipbody_pgon, src, gray, black, 0);
+    polygon_drawFillG(shipbody_pgon, src, white, black, 0);
     polygon_free(shipbody_pgon);
 
     Point leftwing[4];
@@ -96,7 +119,7 @@ int main(int argc, char *argv[])
     
     Polygon *leftwing_pgon;
     leftwing_pgon = polygon_createp(4, leftwing);
-    polygon_drawFill(leftwing_pgon, src, black);
+    polygon_drawFillG(leftwing_pgon, src, gray, black, 0);
     polygon_free(leftwing_pgon);
 
     Point rightwing[4];
@@ -107,7 +130,7 @@ int main(int argc, char *argv[])
     
     Polygon *rightwing_pgon;
     rightwing_pgon = polygon_createp(4, rightwing);
-    polygon_drawFill(rightwing_pgon, src, black);
+    polygon_drawFillG(rightwing_pgon, src, black, gray, 0);
     polygon_free(rightwing_pgon);
 
     Point booster[4];
@@ -117,7 +140,7 @@ int main(int argc, char *argv[])
     point_set2D(&booster[3], (src->cols / 2) + 35, 425);
     Polygon *booster_pgon;
     booster_pgon = polygon_createp(4, booster);
-    polygon_drawFill(booster_pgon, src, black);
+    polygon_drawFillG(booster_pgon, src, gray, black, 0);
     polygon_free(booster_pgon);
 
     Point upperleft_wing[3];
@@ -126,7 +149,7 @@ int main(int argc, char *argv[])
     point_set2D(&upperleft_wing[2], (src->cols / 2) - 35, 265);
     Polygon *upperleft_wing_pgon;
     upperleft_wing_pgon = polygon_createp(3, upperleft_wing);
-    polygon_drawFill(upperleft_wing_pgon, src, black);
+    polygon_drawFillG(upperleft_wing_pgon, src, gray, black, 0);
     polygon_free(upperleft_wing_pgon);
 
     Point upperright_wing[3];
@@ -135,7 +158,7 @@ int main(int argc, char *argv[])
     point_set2D(&upperright_wing[2], (src->cols / 2) + 35, 265);
     Polygon *upperright_wing_pgon;
     upperright_wing_pgon = polygon_createp(3, upperright_wing);
-    polygon_drawFill(upperright_wing_pgon, src, black);
+    polygon_drawFillG(upperright_wing_pgon, src, black, gray, 0);
     polygon_free(upperright_wing_pgon);
 
     Point botmidwing[4];
@@ -145,7 +168,7 @@ int main(int argc, char *argv[])
     point_set2D(&botmidwing[3], (src->cols / 2) - 15, 410);
     Polygon *botmidwing_pgon;
     botmidwing_pgon = polygon_createp(4, botmidwing);
-    polygon_drawFill(botmidwing_pgon, src, black);
+    // polygon_drawFill(botmidwing_pgon, src, black);
     polygon_free(botmidwing_pgon);
 
     Point cockpit[6];
@@ -157,7 +180,7 @@ int main(int argc, char *argv[])
     point_set2D(&cockpit[5], (src->cols / 2) - 5, 75);
     Polygon *cockpit_pgon;
     cockpit_pgon = polygon_createp(6, cockpit);
-    polygon_drawFill(cockpit_pgon, src, black);
+    polygon_drawFillG(cockpit_pgon, src, gray, black, 0);
     polygon_free(cockpit_pgon);
 
     Circle windows[3];
@@ -167,7 +190,7 @@ int main(int argc, char *argv[])
         Point p;
         point_set2D(&p, (src->cols / 2), wrow);
         circle_set(&windows[w], p, 10.0);
-        circle_drawFillG(&windows[w], src, white, black, 0);
+        circle_drawFillG(&windows[w], src, gray, black, 0);
         wrow += 30;
     }
 

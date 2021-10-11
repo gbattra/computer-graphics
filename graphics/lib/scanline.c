@@ -369,7 +369,20 @@ void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
     int size = llist->size;
     while (l)
     {
-        if (!vert) line_drawG(l, src, ca, cb);
+        if (!vert)
+        {
+            Point *maxX = polygon_maxX(pgon);
+            Point *minX = polygon_minX(pgon);
+            int dx = maxX->val[0] - minX->val[0];
+            for (int x = l->a.val[0]; x < l->b.val[0]; x++)
+            {
+                double alpha = ((double) (x - minX->val[0])) / (double) dx;
+                Color c;
+                color_interpolate(&c, &ca, &cb, alpha);
+
+                image_setColor(src, l->a.val[1], x, c);
+            }
+        }
         else
         {
             Color c;

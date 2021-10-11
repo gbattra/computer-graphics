@@ -162,3 +162,25 @@ void polygon_draw(Polygon *pgon, Image *src, Color c)
     line_set2D(&l, a->val[0], a->val[1], b->val[0], b->val[1]);
     line_draw(&l, src, c);
 }
+
+Point *polygon_minX(Polygon *pgon)
+{
+    Point *minX = &pgon->vlist[0];
+    for (int v = 1; v < pgon->nVertex; v++)
+    {
+        if (pgon->vlist[v].val[0] < minX->val[0]) minX = &pgon->vlist[v];
+    }
+
+    return minX;
+}
+
+Point *polygon_maxX(Polygon *pgon)
+{
+    Point *maxX = &pgon->vlist[0];
+    for (int v = 1; v < pgon->nVertex; v++)
+    {
+        if (pgon->vlist[v].val[0] > maxX->val[0]) maxX = &pgon->vlist[v];
+    }
+
+    return maxX;
+}

@@ -106,7 +106,7 @@ static void fill_row(
     }
     for (int x = x0; x < x1; x++)
     {
-        set_pixel(x, y0, el, ca, cb, vert, src);
+        set_pixel(x, y0, cl, ca, cb, vert, src);
     }
 }
 

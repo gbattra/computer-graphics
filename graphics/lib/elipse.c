@@ -30,15 +30,15 @@ static void set_pixel(
     int vert,
     Image *src)
 {
-    // int dx = x - el->c.val[0];
-    // int dy = y - el->c.val[1];
-    // double alpha = (((double) dx) + el->ra) / (2.0*el->ra);
-    // if (vert) alpha = (((double) dy) + el->rb) / (2.0*el->rb);
+    int dx = x - el->c.val[0];
+    int dy = y - el->c.val[1];
+    double alpha = (((double) dx) + el->ra) / (2.0*el->ra);
+    if (vert) alpha = (((double) dy) + el->rb) / (2.0*el->rb);
 
-    // Color c;
-    // color_interpolate(&c, &ca, &cb, alpha);
+    Color c;
+    color_interpolate(&c, &ca, &cb, alpha);
 
-    image_setColor(src, y, x, ca);
+    image_setColor(src, y, x, c);
 }
 
 /**
@@ -201,7 +201,11 @@ void elipse_drawFill(Elipse *el, Image *src, Color c)
 }
 
 void elipse_drawG(Elipse *el, Image *src, Color ca, Color cb, int vert)
-{}
+{
+    draw_elipse(el, src, ca, cb, vert, 0);
+}
 
 void elipse_drawFillG(Elipse *el, Image *src, Color ca, Color cb, int vert)
-{}
+{
+    draw_elipse(el, src, ca, cb, vert, 1);
+}

@@ -11,6 +11,7 @@
 #include <math.h>
 #include "polygon.h"
 #include "list.h"
+#include "line.h"
 
 
 /********************
@@ -38,6 +39,19 @@ static int compYStart( const void *a, const void *b ) {
 	Edge *eb = (Edge *)b;
 
 	return(ea->yStart - eb->yStart);
+}
+
+/**
+ * Compare two lines sorting first by row, then by x start.
+ */
+static int compLineStart(const void *a, const void *b)
+{
+    Line *la = (Line *) a;
+    Line *lb = (Line *) b;
+    int xstart = (la->a.val[0] - lb->a.val[0]);
+    int ystart = (la->a.val[1] - lb->a.val[1]);
+    if (ystart == 0) return xstart;
+    return ystart;
 }
 
 
@@ -190,11 +204,11 @@ static LinkedList *setupEdgeList( Polygon *p, Image *src) {
 	Draw one scanline of a polygon given the scanline, the active edges,
 	a DrawState, the image, and some Lights (for Phong shading only).
  */
-static void fillScan( int scan, LinkedList *active, Image *src, Color c ) {
+static void fillScan( int scan, LinkedList *active, Image *src, LinkedList *llist ) {
   Edge *p1, *p2;
   int i, f;
 
-	// loop over the list
+	// loop over the lis
   p1 = ll_head( active );
   while(p1) {
 		// the edges have to come in pairs, draw from one to the next
@@ -221,11 +235,9 @@ static void fillScan( int scan, LinkedList *active, Image *src, Color c ) {
 	  // clip to the right side of the image
 	  if (endX > src->cols) endX = src->cols;
 
-	  // loop from start to end and color in the pixels
-	  for (int j = startX; j < endX; j++)
-	  {
-		  image_setColor(src, scan, j, c);
-	  }
+      Line *l = (Line *) malloc(sizeof(Line));
+	  line_set2D(l, startX, scan, endX, scan);
+      ll_insert(llist, l, compLineStart);
 
 	  // move ahead to the next pair of edges
 	  p1 = ll_next( active );
@@ -237,7 +249,7 @@ static void fillScan( int scan, LinkedList *active, Image *src, Color c ) {
 /* 
 	 Process the edge list, assumes the edges list has at least one entry
 */
-static int processEdgeList( LinkedList *edges, Image *src, Color c ) {
+static int processEdgeList( LinkedList *edges, Image *src, LinkedList *llist) {
 	LinkedList *active = NULL;
 	LinkedList *tmplist = NULL;
 	LinkedList *transfer = NULL;
@@ -267,7 +279,7 @@ static int processEdgeList( LinkedList *edges, Image *src, Color c ) {
 
 		// if there are active edges
 		// fill out the scanline
-		fillScan( scan, active, src, c);
+		fillScan( scan, active, src, llist);
 
 		// remove any ending edges and update the rest
 		for( tedge = ll_pop( active ); tedge != NULL; tedge = ll_pop( active ) ) {
@@ -309,19 +321,53 @@ static int processEdgeList( LinkedList *edges, Image *src, Color c ) {
 /*
 	Draws a filled polygon of the specified color into the image src.
  */
-void polygon_drawFill(Polygon *p, Image *src, Color c ) {
+void polygon_drawFill(Polygon *pgon, Image *src, Color c) {
 	LinkedList *edges = NULL;
 
 	// set up the edge list
-	edges = setupEdgeList( p, src );
+	edges = setupEdgeList( pgon, src );
 	if( !edges )
 		return;
 	
+    LinkedList *llist;
+    llist = ll_new();
 	// process the edge list (should be able to take an arbitrary edge list)
-	processEdgeList( edges, src, c);
+	processEdgeList( edges, src, llist);
+
+    Line *l;
+    l = ll_pop(llist);
+    while (l)
+    {
+        line_draw(l, src, c);
+        l = ll_pop(llist);
+    }
 
 	// clean up
 	ll_delete( edges, (void (*)(const void *))free );
+
+    free(llist);
+
+	return;
+}
+
+void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
+{
+    LinkedList *edges = NULL;
+
+	// set up the edge list
+	edges = setupEdgeList( pgon, src );
+	if( !edges )
+		return;
+	
+    LinkedList *llist;
+    llist = ll_new();
+	// process the edge list (should be able to take an arbitrary edge list)
+	processEdgeList( edges, src, llist);
+
+	// clean up
+	ll_delete( edges, (void (*)(const void *))free );
+
+    free(llist);
 
 	return;
 }

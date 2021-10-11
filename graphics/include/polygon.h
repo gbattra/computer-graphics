@@ -206,6 +206,19 @@ void polygon_drawFill(Polygon *pgon, Image *src, Color c);
  */
 void polygon_drawFillB(Polygon *pgon, Image *src, Color color);
 
+/**
+ * Fill a polygon with a gradient from one color to another.
+ * 
+ * @param pgon the polygon to draw
+ * @param src the image to draw on
+ * @param ca the start color
+ * @param cb the end color
+ * @param vert flag for vertical gradient (0 = horizontal by default)
+ * 
+ * @return void
+ */
+void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert);
+
 // void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
 
 // void polygon_shade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);

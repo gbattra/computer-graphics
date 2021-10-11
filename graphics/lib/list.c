@@ -39,6 +39,7 @@ LinkedList *ll_new( void ) {
 */
 void ll_insert( LinkedList *ll, void *item, int (*comp)(const void *, const void *) ) {
 	Node *p, *q, *n;
+    ll->size += 1;
 
 	// see if the list is empty or the item replaces the starting element
 	if( ll->root == NULL || comp(item, ll->root->data) <= 0 ) {
@@ -70,7 +71,6 @@ void ll_insert( LinkedList *ll, void *item, int (*comp)(const void *, const void
 	n->data = item;
 	n->next = NULL;
 	q->next = n;
-
 	return;
 }
 
@@ -134,6 +134,7 @@ void *ll_pop( LinkedList *ll ) {
 
 	node_data = n->data;
 	free(n);
+    ll->size -= 1;
 
 	return( node_data );
 }

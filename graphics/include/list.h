@@ -18,6 +18,7 @@ typedef struct {
 typedef struct {
 	Node *root;
 	Node *current;
+	int size;
 } LinkedList;
 
 // allocate and return a new linked list

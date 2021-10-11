@@ -5,6 +5,9 @@
  * Wrapper header around all subheaders for the grpahics engine.
  */
 
+#ifndef GRAPHICS
+#define GRAPHICS
+
 #include "image.h"
 #include "point.h"
 #include "line.h"
@@ -18,3 +21,5 @@
 #include "noise.h"
 #include "fractals.h"
 #include "polygon.h"
+
+#endif

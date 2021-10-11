@@ -52,4 +52,30 @@ void elipse_draw(Elipse *el, Image *src, Color c);
  */
 void elipse_drawFill(Elipse *el, Image *src, Color c);
 
+/**
+ * Draw the elipse with a gradient outline between two colors.
+ * 
+ * @param el the elipse to draw
+ * @param src the image to draw on
+ * @param ca the start color
+ * @param cb the end color
+ * @param vert vertical gradient flag
+ * 
+ * @return void
+ */
+void elipse_drawG(Elipse *el, Image *src, Color ca, Color cb, int vert);
+
+/**
+ * Draw the elipse with a gradient fill between two colors.
+ * 
+ * @param el the elipse to draw
+ * @param src the image to draw on
+ * @param ca the start color
+ * @param cb the end color
+ * @param vert vertical gradient flag
+ * 
+ * @return void
+ */
+void elipse_drawFillG(Elipse *el, Image *src, Color ca, Color cb, int vert);
+
 #endif

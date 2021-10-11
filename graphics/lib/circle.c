@@ -19,19 +19,30 @@
  * 
  * @param x the x coord
  * @param y the y coord
+ * @param circ the circle being drawn
+ * @param ca the start color
+ * @param cb the end color
+ * @param vert vertical gradient flag
  * @param src the image to draw on
- * @param pix the pixel to draw
  * 
  * @return void
  */
-static void set_pixel(int x, int y, Image *src, FPixel pix)
+static void set_pixel(
+    int x, int y,
+    Circle *circ,
+    Color ca, Color cb,
+    int vert,
+    Image *src)
 {
-    if (y < 0 || y >= src->rows || x < 0 || x >= src->cols) return;
-    
-    Point p;
-    p.val[0] = x;
-    p.val[1] = y;
-    point_draw(&p, src, pix);
+    int dx = x - circ->center.val[0];
+    int dy = y - circ->center.val[1];
+    double alpha = (((double) dx) + circ->radius) / (2.0*circ->radius);
+    if (vert) alpha = (((double) dy) + circ->radius) / (2.0*circ->radius);
+
+    Color c;
+    color_interpolate(&c, &ca, &cb, alpha);
+
+    image_setColor(src, y, x, c);
 }
 
 /**
@@ -39,29 +50,31 @@ static void set_pixel(int x, int y, Image *src, FPixel pix)
  * 
  * @param xc the center x coord
  * @param yc the center y coord
+ * @param circ the circle being drawn
  * @param dx the delta in x
  * @param dy the delta in y
- * @param c the color value to set
+ * @param ca the start color value to set
+ * @param cb the end color value to set
+ * @param vert vertical gradient flag
  * @param src the image to update
  * 
  * @return void
  */
-static void reflect_eight(int xc, int yc, int dx, int dy, Color c, Image *src)
+static void reflect_eight(
+    int xc, int yc, int dx, int dy,
+    Circle *circ,
+    Color ca, Color cb,
+    int vert, Image *src)
 {
-    FPixel pix;
-    pix.rgb[0] = c.c[0];
-    pix.rgb[1] = c.c[1];
-    pix.rgb[2] = c.c[2];
+    set_pixel(xc + dx, yc + dy, circ, ca, cb, vert, src);
+    set_pixel(xc - dx, yc + dy, circ, ca, cb, vert, src);
+    set_pixel(xc + dx, yc - dy, circ, ca, cb, vert, src);
+    set_pixel(xc - dx, yc - dy, circ, ca, cb, vert, src);
 
-    set_pixel(xc + dx, yc + dy, src, pix);
-    set_pixel(xc - dx, yc + dy, src, pix);
-    set_pixel(xc + dx, yc - dy, src, pix);
-    set_pixel(xc - dx, yc - dy, src, pix);
-
-    set_pixel(xc + dy, yc + dx, src, pix);
-    set_pixel(xc - dy, yc + dx, src, pix);
-    set_pixel(xc + dy, yc - dx, src, pix);
-    set_pixel(xc - dy, yc - dx, src, pix);
+    set_pixel(xc + dy, yc + dx, circ, ca, cb, vert, src);
+    set_pixel(xc - dy, yc + dx, circ, ca, cb, vert, src);
+    set_pixel(xc + dy, yc - dx, circ, ca, cb, vert, src);
+    set_pixel(xc - dy, yc - dx, circ, ca, cb, vert, src);
 }
 
 /**
@@ -71,20 +84,30 @@ static void reflect_eight(int xc, int yc, int dx, int dy, Color c, Image *src)
  * @param y0 the start y
  * @param x1 the end x
  * @param y1 the end y
- * @param c the color to draw
+ * @param cl the circle to draw
+ * @param ca the start color to draw
+ * @param cb the end color to draw
+ * @param vert vertical gradient flag
  * @param src the image to draw on
  * 
  * @return void
  */
-static void fill_row(int x0, int y0, int x1, int y1, Color c, Image *src)
-{   
-    Line l;
-    l.a.val[0] = x0;
-    l.a.val[1] = y1;
-    l.b.val[0] = x1;
-    l.b.val[1] = y1;
+static void fill_row(
+    int x0, int y0, int x1, int y1,
+    Circle *cl, Color ca, Color cb,
+    int vert, Image *src)
+{
 
-    line_draw(&l, src, c);
+    if (x0 > x1)
+    {
+        int xt = x0;
+        x0 = x1;
+        x1 = xt;
+    }
+    for (int x = x0; x < x1; x++)
+    {
+        set_pixel(x, y0, el, ca, cb, vert, src);
+    }
 }
 
 /**
@@ -94,17 +117,23 @@ static void fill_row(int x0, int y0, int x1, int y1, Color c, Image *src)
  * @param yc the center y
  * @param dx the delta in x
  * @param dy the delta in y
- * @param c the color to draw
+ * @param cl the circle to draw
+ * @param ca the start color to draw
+ * @param cb the end color to draw
+ * @param vert vertical gradient flag
  * @param src the image to draw on
  * 
  * @return void
  */
-static void fill_rows(int xc, int yc, int dx, int dy, Color c, Image *src)
+static void fill_rows(
+    int xc, int yc, int dx, int dy,
+    Circle *cl, Color ca, Color cb,
+    int vert, Image *src)
 {
-    fill_row(xc - dx, yc + dy, xc + dx, yc + dy, c, src);
-    fill_row(xc - dx, yc - dy, xc + dx, yc - dy, c, src);
-    fill_row(xc - dy, yc - dx, xc + dy, yc - dx, c, src);
-    fill_row(xc - dy, yc + dx, xc + dy, yc + dx, c, src);
+    fill_row(xc - dx, yc + dy, xc + dx, yc + dy, cl, ca, cb, vert, src);
+    fill_row(xc - dx, yc - dy, xc + dx, yc - dy, cl, ca, cb, vert, src);
+    fill_row(xc - dy, yc - dx, xc + dy, yc - dx, cl, ca, cb, vert, src);
+    fill_row(xc - dy, yc + dx, xc + dy, yc + dx, cl, ca, cb, vert, src);
 }
 
 /**
@@ -112,12 +141,14 @@ static void fill_rows(int xc, int yc, int dx, int dy, Color c, Image *src)
  * 
  * @param cl the circle to draw
  * @param src the image to draw on
- * @param c the color of the circle
+ * @param ca the start color of the circle
+ * @param cb the end color of the circle
  * @param fill flag to indicate if circle should be filled
+ * @param vert vertical gradient flag
  * 
  * @return void
  */
-static void draw_circle(Circle *cl, Image *src, Color c, int fill)
+static void draw_circle(Circle *cl, Image *src, Color ca, Color cb, int fill, int vert)
 {
     double r = cl->radius;
     int xc = cl->center.val[0];
@@ -125,7 +156,7 @@ static void draw_circle(Circle *cl, Image *src, Color c, int fill)
     int dx = 0;
     int dy = r;
     int e = 1 - r;
-    reflect_eight(xc, yc, dx, dy, c, src);
+    reflect_eight(xc, yc, dx, dy, cl, ca, cb, vert, src);
 
     while (dx < dy)
     {
@@ -139,11 +170,11 @@ static void draw_circle(Circle *cl, Image *src, Color c, int fill)
             dy--;
             e += 2 * (dx - dy) + 1;
         }
-        reflect_eight(xc, yc, dx, dy, c, src);
-        if (fill) fill_rows(xc, yc, dx, dy, c, src);
+        reflect_eight(xc, yc, dx, dy, cl, ca, cb, vert, src);
+        if (fill) fill_rows(xc, yc, dx, dy, cl, ca, cb, vert, src);
     }
 
-    if (fill) fill_row(xc - r, yc, xc + r, yc, c, src);
+    if (fill) fill_row(xc - r, yc, xc + r, yc, cl, ca, cb, vert, src);
 }
 
 void circle_set(Circle *circle, Point tp, double tr)
@@ -155,10 +186,20 @@ void circle_set(Circle *circle, Point tp, double tr)
 // Implementatin inspired by circleMidpoint.c
 void circle_draw(Circle *cl, Image *src, Color c)
 {
-    draw_circle(cl, src, c, 0);
+    draw_circle(cl, src, c, c, 0, 0);
 }
 
 void circle_drawFill(Circle *cl, Image *src, Color c)
 {
-    draw_circle(cl, src, c, 1);
+    draw_circle(cl, src, c, c, 1, 0);
+}
+
+void circle_drawG(Circle *cl, Image *src, Color ca, Color cb, int vert)
+{
+    draw_circle(cl, src, ca, cb, 0, vert);
+}
+
+void circle_drawFillG(Circle *cl, Image *src, Color ca, Color cb, int vert)
+{
+    draw_circle(cl, src, ca, cb, 1, vert);
 }

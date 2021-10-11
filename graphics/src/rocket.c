@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     color_set(&colors[6], 247.0/255.0, 235.0/255.0, 222.0/255.0);
     for (int i = 0; i < 15; i++)
     {
-        circle_drawFill(&circles[i], src, colors[i]);
+        circle_drawFillG(&circles[i], src, colors[i], colors[i+1], 1);
     }
     
     // draw ship
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
         Point p;
         point_set2D(&p, (src->cols / 2), wrow);
         circle_set(&windows[w], p, 10.0);
-        circle_drawFill(&windows[w], src, black);
+        circle_drawFillG(&windows[w], src, white, black, 0);
         wrow += 30;
     }
 

@@ -50,5 +50,30 @@ void circle_draw(Circle *circle, Image *src, Color c);
  */
 void circle_drawFill(Circle *circle, Image *src, Color c);
 
+/**
+ * Draw the circle with a gradient outline between two colors.
+ * 
+ * @param cl the circle to draw
+ * @param src the image to draw on
+ * @param ca the start color of the circle
+ * @param cb the end color of the circle
+ * @param vert vertical gradient flag
+ * 
+ * @return void
+ */
+void circle_drawG(Circle *cl, Image *src, Color ca, Color cb, int vert);
+
+/**
+ * Draw and fill the circle with a gradient between two colors.
+ * 
+ * @param cl the circle to draw
+ * @param src the image to draw on
+ * @param ca the start color
+ * @param cb the end color
+ * @param vert vertical gradient flag
+ * 
+ * @return void
+ */
+void circle_drawFillG(Circle *cl, Image *src, Color ca, Color cb, int vert);
 
 #endif

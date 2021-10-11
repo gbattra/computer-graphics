@@ -369,7 +369,7 @@ void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
     int size = llist->size;
     while (l)
     {
-        if (vert) line_drawG(l, src, ca, cb);
+        if (!vert) line_drawG(l, src, ca, cb);
         else
         {
             Color c;

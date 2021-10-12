@@ -7,8 +7,17 @@
  */
 
 #include "polygon.h"
-#include "image.h"
 
+/**
+ * Computes the implicit equation for the line.
+ * 
+ * @param x the x coord
+ * @param y the y coord
+ * @param start the start of the line
+ * @param end the end of the line
+ * 
+ * @return the computed value
+ */
 static double pointline(double x, double y, Point *start, Point *end)
 {
     double y0= start->val[1];
@@ -19,6 +28,17 @@ static double pointline(double x, double y, Point *start, Point *end)
     return (y0 - y1)*x + (x1 - x0)*y + x0*y1 - x1*y0;
 }
 
+/**
+ * Computes the barycentric coord given the (x,y) coord and the line start and end points.
+ * 
+ * @param x the x coord
+ * @param y the y coord
+ * @param top0 the starting point of the edge of the triangle
+ * @param top1 the ending point of the edge of the triangle
+ * @param bot the point of the triangle tangential to the edge used
+ *
+ * @return the barycentric coord
+ */
 static double barycentric_coord(double x, double y, Point *top0, Point *top1, Point *bot)
 {
     double numerator = pointline(x, y, top0, top1);
@@ -27,7 +47,18 @@ static double barycentric_coord(double x, double y, Point *top0, Point *top1, Po
     return numerator / denominator;
 }
 
-void polygon_drawFillB(Polygon *pgon, Image *src, Color color)
+/**
+ * Draws and fills the polygon using the barycentric coords.
+ * 
+ * @param pgon the polygon to draw
+ * @param src the image to draw on
+ * @param ac the A point color
+ * @param bc the B point color
+ * @param cc the C point color
+ *
+ * @return void
+ */
+static void polygon_fillB(Polygon *pgon, Image *src, Color ac, Color bc, Color cc)
 {
     if (pgon->nVertex != 3)
     {
@@ -68,10 +99,20 @@ void polygon_drawFillB(Polygon *pgon, Image *src, Color color)
             if ((0 <= alpha) && (alpha <= 1) && (0 <= beta) && (beta <= 1) && (0 <= gamma) && (gamma <= 1))
             {
                 FPixel *pix = &row[j];
-                pix->rgb[0] = color.c[0];
-                pix->rgb[1] = color.c[1];
-                pix->rgb[2] = color.c[2];
+                pix->rgb[0] = (alpha * ac.c[0]) + (beta * bc.c[0]) + (gamma * cc.c[0]);
+                pix->rgb[1] = (alpha * ac.c[1]) + (beta * bc.c[1]) + (gamma * cc.c[1]);
+                pix->rgb[2] = (alpha * ac.c[2]) + (beta * bc.c[2]) + (gamma * cc.c[2]);
             }
         }
     }
+}
+
+void polygon_drawFillB(Polygon *pgon, Image *src, Color color)
+{
+    polygon_fillB(pgon, src, color, color, color);
+}
+
+void polygon_blendFillB(Polygon *pgon, Image *src, Color ac, Color bc, Color cc)
+{
+    polygon_fillB(pgon, src, ac, bc, cc);
 }

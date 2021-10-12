@@ -207,6 +207,20 @@ void polygon_drawFill(Polygon *pgon, Image *src, Color c);
 void polygon_drawFillB(Polygon *pgon, Image *src, Color color);
 
 /**
+ * Fills a polygon using barycentric coords and blends the pixel
+ * colors using the alpha, beta, and gamma values.
+ * 
+ * @param pgon the polygon to draw
+ * @param src the image to draw on
+ * @param ac the A point color
+ * @param bc the B point color
+ * @param cc the C point color
+ * 
+ * @return void
+ */
+void polygon_blendFillB(Polygon *pgon, Image *src, Color ac, Color bc, Color cc);
+
+/**
  * Fill a polygon with a gradient from one color to another.
  * 
  * @param pgon the polygon to draw

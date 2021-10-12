@@ -54,7 +54,8 @@ EXECUTABLES = ppmtest \
 			  test4a \
 			  test4c \
 			  test4b \
-			  rocket
+			  rocket \
+			  barycentricimg
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -64,7 +65,7 @@ LAB2_EXECUTABLES = image_api fractalstest perlinnoise fractalmain
 
 LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c illustration testbench floodfilltest
 
-LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket
+LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -164,6 +165,9 @@ test4c: $(ODIR)/test4c.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 rocket: $(ODIR)/rocket.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+barycentricimg: $(ODIR)/barycentricimg.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

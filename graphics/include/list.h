@@ -8,6 +8,9 @@
 	and value > 0 if A > B
 */
 
+#ifndef LIST
+#define LIST
+
 // Node data structure
 typedef struct {
 	void *data;
@@ -44,3 +47,5 @@ void *ll_pop( LinkedList *ll );
 
 // returns true if the list is empty
 int ll_empty( LinkedList *ll );
+
+#endif

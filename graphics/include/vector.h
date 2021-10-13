@@ -4,7 +4,9 @@
  *
  * Header file defining the Vector struct and API.
  */
- 
+
+#ifndef VECTOR
+#define VECTOR
 
 #include "point.h"
 #include <stdio.h>
@@ -83,3 +85,5 @@ double vector_dot(Vector *a, Vector *b);
  * @return void
  */
 void vector_cross(Vector *a, Vector *b, Vector *c);
+
+#endif

@@ -21,5 +21,7 @@
 #include "noise.h"
 #include "fractals.h"
 #include "polygon.h"
+#include "vector.h"
+#include "matrix.h"
 
 #endif

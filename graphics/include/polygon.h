@@ -10,7 +10,7 @@
 
 #include "image.h"
 #include "point.h"
-#include "geometry.h"
+#include "vector.h"
 #include <stdlib.h>
 
 typedef struct

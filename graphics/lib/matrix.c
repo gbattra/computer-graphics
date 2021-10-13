@@ -86,6 +86,7 @@ void matrix_transpose(Matrix *m)
 
 void matrix_multiply(Matrix *a, Matrix *b, Matrix *c)
 {
+    Matrix tmp;
     for (int i = 0; i < 4; i++)
     {
         double ax = a->m[i][0];
@@ -102,39 +103,208 @@ void matrix_multiply(Matrix *a, Matrix *b, Matrix *c)
 
             double cv = (ax*bx) + (ay*by) + (az*bz) + (ah*bh);
 
-            matrix_set(c, i, j, cv);
+            matrix_set(&tmp, i, j, cv);
         }
+    }
+    matrix_copy(&c, &tmp);
+}
+
+void matrix_xformPoint(Matrix *m, Point *p, Point *q)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        double ax = m->m[i][0];
+        double ay = m->m[i][1];
+        double az = m->m[i][2];
+        double ah = m->m[i][4];
+
+        double px = p->val[0];
+        double py = p->val[1];
+        double pz = p->val[2];
+        double ph = p->val[3];
+
+        double cv = (ax*px) + (ay*py) + (az*pz) + (ah*ph);
+
+        q->val[i] = cv;
     }
 }
 
-void matrix_xformPoint(Matrix *m, Point *p, Point *q);
+void matrix_xformVector(Matrix *m, Vector *p, Vector *q)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        double ax = m->m[i][0];
+        double ay = m->m[i][1];
+        double az = m->m[i][2];
+        double ah = m->m[i][4];
 
-void matrix_xformVector(Matrix *m, Vector *p, Vector *q);
+        double px = p->val[0];
+        double py = p->val[1];
+        double pz = p->val[2];
+        double ph = p->val[3];
 
-void matrix_xformPolygon(Matrix *m, Polygon *p);
+        double cv = (ax*px) + (ay*py) + (az*pz) + (ah*ph);
 
-void matrix_xformPolyline(Matrix *m, Polyline *p);
+        q->val[i] = cv;
+    }
+}
 
-void matrix_xfromLine(Matrix *m, Line *l);
+void matrix_xformPolygon(Matrix *m, Polygon *p)
+{
+    for (int i = 0; i < p->nVertex; i++)
+    {
+        Point q;
+        matrix_xformPoint(m, &p->vlist[i], &q);
+        point_copy(&p->vlist[i], &q);
 
-void matrix_scale2D(Matrix *m, double sx, double sy);
+        // do same for normals using matrix_xformVector()
+    }
+}
 
-void matrix_translate2D(Matrix *m, double tx, double ty);
+void matrix_xformPolyline(Matrix *m, Polyline *p)
+{
+    for (int i = 0; i < p->numVertex; i++)
+    {
+        Point q;
+        matrix_xformPoint(m, &p->vertex[i], &q);
+        point_copy(&p->vertex[i], &q);
+    }
+}
 
-void matrix_shear2D(Matrix *m, double sx, double sy);
+void matrix_xfromLine(Matrix *m, Line *l)
+{
+    Point ta, tb;
+    matrix_xformPoint(m, &l->a, &ta);
+    matrix_xformPoint(m, &l->b, &tb);
+    point_copy(&l->a, &ta);
+    point_copy(&l->b, &tb);
+}
 
-void matrix_translate(Matrix *m, double tx, double ty, double tz);
+void matrix_scale2D(Matrix *m, double sx, double sy)
+{
+    Matrix S;
+    matrix_identity(&S);
+    matrix_set(&S, 0, 0, sx);
+    matrix_set(&S, 1, 1, sy);
 
-void matrix_scale(Matrix *m, double sx, double sy, double sz);
+    matrix_multiply(&S, m, m);
+}
 
-void matrix_rotateX(Matrix *m, double cth, double sth);
+void matrix_translate2D(Matrix *m, double tx, double ty)
+{
+    Matrix T;
+    matrix_identity(&T);
+    matrix_set(&T, 0, 3, tx);
+    matrix_set(&T, 1, 3, ty);
 
-void matrix_rotateY(Matrix *m, double cth, double sth);
+    matrix_multiply(&T, m, m);
+}
 
-void matrix_rotateZ(Matrix *m, double cth, double sth);
+void matrix_shear2D(Matrix *m, double sx, double sy)
+{
+    Matrix S;
+    matrix_identity(&S);
+    matrix_set(&S, 0, 1, sx);
+    matrix_set(&S, 1, 0, sy);
 
-void matrix_rotateXYZ(Matrix *m, Vector *u, Vector *v, Vector *w);
+    matrix_multiply(&S, m, m);
+}
 
-void matrix_shearZ(Matrix *m, double sx, double sy);
+void matrix_translate(Matrix *m, double tx, double ty, double tz)
+{
+    Matrix T;
+    matrix_identity(&T);
+    matrix_set(&T, 0, 3, tx);
+    matrix_set(&T, 1, 3, ty);
+    matrix_set(&T, 2, 3, tz);
 
-void matrix_perspective(Matrix *m, double d);
+    matrix_multiply(&T, m, m);
+}
+
+void matrix_scale(Matrix *m, double sx, double sy, double sz)
+{
+    Matrix S;
+    matrix_identity(&S);
+    matrix_set(&S, 0, 0, sx);
+    matrix_set(&S, 1, 1, sy);
+    matrix_set(&S, 2, 2, sz);
+
+    matrix_multiply(&S, m, m);
+}
+
+void matrix_rotateX(Matrix *m, double cth, double sth)
+{
+    Matrix R;
+    matrix_identity(&R);
+    matrix_set(&R, 1, 1, cth);
+    matrix_set(&R, 1, 2, -sth);
+    matrix_set(&R, 2, 1, sth);
+    matrix_set(&R, 2, 2, cth);
+
+    matrix_multiply(&R, m, m);
+}
+
+void matrix_rotateY(Matrix *m, double cth, double sth)
+{
+    Matrix R;
+    matrix_identity(&R);
+    matrix_set(&R, 0, 0, cth);
+    matrix_set(&R, 0, 2, sth);
+    matrix_set(&R, 2, 0, -sth);
+    matrix_set(&R, 2, 2, cth);
+
+    matrix_multiply(&R, m, m);
+}
+
+void matrix_rotateZ(Matrix *m, double cth, double sth)
+{
+    Matrix R;
+    matrix_identity(&R);
+    matrix_set(&R, 0, 0, cth);
+    matrix_set(&R, 0, 1, -sth);
+    matrix_set(&R, 1, 0, sth);
+    matrix_set(&R, 1, 1, cth);
+
+    matrix_multiply(&R, m, m);
+}
+
+void matrix_rotateXYZ(Matrix *m, Vector *u, Vector *v, Vector *w)
+{
+    Matrix R;
+    matrix_identity(&R);
+    matrix_set(&R, 0, 0, u->val[0]);
+    matrix_set(&R, 1, 0, u->val[1]);
+    matrix_set(&R, 2, 0, u->val[2]);
+    matrix_set(&R, 3, 0, u->val[3]);
+
+    matrix_set(&R, 0, 1, v->val[0]);
+    matrix_set(&R, 1, 1, v->val[1]);
+    matrix_set(&R, 2, 1, v->val[2]);
+    matrix_set(&R, 3, 1, v->val[3]);
+
+    matrix_set(&R, 0, 2, w->val[0]);
+    matrix_set(&R, 1, 2, w->val[1]);
+    matrix_set(&R, 2, 2, w->val[2]);
+    matrix_set(&R, 3, 2, w->val[3]);
+
+    matrix_multiply(&R, m, m);
+}
+
+void matrix_shearZ(Matrix *m, double sx, double sy)
+{
+    Matrix S;
+    matrix_identity(&S);
+    matrix_set(&S, 0, 2, sx);
+    matrix_set(&S, 1, 2, sy);
+
+    matrix_multiply(&S, m, m);
+}
+
+void matrix_perspective(Matrix *m, double d)
+{
+    Matrix P;
+    matrix_identity(&P);
+    matrix_set(&P, 3, 2, 1.0/d);
+
+    matrix_multiply(&P, m, m);
+}

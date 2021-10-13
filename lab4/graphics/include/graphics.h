@@ -15,7 +15,6 @@
 #include "elipse.h"
 #include "polyline.h"
 #include "stack.h"
-#include "geometry.h"
 #include "list.h"
 #include "floodfill.h"
 #include "noise.h"

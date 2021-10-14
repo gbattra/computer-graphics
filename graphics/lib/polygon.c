@@ -128,7 +128,7 @@ void polygon_copy(Polygon *to, Polygon *from)
 
 void polygon_print(Polygon *pgon, FILE *fp)
 {
-    fprintf(fp, "%i\n%i\n%i\n", pgon->zBuffer, pgon->oneSided, pgon->nVertex);
+    fprintf(fp, "Polygon:\n N-Vertices: %i\n", pgon->nVertex);
     for (int i = 0; i < pgon->nVertex; i++)
     {
         point_print(&pgon->vlist[i], fp);

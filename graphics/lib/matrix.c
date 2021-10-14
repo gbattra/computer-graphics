@@ -92,7 +92,7 @@ void matrix_multiply(Matrix *a, Matrix *b, Matrix *c)
         double ax = a->m[i][0];
         double ay = a->m[i][1];
         double az = a->m[i][2];
-        double ah = a->m[i][4];
+        double ah = a->m[i][3];
 
         for (int j = 0; j < 4; j++)
         {
@@ -106,7 +106,7 @@ void matrix_multiply(Matrix *a, Matrix *b, Matrix *c)
             matrix_set(&tmp, i, j, cv);
         }
     }
-    matrix_copy(&c, &tmp);
+    matrix_copy(c, &tmp);
 }
 
 void matrix_xformPoint(Matrix *m, Point *p, Point *q)
@@ -116,7 +116,7 @@ void matrix_xformPoint(Matrix *m, Point *p, Point *q)
         double ax = m->m[i][0];
         double ay = m->m[i][1];
         double az = m->m[i][2];
-        double ah = m->m[i][4];
+        double ah = m->m[i][3];
 
         double px = p->val[0];
         double py = p->val[1];
@@ -136,7 +136,7 @@ void matrix_xformVector(Matrix *m, Vector *p, Vector *q)
         double ax = m->m[i][0];
         double ay = m->m[i][1];
         double az = m->m[i][2];
-        double ah = m->m[i][4];
+        double ah = m->m[i][3];
 
         double px = p->val[0];
         double py = p->val[1];

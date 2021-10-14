@@ -27,7 +27,7 @@ LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here
 _DEPS = ppmIO.h graphics.h image.h fractals.h noise.h line.h point.h circle.h elipse.h polyline.h stack.h \
-		floodfill.h polygon.h
+		floodfill.h polygon.h vector.h matrix.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
@@ -55,7 +55,8 @@ EXECUTABLES = ppmtest \
 			  test4c \
 			  test4b \
 			  rocket \
-			  barycentricimg
+			  barycentricimg \
+			  test5a
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -66,6 +67,8 @@ LAB2_EXECUTABLES = image_api fractalstest perlinnoise fractalmain
 LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c illustration testbench floodfilltest
 
 LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
+
+LAB5_EXECUTABLES = test5a
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -168,6 +171,9 @@ rocket: $(ODIR)/rocket.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 barycentricimg: $(ODIR)/barycentricimg.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test5a: $(ODIR)/test5a.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

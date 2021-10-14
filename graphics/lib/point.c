@@ -13,6 +13,8 @@ void point_set2D(Point *p, double x, double y)
 {
     p->val[0] = x;
     p->val[1] = y;
+    p->val[2] = 0.0;
+    p->val[3] = 1.0;
 }
 
 void point_set3D(Point *p, double x, double y, double z)
@@ -20,6 +22,7 @@ void point_set3D(Point *p, double x, double y, double z)
     p->val[0] = x;
     p->val[1] = y;
     p->val[2] = z;
+    p->val[3] = 1.0;
 }
 
 void point_set(Point *p, double x, double y, double z, double h)
@@ -34,6 +37,8 @@ void point_normalize(Point *p)
 {
     p->val[0] = p->val[0] / p->val[3];
     p->val[1] = p->val[1] / p->val[3];
+    p->val[2] = p->val[2] / p->val[3];
+    p->val[3] = p->val[3] / p->val[3];
 }
 
 void point_copy(Point *to, Point *from)
@@ -51,5 +56,5 @@ void point_draw(Point *p, Image *src, FPixel c)
 
 void point_print(Point *p, FILE *fp)
 {
-    fprintf(fp, "%f\n%f\n%f\n%f\n", p->val[0], p->val[1], p->val[2], p->val[3]);
+    fprintf(fp, "(%f, %f, %f) | h: %f\n", p->val[0], p->val[1], p->val[2], p->val[3]);
 }

@@ -11,6 +11,9 @@
         "floodfill.h": "c",
         "polygon.h": "c",
         "line.h": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "graphics.h": "c",
+        "fractals.h": "c",
+        "matrix.h": "c"
     }
 }

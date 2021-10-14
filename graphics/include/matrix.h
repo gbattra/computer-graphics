@@ -151,7 +151,7 @@ void matrix_xformPolyline(Matrix *m, Polyline *p);
  * 
  * @return void
  */
-void matrix_xfromLine(Matrix *m, Line *l);
+void matrix_xformLine(Matrix *m, Line *l);
 
 /**
  * Scale the matrix by sx and sy.

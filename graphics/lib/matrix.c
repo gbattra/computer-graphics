@@ -94,12 +94,22 @@ void matrix_multiply(Matrix *a, Matrix *b, Matrix *c)
         double az = a->m[i][2];
         double ah = a->m[i][3];
 
+        // if (ax == -0.0) ax = 0.0;
+        // if (ay == -0.0) ay = 0.0;
+        // if (az == -0.0) az = 0.0;
+        // if (ah == -0.0) ah = 0.0;
+
         for (int j = 0; j < 4; j++)
         {
             double bx = b->m[0][j];
             double by = b->m[1][j];
             double bz = b->m[2][j];
             double bh = b->m[3][j];
+
+            // if (bx == -0.0) bx = 0.0;
+            // if (by == -0.0) by = 0.0;
+            // if (bz == -0.0) bz = 0.0;
+            // if (bh == -0.0) bh = 0.0;
 
             double cv = (ax*bx) + (ay*by) + (az*bz) + (ah*bh);
 
@@ -123,6 +133,16 @@ void matrix_xformPoint(Matrix *m, Point *p, Point *q)
         double pz = p->val[2];
         double ph = p->val[3];
 
+        // if (ax == -0.0) ax = 0.0;
+        // if (ay == -0.0) ay = 0.0;
+        // if (az == -0.0) az = 0.0;
+        // if (ah == -0.0) ah = 0.0;
+
+        // if (px == -0.0) px = 0.0;
+        // if (py == -0.0) py = 0.0;
+        // if (pz == -0.0) pz = 0.0;
+        // if (ph == -0.0) ph = 0.0;
+
         double cv = (ax*px) + (ay*py) + (az*pz) + (ah*ph);
 
         q->val[i] = cv;
@@ -142,6 +162,16 @@ void matrix_xformVector(Matrix *m, Vector *p, Vector *q)
         double py = p->val[1];
         double pz = p->val[2];
         double ph = p->val[3];
+
+        // if (ax == -0.0) ax = 0.0;
+        // if (ay == -0.0) ay = 0.0;
+        // if (az == -0.0) az = 0.0;
+        // if (ah == -0.0) ah = 0.0;
+
+        // if (px == -0.0) px = 0.0;
+        // if (py == -0.0) py = 0.0;
+        // if (pz == -0.0) pz = 0.0;
+        // if (ph == -0.0) ph = 0.0;
 
         double cv = (ax*px) + (ay*py) + (az*pz) + (ah*ph);
 
@@ -171,7 +201,7 @@ void matrix_xformPolyline(Matrix *m, Polyline *p)
     }
 }
 
-void matrix_xfromLine(Matrix *m, Line *l)
+void matrix_xformLine(Matrix *m, Line *l)
 {
     Point ta, tb;
     matrix_xformPoint(m, &l->a, &ta);

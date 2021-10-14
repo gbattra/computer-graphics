@@ -22,5 +22,6 @@
 #include "polygon.h"
 #include "vector.h"
 #include "matrix.h"
+#include "view.h"
 
 #endif

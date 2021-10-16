@@ -14,6 +14,7 @@
         "algorithm": "c",
         "graphics.h": "c",
         "fractals.h": "c",
-        "matrix.h": "c"
+        "matrix.h": "c",
+        "view.h": "c"
     }
 }

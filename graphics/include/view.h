@@ -20,6 +20,20 @@ typedef struct
     int screeny;
 } View2D;
 
+typedef struct
+{
+    Point vrp;  // visual reference point
+    Vector vpn;  // view plane normal
+    Vector vup;  // view up vector
+    double d;  // focal point
+    double du;  // width of view
+    double dv;  // height of view
+    double f;  // front clip plane
+    double b;  // back clip plane
+    int screenx;  // image columns
+    int screeny;  // image rows
+} View3D;
+
 /**
  * Transforms VTM by the specified View2D struct.
  * 
@@ -29,5 +43,15 @@ typedef struct
  * @return void
  */
 void matrix_setView2D(Matrix *vtm, View2D *v);
+
+/**
+ * Transform the VTM given the 3D view struct.
+ * 
+ * @param vtm the visual transformation matric
+ * @param v the view to parameterize the transformations
+ * 
+ * @return void
+ */
+void matrix_setView3D(Matrix *vtm, View3D *v);
 
 #endif

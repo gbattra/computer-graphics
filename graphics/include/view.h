@@ -71,6 +71,7 @@ void matrix_wldTcvv(Matrix *vtm, View3D *v);
  * 
  * @param vtm the view transformation matrix
  * @param v the view frame configuration
+ * @param p the perspective matrix
  * 
  * @return void
  */

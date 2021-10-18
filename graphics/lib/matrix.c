@@ -121,6 +121,7 @@ void matrix_multiply(Matrix *a, Matrix *b, Matrix *c)
 
 void matrix_xformPoint(Matrix *m, Point *p, Point *q)
 {
+    Point tmp;
     for (int i = 0; i < 4; i++)
     {
         double ax = m->m[i][0];
@@ -145,8 +146,10 @@ void matrix_xformPoint(Matrix *m, Point *p, Point *q)
 
         double cv = (ax*px) + (ay*py) + (az*pz) + (ah*ph);
 
-        q->val[i] = cv;
+        tmp.val[i] = cv;
     }
+
+    point_copy(q, &tmp);
 }
 
 void matrix_xformVector(Matrix *m, Vector *p, Vector *q)

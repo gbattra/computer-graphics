@@ -33,45 +33,20 @@ void matrix_setView3D(Matrix *vtm, View3D *v)
     matrix_identity(vtm);
     matrix_translate(vtm, -(v->vrp.val[0]), -(v->vrp.val[1]), -(v->vrp.val[2]));
 
-    printf("After VRP translate:\n");
-    matrix_print(vtm, stdout);
-
     vector_normalize(&u);
     vector_normalize(&v->vup);
     vector_normalize(&v->vpn);
 
-    printf("View axis\n");
-    vector_print(&u, stdout);
-    vector_print(&v->vup, stdout);
-    vector_print(&v->vpn, stdout);
-
     matrix_rotateXYZ(vtm, &u, &v->vup, &v->vpn);
-    printf("After XYZ\n");
-    matrix_print(vtm, stdout);
-
     matrix_translate(vtm, 0, 0, v->d);
-    printf("After COP translate\n");
-    matrix_print(vtm, stdout);
 
     double bp = v->d + v->b;
     matrix_scale(vtm, (2.0*v->d) / (bp*v->du), (2.0*v->d) / (bp*v->dv), 1.0 / bp);
-
-    printf("After scale to CVV\n");
-    matrix_print(vtm, stdout);
     
     double dp = v->d / bp;
     matrix_perspective(vtm, dp);
-
-    printf("After persp:\n");
-    matrix_print(vtm, stdout);
-
     matrix_scale2D(vtm, -(v->screenx / (2.0*dp)), -(v->screeny / (2.0*dp)));
-    printf("After scale to image coords:\n");
-    matrix_print(vtm, stdout);
-
     matrix_translate2D(vtm, v->screenx / 2.0, v->screeny / 2.0);
-    printf("After translate in image coords:\n");
-    matrix_print(vtm, stdout);
 }
 
 void matrix_wldTcvv(Matrix *vtm, View3D *v)

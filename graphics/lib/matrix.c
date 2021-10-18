@@ -303,19 +303,16 @@ void matrix_rotateXYZ(Matrix *m, Vector *u, Vector *v, Vector *w)
     Matrix R;
     matrix_identity(&R);
     matrix_set(&R, 0, 0, u->val[0]);
-    matrix_set(&R, 1, 0, u->val[1]);
-    matrix_set(&R, 2, 0, u->val[2]);
-    matrix_set(&R, 3, 0, u->val[3]);
+    matrix_set(&R, 0, 1, u->val[1]);
+    matrix_set(&R, 0, 2, u->val[2]);
 
-    matrix_set(&R, 0, 1, v->val[0]);
+    matrix_set(&R, 1, 0, v->val[0]);
     matrix_set(&R, 1, 1, v->val[1]);
-    matrix_set(&R, 2, 1, v->val[2]);
-    matrix_set(&R, 3, 1, v->val[3]);
+    matrix_set(&R, 1, 2, v->val[2]);
 
-    matrix_set(&R, 0, 2, w->val[0]);
-    matrix_set(&R, 1, 2, w->val[1]);
+    matrix_set(&R, 2, 0, w->val[0]);
+    matrix_set(&R, 2, 1, w->val[1]);
     matrix_set(&R, 2, 2, w->val[2]);
-    matrix_set(&R, 3, 2, w->val[3]);
 
     matrix_multiply(&R, m, m);
 }
@@ -334,6 +331,7 @@ void matrix_perspective(Matrix *m, double d)
 {
     Matrix P;
     matrix_identity(&P);
+    matrix_set(&P, 3, 3, 0.0);
     matrix_set(&P, 3, 2, 1.0/d);
 
     matrix_multiply(&P, m, m);

@@ -54,4 +54,26 @@ void matrix_setView2D(Matrix *vtm, View2D *v);
  */
 void matrix_setView3D(Matrix *vtm, View3D *v);
 
+/**
+ * Setup transformation matrix to convert world coords
+ * to canonical view volume coords. Do this before clipping.
+ * 
+ * @param vtm the view transformation matrix
+ * @param v the view frame configuration
+ * 
+ * @return void
+ */
+void matrix_wldTcvv(Matrix *vtm, View3D *v);
+
+/**
+ * Convert from canonical view volume coords to screen (pixel) coords.
+ * Do this after clipping.
+ * 
+ * @param vtm the view transformation matrix
+ * @param v the view frame configuration
+ * 
+ * @return void
+ */
+void matrix_cvvTscr(Matrix *vtm, View3D *v, Matrix *p);
+
 #endif

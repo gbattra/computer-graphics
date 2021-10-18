@@ -57,7 +57,8 @@ EXECUTABLES = ppmtest \
 			  rocket \
 			  barycentricimg \
 			  test5a \
-			  test5b
+			  test5b \
+			  test5c
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -69,7 +70,7 @@ LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c illustratio
 
 LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
 
-LAB5_EXECUTABLES = test5a test5b
+LAB5_EXECUTABLES = test5a test5b test5c
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -178,6 +179,9 @@ test5a: $(ODIR)/test5a.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test5b: $(ODIR)/test5b.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test5c: $(ODIR)/test5c.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

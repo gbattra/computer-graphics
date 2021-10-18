@@ -26,6 +26,56 @@ void matrix_setView2D(Matrix *vtm, View2D *v)
 
 void matrix_setView3D(Matrix *vtm, View3D *v)
 {
+    Vector u;
+    vector_cross(&v->vup, &v->vpn, &u);
+    vector_cross(&v->vpn, &u, &v->vup);
+    
+    matrix_identity(vtm);
+    matrix_translate(vtm, -(v->vrp.val[0]), -(v->vrp.val[1]), -(v->vrp.val[2]));
+
+    printf("After VRP translate:\n");
+    matrix_print(vtm, stdout);
+
+    vector_normalize(&u);
+    vector_normalize(&v->vup);
+    vector_normalize(&v->vpn);
+
+    printf("View axis\n");
+    vector_print(&u, stdout);
+    vector_print(&v->vup, stdout);
+    vector_print(&v->vpn, stdout);
+
+    matrix_rotateXYZ(vtm, &u, &v->vup, &v->vpn);
+    printf("After XYZ\n");
+    matrix_print(vtm, stdout);
+
+    matrix_translate(vtm, 0, 0, v->d);
+    printf("After COP translate\n");
+    matrix_print(vtm, stdout);
+
+    double bp = v->d + v->b;
+    matrix_scale(vtm, (2.0*v->d) / (bp*v->du), (2.0*v->d) / (bp*v->dv), 1.0 / bp);
+
+    printf("After scale to CVV\n");
+    matrix_print(vtm, stdout);
+    
+    double dp = v->d / bp;
+    matrix_perspective(vtm, dp);
+
+    printf("After persp:\n");
+    matrix_print(vtm, stdout);
+
+    matrix_scale2D(vtm, -(v->screenx / (2.0*dp)), -(v->screeny / (2.0*dp)));
+    printf("After scale to image coords:\n");
+    matrix_print(vtm, stdout);
+
+    matrix_translate2D(vtm, v->screenx / 2.0, v->screeny / 2.0);
+    printf("After translate in image coords:\n");
+    matrix_print(vtm, stdout);
+}
+
+void matrix_wldTcvv(Matrix *vtm, View3D *v)
+{
     double u0 = v->vrp.val[0] - (v->du / 2.0);
     double u1 = v->vrp.val[0] + (v->du / 2.0);
     double v0 = v->vrp.val[1] - (v->dv / 2.0);
@@ -42,8 +92,24 @@ void matrix_setView3D(Matrix *vtm, View3D *v)
     vector_normalize(&v->vup);
     vector_normalize(&v->vpn);
 
-    matrix_rotateXYZ(vtm, u, v->vup, v->vpn);
-    matrix_shearZ(vtm, v->vpn.val[0] / v->vpn.val[2], v->vpn.val[1] / v->vpn.val[2]);
-    matrix_translate(vtm, -(u0 + u1) / 2.0, -(v0 + v1) / 2.0, -(v->f));
-    matrix_scale(vtm, 2.0 / v->du, 2.0 / v->dv, 1.0 / (v->b - v->f));
+    matrix_rotateXYZ(vtm, &u, &v->vup, &v->vpn);
+    matrix_translate(vtm, 0, 0, v->d);
+
+    // Vector dop;
+    // vector_set(
+    //     &dop,
+    //     ((u0 + u1) / 2.0) - v->vrp.val[0],
+    //     ((v0 + v1) / 2.0) - v->vrp.val[1],
+    //     -v->d);
+    // matrix_shearZ(vtm, dop.val[0] / dop.val[2], dop.val[1] / dop.val[2]);
+
+    double bp = v->d + v->b;
+    matrix_scale(vtm, (2.0*v->d) / (bp * v->du), (2.0 * v->d) / (bp * v->dv), 1.0 / bp);
+    
+    // matrix_translate(vtm, -(u0 + u1) / 2.0, -(v0 + v1) / 2.0, -(v->f));
+    // matrix_scale(vtm, 2.0 / v->du, 2.0 / v->dv, 1.0 / (v->b - v->f));
+}
+
+void matrix_cvvTscr(Matrix *vtm, View3D *v, Matrix *p)
+{
 }

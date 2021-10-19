@@ -13,12 +13,16 @@
 Color White = {1.0, 1.0, 1.0};
 Color Gray = {0.25, 0.25, 0.25};
 Color Red = {1.0, 0.0, 0.0};
+Color Black = {0.0, 0.0, 0.0};
 
-int world_size = 100;
+int world_size = 50;
 double horizon = 5.0;
 
 static void draw_car(Image *src, Matrix *vtm)
 {
+    Color carbody_color = {103.0/255.0, 56.0/255.0, 42.0/255.0};
+    Color dark_color = {0.1, 0.1, 0.1};
+
     Point car_points[8];
     point_set2D(&car_points[0], 2, 7 - .5);
     point_set2D(&car_points[1], 2, 6 - .5);
@@ -33,8 +37,32 @@ static void draw_car(Image *src, Matrix *vtm)
     car_pgon = polygon_createp(8, car_points);
     matrix_xformPolygon(vtm, car_pgon);
 
-    polygon_draw(car_pgon, src, White);
+    polygon_drawFill(car_pgon, src, carbody_color);
     polygon_free(car_pgon);
+
+    Point fwindow[4];
+    point_set2D(&fwindow[0], 7, 7 - .5);
+    point_set2D(&fwindow[1], 6, 8 - .5);
+    point_set2D(&fwindow[2], 5, 8 - .5);
+    point_set2D(&fwindow[3], 5, 7 - .5);
+
+    Polygon *fwindow_pgon;
+    fwindow_pgon = polygon_createp(4, fwindow);
+    matrix_xformPolygon(vtm, fwindow_pgon);
+    polygon_drawFill(fwindow_pgon, src, dark_color);
+    polygon_free(fwindow_pgon);
+
+    Point bwindow[4];
+    point_set2D(&bwindow[0], 3, 7 - .5);
+    point_set2D(&bwindow[1], 4, 8 - .5);
+    point_set2D(&bwindow[2], 4.75, 8 - .5);
+    point_set2D(&bwindow[3], 4.75, 7 - .5);
+
+    Polygon *bwindow_pgon;
+    bwindow_pgon = polygon_createp(4, bwindow);
+    matrix_xformPolygon(vtm, bwindow_pgon);
+    polygon_drawFill(bwindow_pgon, src, dark_color);
+    polygon_free(bwindow_pgon);
 
     Point wheel_centers[2];
     point_set2D(&wheel_centers[0], 3.5, 6 - .5);
@@ -47,16 +75,26 @@ static void draw_car(Image *src, Matrix *vtm)
     matrix_xformCircle(vtm, &wheels[0]);
     matrix_xformCircle(vtm, &wheels[1]);
 
-    circle_draw(&wheels[0], src, White);
-    circle_draw(&wheels[1], src, White);
+    circle_drawFill(&wheels[0], src, dark_color);
+    circle_drawFill(&wheels[1], src, dark_color);
 }
 
 static void draw_ground(Image *src, Matrix *vtm)
 {
-    Line ground;
-    line_set2D(&ground, -world_size, horizon, world_size, horizon);
-    matrix_xformLine(vtm, &ground);
-    line_draw(&ground, src, White);
+    Color grasslight = {64.0/255.0, 111.0/255.0, 0.0};
+    Color grassdark = {14.0/255.0, 61.0/255.0, 0.0};
+
+    Point corners[4];
+    point_set2D(&corners[0], -world_size, horizon);
+    point_set2D(&corners[1], world_size, horizon);
+    point_set2D(&corners[2], world_size, -world_size);
+    point_set2D(&corners[3], -world_size, -world_size);
+
+    Polygon *ground;
+    ground = polygon_createp(4, corners);
+    matrix_xformPolygon(vtm, ground);
+    polygon_drawFillG(ground, src, grasslight, grassdark, 1);
+    polygon_free(ground);
 }
 
 static void draw_grid(Image *src, Matrix *vtm)
@@ -89,6 +127,9 @@ static void draw_grid(Image *src, Matrix *vtm)
 
 static void draw_alienship(Image *src, Matrix *vtm)
 {
+    Color beamlight = {247.0/255.0, 252.0/255.0, 194.0/255.0};
+    Color beamdark = {187.0/255.0, 192.0/255.0, 134.0/255.0};
+
     Point window_center;
     point_set2D(&window_center, 16, 16);
 
@@ -111,7 +152,7 @@ static void draw_alienship(Image *src, Matrix *vtm)
     Polygon *body_top_pgon;
     body_top_pgon = polygon_createp(4, body_top_points);
     matrix_xformPolygon(vtm, body_top_pgon);
-    polygon_draw(body_top_pgon, src, White);
+    polygon_drawFillG(body_top_pgon, src, Black, Gray, 1);
     polygon_free(body_top_pgon);
 
     Point body_bot_points[4];
@@ -123,7 +164,7 @@ static void draw_alienship(Image *src, Matrix *vtm)
     Polygon *body_bot_pgon;
     body_bot_pgon = polygon_createp(4, body_bot_points);
     matrix_xformPolygon(vtm, body_bot_pgon);
-    polygon_draw(body_bot_pgon, src, White);
+    polygon_drawFillG(body_bot_pgon, src, Gray, Black, 1);
     polygon_free(body_bot_pgon);
 
     Point beam_points[4];
@@ -135,7 +176,7 @@ static void draw_alienship(Image *src, Matrix *vtm)
     Polygon *beam_pgon;
     beam_pgon = polygon_createp(4, beam_points);
     matrix_xformPolygon(vtm, beam_pgon);
-    polygon_draw(beam_pgon, src, White);
+    polygon_drawFillG(beam_pgon, src, beamlight, beamdark, 1);
     polygon_free(beam_pgon);
 }
 
@@ -147,47 +188,47 @@ static void draw_person(Image *src, Matrix *vtm)
     Circle head;
     circle_set(&head, head_center, 0.5);
     matrix_xformCircle(vtm, &head);
-    circle_draw(&head, src, White);
+    circle_drawFill(&head, src, Black);
 
     Line neck;
     line_set2D(&neck, 16, 8.5, 15.95, 8.05);
     matrix_xformLine(vtm, &neck);
-    line_draw(&neck, src, White);
+    line_draw(&neck, src, Black);
 
     Line torso;
     line_set2D(&torso, 15.95, 8.05, 16.5, 7);
     matrix_xformLine(vtm, &torso);
-    line_draw(&torso, src, White);
+    line_draw(&torso, src, Black);
 
     Line rightleg;
     line_set2D(&rightleg, 16.5, 7, 16.6, 5.75);
     matrix_xformLine(vtm, &rightleg);
-    line_draw(&rightleg, src, White);
+    line_draw(&rightleg, src, Black);
 
     Line leftleg;
     line_set2D(&leftleg, 16.5, 7, 17.75, 6.9);
     matrix_xformLine(vtm, &leftleg);
-    line_draw(&leftleg, src, White);
+    line_draw(&leftleg, src, Black);
 
     Line rightshoulder;
     line_set2D(&rightshoulder, 15.95, 8.05, 16.35, 8.15);
     matrix_xformLine(vtm, &rightshoulder);
-    line_draw(&rightshoulder, src, White);
+    line_draw(&rightshoulder, src, Black);
 
     Line leftshoulder;
     line_set2D(&leftshoulder, 15.95, 8.05, 15.6, 7.95);
     matrix_xformLine(vtm, &leftshoulder);
-    line_draw(&leftshoulder, src, White);
+    line_draw(&leftshoulder, src, Black);
 
     Line rightarm;
     line_set2D(&rightarm, 16.35, 8.15, 17.15, 8);
     matrix_xformLine(vtm, &rightarm);
-    line_draw(&rightarm, src, White);
+    line_draw(&rightarm, src, Black);
 
     Line leftarm;
     line_set2D(&leftarm, 15.6, 7.95, 15.25, 7.25);
     matrix_xformLine(vtm, &leftarm);
-    line_draw(&leftarm, src, White);
+    line_draw(&leftarm, src, Black);
 }
 
 static void draw_house(Image *src, Matrix *vtm)
@@ -248,10 +289,41 @@ static void draw_house(Image *src, Matrix *vtm)
 
 }
 
+static void draw_bg(Image *src, Matrix *vtm)
+{
+    // draw bg
+    Color skyblue = {11.0/255.0, 55.0/255.0, 66.0/255.0};
+    for (int r = 0; r < src->rows; r++)
+    {
+        Line l;
+        line_set2D(&l, 0, r, src->cols, r);
+        line_draw(&l, src, skyblue);
+
+        color_set(&skyblue, skyblue.c[0] + 0.0005, skyblue.c[1] + 0.0005, skyblue.c[2] + 0.0005);
+    }
+
+    // draw stars
+    srand(0);
+    double thresh = 0.2;
+    for (int s = 0; s < src->rows; s++)
+    {
+        float random = (float) rand() / (float) RAND_MAX;
+        while (random >= thresh)
+        {
+            float xrand = (float) rand() / (float) RAND_MAX;
+            int x = (int) (xrand * (float) src->cols);
+            image_setColor(src, s, x, White);
+
+            random = (float) rand() / (float) RAND_MAX;
+        }
+        thresh += 0.001;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     char filename[256];
-    int nframes = 20;
+    int nframes = 18;
     int rows = 900;
     int cols = 1200;
     Image *src;
@@ -280,12 +352,13 @@ int main(int argc, char* argv[])
 
         image_reset(src);
 
-        draw_grid(src, &vtm);
+        draw_bg(src, &vtm);
+        // draw_grid(src, &vtm);
         draw_ground(src, &vtm);
-        draw_car(src, &vtm);
-        draw_alienship(src, &vtm);
-        draw_person(src, &vtm);
-        draw_house(src, &vtm);
+        // draw_car(src, &vtm);
+        // draw_alienship(src, &vtm);
+        // draw_person(src, &vtm);
+        // draw_house(src, &vtm);
 
         sprintf(filename, "output/lab5/scene2D/frame-%04d.ppm", i);
         image_write(src, filename);
@@ -293,4 +366,5 @@ int main(int argc, char* argv[])
         dx += zoom_step;
         point_set2D(&vrp, vrp.val[0] + pan_step, vrp.val[1]);
     }
+    image_free(src);
 }

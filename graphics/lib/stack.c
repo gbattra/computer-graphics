@@ -12,7 +12,8 @@
 
 Stack *stack_create(int capacity, int item_size)
 {
-    Stack *stack = (Stack *) malloc(sizeof(Stack));
+    Stack *stack;
+    stack = (Stack *) malloc(sizeof(Stack));
     stack->capacity = capacity;
     stack->item_size = item_size;
     stack->top = -1;

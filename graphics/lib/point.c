@@ -51,6 +51,9 @@ void point_copy(Point *to, Point *from)
 
 void point_draw(Point *p, Image *src, FPixel c)
 {
+    if (p->val[0] < 0 || p->val[0] > src->cols
+    || p->val[1] < 0 || p->val[1] > src->rows - 1) return;
+
     image_setf(src, (int) p->val[1], (int) p->val[0], c);
 }
 

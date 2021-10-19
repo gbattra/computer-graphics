@@ -29,6 +29,7 @@ LinkedList *ll_new( void ) {
 
 	ll->root = NULL;
 	ll->current = ll->root;
+	ll->size = 0;
 
 	return(ll);
 }

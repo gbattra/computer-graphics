@@ -14,6 +14,7 @@
 #include "polygon.h"
 #include "polyline.h"
 #include "line.h"
+#include "circle.h"
 
 typedef struct
 {
@@ -152,6 +153,16 @@ void matrix_xformPolyline(Matrix *m, Polyline *p);
  * @return void
  */
 void matrix_xformLine(Matrix *m, Line *l);
+
+/**
+ * Transform the points and radius in the circle by matrix m.
+ * 
+ * @param m the transformation matrix
+ * @param c the circle to transform
+ * 
+ * @return void
+ */
+void matrix_xformCircle(Matrix *m, Circle *c);
 
 /**
  * Scale the matrix by sx and sy.

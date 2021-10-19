@@ -13,6 +13,7 @@
  */
 
 #include "matrix.h"
+#include <math.h>
 
 void matrix_print(Matrix *m, FILE *fp)
 {
@@ -211,6 +212,17 @@ void matrix_xformLine(Matrix *m, Line *l)
     matrix_xformPoint(m, &l->b, &tb);
     point_copy(&l->a, &ta);
     point_copy(&l->b, &tb);
+}
+
+void matrix_xformCircle(Matrix *m, Circle *c)
+{
+    Point radius;
+    point_set2D(&radius, c->center.val[0] - c->radius, c->center.val[1] - c->radius);
+    matrix_xformPoint(m, &c->center, &c->center);
+    matrix_xformPoint(m, &radius, &radius);
+
+    double r = fabs(radius.val[0] - c->center.val[0]);
+    c->radius = r;
 }
 
 void matrix_scale2D(Matrix *m, double sx, double sy)

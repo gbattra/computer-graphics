@@ -13,6 +13,7 @@ Color Gray = {0.25, 0.25, 0.25};
 Color Red = {1.0, 0.0, 0.0};
 
 int world_size = 100;
+double horizon = 5.0;
 
 static void draw_car(Image *src, Matrix *vtm)
 {
@@ -55,7 +56,7 @@ static void draw_car(Image *src, Matrix *vtm)
 static void draw_ground(Image *src, Matrix *vtm)
 {
     Line ground;
-    line_set2D(&ground, -world_size, 5, world_size, 5);
+    line_set2D(&ground, -world_size, horizon, world_size, horizon);
     matrix_xformLine(vtm, &ground);
     line_draw(&ground, src, White);
 }
@@ -207,6 +208,64 @@ static void draw_person(Image *src, Matrix *vtm)
     line_draw(&leftarm, src, White);
 }
 
+static void draw_house(Image *src, Matrix *vtm)
+{
+    Point housebody_points[4];
+    point_set2D(&housebody_points[0], 26, horizon);
+    point_set2D(&housebody_points[1], 26, 12);
+    point_set2D(&housebody_points[2], 38, 12);
+    point_set2D(&housebody_points[3], 38, horizon);
+
+    Polygon *housebody_pgon;
+    housebody_pgon = polygon_createp(4, housebody_points);
+    matrix_xformPolygon(vtm, housebody_pgon);
+    polygon_draw(housebody_pgon, src, White);
+    polygon_free(housebody_pgon);
+
+    Point roof_points[3];
+    point_set2D(&roof_points[0], 26, 12);
+    point_set2D(&roof_points[1], 32, 17);
+    point_set2D(&roof_points[2], 38, 12);
+
+    Polygon *roof_pgon;
+    roof_pgon = polygon_createp(3, roof_points);
+    matrix_xformPolygon(vtm, roof_pgon);
+    polygon_draw(roof_pgon, src, White);
+    polygon_free(roof_pgon);
+
+    Point window_points[4];
+    point_set2D(&window_points[0], 29, 6.5);
+    point_set2D(&window_points[1], 29, 10.5);
+    point_set2D(&window_points[2], 35, 10.5);
+    point_set2D(&window_points[3], 35, 6.5);
+
+    Polygon *window_pgon;
+    window_pgon = polygon_createp(4, window_points);
+    matrix_xformPolygon(vtm, window_pgon);
+    polygon_draw(window_pgon, src, White);
+    polygon_free(window_pgon);
+
+    Point door_points[4];
+    point_set2D(&door_points[0], 26, 9);
+    point_set2D(&door_points[1], 24, 9);
+    point_set2D(&door_points[2], 24, horizon);
+    point_set2D(&door_points[3], 26, horizon);
+
+    Polygon *door_pgon;
+    door_pgon = polygon_createp(4, door_points);
+    matrix_xformPolygon(vtm, door_pgon);
+    polygon_draw(door_pgon, src, White);
+    polygon_free(door_pgon);
+
+    Point doorknob_center;
+    point_set2D(&doorknob_center, 24.5, 6.5);
+    Circle doorknob;
+    circle_set(&doorknob, doorknob_center, .15);
+    matrix_xformCircle(vtm, &doorknob);
+    circle_draw(&doorknob, src, White);
+
+}
+
 int main(int argc, char* argv[])
 {
     int rows = 900;
@@ -220,7 +279,7 @@ int main(int argc, char* argv[])
     view.dx = 50.0;
 
     Point vrp;
-    point_set2D(&vrp, 12.0, 10.0);
+    point_set2D(&vrp, 15.0, 10.0);
     point_copy(&view.vrp, &vrp);
 
     Vector x_axis;
@@ -235,6 +294,7 @@ int main(int argc, char* argv[])
     draw_car(src, &vtm);
     draw_alienship(src, &vtm);
     draw_person(src, &vtm);
+    draw_house(src, &vtm);
 
     image_write(src, "output/lab5/view2D.ppm");
 }

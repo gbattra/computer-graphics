@@ -142,7 +142,7 @@ static void draw_alienship(Image *src, Matrix *vtm)
         2.75,
         0);
     matrix_xformElipse(vtm, &window);
-    elipse_draw(&window, src, White);
+    elipse_drawFillG(&window, src, White, Gray, 1);
     
     Point body_top_points[4];
     point_set2D(&body_top_points[0], 12, 15);
@@ -234,6 +234,11 @@ static void draw_person(Image *src, Matrix *vtm)
 
 static void draw_house(Image *src, Matrix *vtm)
 {
+    Color glass = {129.0/255.0, 161.0/255.0, 214.0/255.0};
+    Color wood = {140.0/255.0, 119.0/255.0, 109.0/255.0};
+    Color darkwood = {100.0/255.0, 80.0/255.0, 69.0/255.0};
+    Color darkerwood = {60.0/255.0, 30.0/255.0, 29.0/255.0};
+
     Point housebody_points[4];
     point_set2D(&housebody_points[0], 26, horizon);
     point_set2D(&housebody_points[1], 26, 12);
@@ -243,7 +248,7 @@ static void draw_house(Image *src, Matrix *vtm)
     Polygon *housebody_pgon;
     housebody_pgon = polygon_createp(4, housebody_points);
     matrix_xformPolygon(vtm, housebody_pgon);
-    polygon_draw(housebody_pgon, src, White);
+    polygon_drawFillG(housebody_pgon, src, wood, darkwood, 0);
     polygon_free(housebody_pgon);
 
     Point roof_points[3];
@@ -254,7 +259,7 @@ static void draw_house(Image *src, Matrix *vtm)
     Polygon *roof_pgon;
     roof_pgon = polygon_createp(3, roof_points);
     matrix_xformPolygon(vtm, roof_pgon);
-    polygon_draw(roof_pgon, src, White);
+    polygon_drawFillG(roof_pgon, src, darkwood, darkerwood, 0);
     polygon_free(roof_pgon);
 
     Point window_points[4];
@@ -266,7 +271,7 @@ static void draw_house(Image *src, Matrix *vtm)
     Polygon *window_pgon;
     window_pgon = polygon_createp(4, window_points);
     matrix_xformPolygon(vtm, window_pgon);
-    polygon_draw(window_pgon, src, White);
+    polygon_drawFillG(window_pgon, src, White, glass, 0);
     polygon_free(window_pgon);
 
     Point door_points[4];
@@ -278,7 +283,7 @@ static void draw_house(Image *src, Matrix *vtm)
     Polygon *door_pgon;
     door_pgon = polygon_createp(4, door_points);
     matrix_xformPolygon(vtm, door_pgon);
-    polygon_draw(door_pgon, src, White);
+    polygon_drawFill(door_pgon, src, darkwood);
     polygon_free(door_pgon);
 
     Point doorknob_center;
@@ -286,7 +291,7 @@ static void draw_house(Image *src, Matrix *vtm)
     Circle doorknob;
     circle_set(&doorknob, doorknob_center, .15);
     matrix_xformCircle(vtm, &doorknob);
-    circle_draw(&doorknob, src, White);
+    circle_drawFill(&doorknob, src, Black);
 
 }
 
@@ -358,8 +363,8 @@ int main(int argc, char* argv[])
         draw_ground(src, &vtm);
         draw_car(src, &vtm);
         draw_alienship(src, &vtm);
-        // draw_person(src, &vtm);
-        // draw_house(src, &vtm);
+        draw_person(src, &vtm);
+        draw_house(src, &vtm);
 
         sprintf(filename, "output/lab5/scene2D/frame-%04d.ppm", i);
         image_write(src, filename);
@@ -368,4 +373,6 @@ int main(int argc, char* argv[])
         point_set2D(&vrp, vrp.val[0] + pan_step, vrp.val[1]);
     }
     image_free(src);
+
+    return 0;
 }

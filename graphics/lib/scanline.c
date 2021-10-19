@@ -358,7 +358,7 @@ void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
 	if( !edges )
 		return;
 	
-    LinkedList *llist = NULL;
+    LinkedList *llist;
     llist = ll_new();
 	// process the edge list (should be able to take an arbitrary edge list)
 	processEdgeList( edges, src, llist);

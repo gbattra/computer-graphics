@@ -22,7 +22,7 @@ LIBDIR =../lib
 BINDIR =../bin
 
 # libraries to include
-LIBS = -lm -limageIO
+LIBS = -limageIO -lm
 LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here

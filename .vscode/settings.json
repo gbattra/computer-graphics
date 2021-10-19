@@ -16,6 +16,7 @@
         "fractals.h": "c",
         "matrix.h": "c",
         "view.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "list.h": "c"
     }
 }

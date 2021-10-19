@@ -19,8 +19,8 @@
 #include "floodfill.h"
 #include "noise.h"
 #include "fractals.h"
-#include "polygon.h"
 #include "vector.h"
+#include "polygon.h"
 #include "matrix.h"
 #include "view.h"
 

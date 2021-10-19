@@ -59,7 +59,8 @@ EXECUTABLES = ppmtest \
 			  test5a \
 			  test5b \
 			  test5c \
-			  view2d
+			  scene2d \
+			  scene3d
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -71,7 +72,7 @@ LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c illustratio
 
 LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
 
-LAB5_EXECUTABLES = test5a test5b test5c view2d
+LAB5_EXECUTABLES = test5a test5b test5c scene2d scene3d
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -104,6 +105,9 @@ lab3execs:
 	for i in $(LAB3_EXECUTABLES); do (make $$i); done
 
 lab4execs:
+	for i in $(LAB4_EXECUTABLES); do (make $$i); done
+
+lab5execs:
 	for i in $(LAB4_EXECUTABLES); do (make $$i); done
 
 # put the specific executable rules here
@@ -185,7 +189,10 @@ test5b: $(ODIR)/test5b.o
 test5c: $(ODIR)/test5c.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
-view2d: $(ODIR)/view2d.o
+scene2d: $(ODIR)/scene2d.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+scene3d: $(ODIR)/scene3d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

@@ -329,7 +329,7 @@ static void draw_bg(Image *src, Matrix *vtm)
 int main(int argc, char* argv[])
 {
     char filename[256];
-    int nframes = 18;
+    int nframes = 40;
     int rows = 900;
     int cols = 1200;
     Image *src;
@@ -341,8 +341,8 @@ int main(int argc, char* argv[])
     Vector x_axis;
     vector_set(&x_axis, 1.0, 0.0, 0.0);
 
-    double pan_step = 1;
-    double zoom_step = 2;
+    double pan_step = 0.5;
+    double zoom_step = 1;
     
     for (int i = 0; i < nframes; i++)
     {

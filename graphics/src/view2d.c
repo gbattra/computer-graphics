@@ -7,6 +7,8 @@
 
 #include "graphics.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 Color White = {1.0, 1.0, 1.0};
 Color Gray = {0.25, 0.25, 0.25};
@@ -248,33 +250,47 @@ static void draw_house(Image *src, Matrix *vtm)
 
 int main(int argc, char* argv[])
 {
+    char filename[256];
+    int nframes = 20;
     int rows = 900;
     int cols = 1200;
     Image *src;
     src = image_create(rows, cols);
-    
-    View2D view;
-    view.screenx = cols;
-    view.screeny = rows;
-    view.dx = 50.0;
 
+    double dx = 15.0;
     Point vrp;
-    point_set2D(&vrp, 15.0, 10.0);
-    point_copy(&view.vrp, &vrp);
-
+    point_set2D(&vrp, 2.0, 10.0);
     Vector x_axis;
     vector_set(&x_axis, 1.0, 0.0, 0.0);
-    vector_copy(&view.x, &x_axis);
 
-    Matrix vtm;
-    matrix_setView2D(&vtm, &view);
+    double pan_step = 1;
+    double zoom_step = 2;
+    
+    for (int i = 0; i < nframes; i++)
+    {
+        View2D view;
+        view.screenx = cols;
+        view.screeny = rows;
+        view.dx = dx;
+        point_copy(&view.vrp, &vrp);
+        vector_copy(&view.x, &x_axis);
 
-    draw_grid(src, &vtm);
-    draw_ground(src, &vtm);
-    draw_car(src, &vtm);
-    draw_alienship(src, &vtm);
-    draw_person(src, &vtm);
-    draw_house(src, &vtm);
+        Matrix vtm;
+        matrix_setView2D(&vtm, &view);
 
-    image_write(src, "output/lab5/view2D.ppm");
+        image_reset(src);
+
+        draw_grid(src, &vtm);
+        draw_ground(src, &vtm);
+        draw_car(src, &vtm);
+        draw_alienship(src, &vtm);
+        draw_person(src, &vtm);
+        draw_house(src, &vtm);
+
+        sprintf(filename, "output/lab5/scene2D/frame-%04d.ppm", i);
+        image_write(src, filename);
+
+        dx += zoom_step;
+        point_set2D(&vrp, vrp.val[0] + pan_step, vrp.val[1]);
+    }
 }

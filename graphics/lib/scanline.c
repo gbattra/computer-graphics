@@ -159,7 +159,7 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	smallest row.
 */
 static LinkedList *setupEdgeList( Polygon *p, Image *src) {
-	LinkedList *edges;
+	LinkedList *edges = NULL;
 	Point v1, v2;
 	int i;
 
@@ -351,14 +351,14 @@ void polygon_drawFill(Polygon *pgon, Image *src, Color c) {
 
 void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
 {
-    LinkedList *edges;
+    LinkedList *edges = NULL;
 
 	// set up the edge list
 	edges = setupEdgeList( pgon, src );
 	if( !edges )
 		return;
 	
-    LinkedList *llist;
+    LinkedList *llist = NULL;
     llist = ll_new();
 	// process the edge list (should be able to take an arbitrary edge list)
 	processEdgeList( edges, src, llist);
@@ -367,7 +367,6 @@ void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
     l = ll_pop(llist);
     int i = 0;
     int size = llist->size;
-	printf("%i\n", size);
     while (l)
     {
         if (!vert)

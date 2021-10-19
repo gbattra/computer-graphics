@@ -20,7 +20,8 @@ double horizon = 5.0;
 
 static void draw_car(Image *src, Matrix *vtm)
 {
-    Color carbody_color = {103.0/255.0, 56.0/255.0, 42.0/255.0};
+    Color carbodylight = {123.0/255.0, 76.0/255.0, 62.0/255.0};
+    Color carbodydark = {73.0/255.0, 16.0/255.0, 02.0/255.0};
     Color dark_color = {0.1, 0.1, 0.1};
 
     Point car_points[8];
@@ -37,7 +38,7 @@ static void draw_car(Image *src, Matrix *vtm)
     car_pgon = polygon_createp(8, car_points);
     matrix_xformPolygon(vtm, car_pgon);
 
-    polygon_drawFill(car_pgon, src, carbody_color);
+    polygon_drawFillG(car_pgon, src, carbodydark, carbodylight, 0);
     polygon_free(car_pgon);
 
     Point fwindow[4];
@@ -49,7 +50,7 @@ static void draw_car(Image *src, Matrix *vtm)
     Polygon *fwindow_pgon;
     fwindow_pgon = polygon_createp(4, fwindow);
     matrix_xformPolygon(vtm, fwindow_pgon);
-    polygon_drawFill(fwindow_pgon, src, dark_color);
+    polygon_drawFillG(fwindow_pgon, src, dark_color, Gray, 0);
     polygon_free(fwindow_pgon);
 
     Point bwindow[4];
@@ -75,8 +76,8 @@ static void draw_car(Image *src, Matrix *vtm)
     matrix_xformCircle(vtm, &wheels[0]);
     matrix_xformCircle(vtm, &wheels[1]);
 
+    circle_drawFillG(&wheels[1], src, dark_color, Gray, 0);
     circle_drawFill(&wheels[0], src, dark_color);
-    circle_drawFill(&wheels[1], src, dark_color);
 }
 
 static void draw_ground(Image *src, Matrix *vtm)
@@ -355,8 +356,8 @@ int main(int argc, char* argv[])
         draw_bg(src, &vtm);
         // draw_grid(src, &vtm);
         draw_ground(src, &vtm);
-        // draw_car(src, &vtm);
-        // draw_alienship(src, &vtm);
+        draw_car(src, &vtm);
+        draw_alienship(src, &vtm);
         // draw_person(src, &vtm);
         // draw_house(src, &vtm);
 

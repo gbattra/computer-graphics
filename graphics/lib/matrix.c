@@ -225,6 +225,24 @@ void matrix_xformCircle(Matrix *m, Circle *c)
     c->radius = r;
 }
 
+void matrix_xformElipse(Matrix *m, Elipse *e)
+{
+    Point ra, rb;
+    point_set2D(&ra, e->c.val[0] - e->ra, e->c.val[1] - e->ra);
+    point_set2D(&rb, e->c.val[0] - e->rb, e->c.val[1] - e->rb);
+
+    matrix_xformPoint(m, &e->c, &e->c);
+    matrix_xformPoint(m, &ra, &ra);
+    matrix_xformPoint(m, &rb, &rb);
+
+    elipse_set(
+        e,
+        e->c,
+        fabs(ra.val[0] - e->c.val[0]),
+        fabs(rb.val[1] - e->c.val[1]),
+        0);
+}
+
 void matrix_scale2D(Matrix *m, double sx, double sy)
 {
     Matrix S;

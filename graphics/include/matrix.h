@@ -15,6 +15,7 @@
 #include "polyline.h"
 #include "line.h"
 #include "circle.h"
+#include "elipse.h"
 
 typedef struct
 {
@@ -163,6 +164,16 @@ void matrix_xformLine(Matrix *m, Line *l);
  * @return void
  */
 void matrix_xformCircle(Matrix *m, Circle *c);
+
+/**
+ * Transform the points and radii of the elipse by matrix m.
+ * 
+ * @param m the transformation matrix
+ * @param e the elipse to transform
+ * 
+ * @return void
+ */
+void matrix_xformElipse(Matrix *m, Elipse *e);
 
 /**
  * Scale the matrix by sx and sy.

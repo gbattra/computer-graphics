@@ -37,17 +37,13 @@ static void draw_car(Image *src, Matrix *vtm)
     Point wheel_centers[2];
     point_set2D(&wheel_centers[0], 3.5, 6 - .5);
     point_set2D(&wheel_centers[1], 6.5, 6 - .5);
-    matrix_xformPoint(vtm, &wheel_centers[0], &wheel_centers[0]);
-    matrix_xformPoint(vtm, &wheel_centers[1], &wheel_centers[1]);
-
-    Point wheel_radius;
-    point_set2D(&wheel_radius, 3, 6);
-    matrix_xformPoint(vtm, &wheel_radius, &wheel_radius);
-    double r = fabs(wheel_radius.val[0] - wheel_centers[0].val[0]);
     
     Circle wheels[2];
-    circle_set(&wheels[0], wheel_centers[0], r);
-    circle_set(&wheels[1], wheel_centers[1], r);
+    circle_set(&wheels[0], wheel_centers[0], .5);
+    circle_set(&wheels[1], wheel_centers[1], .5);
+
+    matrix_xformCircle(vtm, &wheels[0]);
+    matrix_xformCircle(vtm, &wheels[1]);
 
     circle_draw(&wheels[0], src, White);
     circle_draw(&wheels[1], src, White);
@@ -83,11 +79,9 @@ static void draw_grid(Image *src, Matrix *vtm)
     Point c;
     point_set2D(&c, 0.0, 0.0);
 
-    matrix_xformPoint(vtm, &c, &c);
-
     Circle center;
-    circle_set(&center, c, 10.0);
-
+    circle_set(&center, c, .25);
+    matrix_xformCircle(vtm, &center);
     circle_drawFill(&center, src, Red);
 }
 
@@ -95,23 +89,15 @@ static void draw_alienship(Image *src, Matrix *vtm)
 {
     Point window_center;
     point_set2D(&window_center, 16, 16);
-    matrix_xformPoint(vtm, &window_center, &window_center);
-
-    Point elipse_dx;
-    point_set2D(&elipse_dx, 13.5, 15);
-    matrix_xformPoint(vtm, &elipse_dx, &elipse_dx);
-
-    Point elipse_dy;
-    point_set2D(&elipse_dy, 16, 13.25);
-    matrix_xformPoint(vtm, &elipse_dy, &elipse_dy);
 
     Elipse window;
     elipse_set(
         &window,
         window_center,
-        fabs(window_center.val[0] - elipse_dx.val[0]),
-        fabs(window_center.val[1] - elipse_dy.val[1]),
+        2.5,
+        2.75,
         0);
+    matrix_xformElipse(vtm, &window);
     elipse_draw(&window, src, White);
     
     Point body_top_points[4];
@@ -155,16 +141,10 @@ static void draw_person(Image *src, Matrix *vtm)
 {
     Point head_center;
     point_set2D(&head_center, 16, 9);
-    Point head_radius;
-    point_set2D(&head_radius, 15.5, 9);
-    
-    matrix_xformPoint(vtm, &head_center, &head_center);
-    matrix_xformPoint(vtm, &head_radius, &head_radius);
-
-    double r = fabs(head_radius.val[0] - head_center.val[0]);
 
     Circle head;
-    circle_set(&head, head_center, r);
+    circle_set(&head, head_center, 0.5);
+    matrix_xformCircle(vtm, &head);
     circle_draw(&head, src, White);
 
     Line neck;

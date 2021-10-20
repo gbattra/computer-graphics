@@ -18,7 +18,7 @@ typedef struct
     double w;
     double l;
     Point c;
-    Polygon sides[6];
+    Polygon *sides;
 } Cube;
 
 /**
@@ -50,6 +50,16 @@ void cube_setSides(Cube *cube);
  * @return void
  */
 void cube_free(Cube *cube);
+
+/**
+ * Prints the cube to the file pointer.
+ * 
+ * @param cube the cube to print
+ * @param fp the file pointer to print to
+ * 
+ * @return void
+ */
+void cube_print(Cube *cube, FILE *fp);
 
 /**
  * Draw an outline of the cube.

@@ -14,6 +14,7 @@ Cube *cube_create(double h, double w, double l, Point c)
     cube->h = h;
     cube->l = l;
     cube->w = w;
+    cube->sides = (Polygon *) malloc(sizeof(Polygon) * 6);
     point_copy(&cube->c, &c);
     cube_setSides(cube);
 
@@ -71,6 +72,19 @@ void cube_drawFill(Cube *cub, Image *src, Color c[6])
 
 void cube_free(Cube *cube)
 {
+    free(cube->sides);
     free(cube);
+}
+
+void cube_print(Cube *cube, FILE *fp)
+{
+    fprintf(fp, "Cube:\n");
+    fprintf(fp, "h: %f, w: %f, l: %f\n", cube->h, cube->w, cube->l);
+    fprintf(fp, "Center: ");
+    point_print(&cube->c, fp);
+    for (int i = 0; i < 6; i++)
+    {
+        polygon_print(&cube->sides[i], fp);
+    }
 }
 

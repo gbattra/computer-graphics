@@ -9,9 +9,9 @@
 
 static void draw_cubes(Image *src, Matrix *vtm)
 {
-    double w = 1.0;
-    double l = 1.0;
-    double maxHeight = 1.0;
+    double w = 5.0;
+    double l = 5.0;
+    double maxHeight = 5.0;
     int nCubes = 1;
     Color cols[nCubes];
 
@@ -24,11 +24,14 @@ static void draw_cubes(Image *src, Matrix *vtm)
 
         double h = (((float) rand()) / (float) RAND_MAX) * maxHeight;
         Point c;
-        point_set3D(&c, 0, 0, 0);
+        point_set3D(&c, 1, 1, 1);
 
         Cube *cube;
-        cube = cube_create(h, w, l, c);
+        cube = cube_create(1, 1, 1, c);
         matrix_xformCube(vtm, cube);
+        for (int p = 0; p < 6; p++) polygon_normalize( &cube->sides[p]);
+
+        cube_print(cube, stdout);
         cube_draw(cube, src, colors);
         cube_free(cube);
     }
@@ -52,8 +55,8 @@ int main(int argc, char *argv[])
 
         vector_set( &(view.vup), 0, 1, 0 );
         view.d = 1;
-        view.du = 10;
-        view.dv = view.du * (float) rows / cols;
+        view.du = 2;
+        view.dv = view.du * ((float) rows / (float) cols);
         view.f = 0;
         view.b = 4;
         view.screenx = cols;

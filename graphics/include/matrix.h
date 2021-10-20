@@ -16,6 +16,7 @@
 #include "line.h"
 #include "circle.h"
 #include "elipse.h"
+#include "cube.h"
 
 typedef struct
 {
@@ -174,6 +175,16 @@ void matrix_xformCircle(Matrix *m, Circle *c);
  * @return void
  */
 void matrix_xformElipse(Matrix *m, Elipse *e);
+
+/**
+ * Transform a cube by a given transformation matrix.
+ * 
+ * @param m the transformation matric
+ * @param c the cube to transform
+ * 
+ * @return void
+ */
+void matrix_xformCube(Matrix *m, Cube *c);
 
 /**
  * Scale the matrix by sx and sy.

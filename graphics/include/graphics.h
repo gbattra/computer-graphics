@@ -21,6 +21,7 @@
 #include "fractals.h"
 #include "vector.h"
 #include "polygon.h"
+#include "cube.h"
 #include "matrix.h"
 #include "view.h"
 

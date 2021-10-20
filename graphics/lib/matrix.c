@@ -243,6 +243,15 @@ void matrix_xformElipse(Matrix *m, Elipse *e)
         0);
 }
 
+void matrix_xformCube(Matrix *m, Cube *c)
+{
+    matrix_xformPoint(m, &c->c, &c->c);
+    for (int i = 0; i < 6; i++)
+    {
+        matrix_xformPolygon(m, &c->sides[i]);
+    }
+}
+
 void matrix_scale2D(Matrix *m, double sx, double sy)
 {
     Matrix S;

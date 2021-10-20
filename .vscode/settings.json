@@ -18,6 +18,7 @@
         "view.h": "c",
         "stdio.h": "c",
         "list.h": "c",
-        "ppmio.h": "c"
+        "ppmio.h": "c",
+        "cube.h": "c"
     }
 }

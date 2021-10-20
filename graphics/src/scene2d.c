@@ -80,5 +80,7 @@ int main(int argc, char *argv[])
         point_set2D(&vrp, vrp.val[0] + pan_step, vrp.val[1]);
     }
 
+    image_free(src);
+
     return 0;
 }

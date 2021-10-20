@@ -8,13 +8,16 @@
 #include "cube.h"
 
 
-void cube_create(Cube *cube, double h, double w, double l, Point c)
+Cube *cube_create(double h, double w, double l, Point c)
 {
+    Cube *cube = (Cube *) malloc(sizeof(Cube));
     cube->h = h;
     cube->l = l;
     cube->w = w;
     point_copy(&cube->c, &c);
     cube_setSides(cube);
+
+    return cube;
 }
 
 void cube_setSides(Cube *cube)
@@ -53,13 +56,21 @@ void cube_setSides(Cube *cube)
     polygon_set(&cube->sides[5], 4, bot);
 }
 
-void cube_draw(Cube *cube, Image *src, Color c[4])
+void cube_draw(Cube *cube, Image *src, Color c[6])
 {
-
+    for (int i = 0; i < 6; i++)
+    {
+        polygon_draw(&cube->sides[i], src, c[i]);
+    }
 }
 
 void cube_drawFill(Cube *cub, Image *src, Color c[6])
 {
 
+}
+
+void cube_free(Cube *cube)
+{
+    free(cube);
 }
 

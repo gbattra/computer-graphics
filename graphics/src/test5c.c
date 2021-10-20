@@ -126,5 +126,7 @@ int main(int argc, char *argv[]) {
         image_write( src, filename );
     }
 
+    image_free(src);
+
     return(0);
 }

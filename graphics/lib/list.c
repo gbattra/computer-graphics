@@ -157,5 +157,4 @@ void ll_delete( LinkedList *ll, void (*freefunc)(const void *) ) {
 	free( ll );
 
 	return;
-
 }

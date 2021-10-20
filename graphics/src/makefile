@@ -109,7 +109,7 @@ lab4execs:
 	for i in $(LAB4_EXECUTABLES); do (make $$i); done
 
 lab5execs:
-	for i in $(LAB4_EXECUTABLES); do (make $$i); done
+	for i in $(LAB5_EXECUTABLES); do (make $$i); done
 
 # put the specific executable rules here
 ppmtest: $(ODIR)/ppmmain.o

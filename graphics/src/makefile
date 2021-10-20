@@ -60,7 +60,8 @@ EXECUTABLES = ppmtest \
 			  test5b \
 			  test5c \
 			  scene2d \
-			  scene3d
+			  scene3d \
+			  aliens2d
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -72,7 +73,7 @@ LAB3_EXECUTABLES = test3d circletest elipsetest test3a test3b test3c illustratio
 
 LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
 
-LAB5_EXECUTABLES = test5a test5b test5c scene2d scene3d
+LAB5_EXECUTABLES = test5a test5b test5c scene2d scene3d aliens2d
 
 
 # put a list of all the object files here for all executables (with .o endings)
@@ -190,6 +191,9 @@ test5c: $(ODIR)/test5c.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 scene2d: $(ODIR)/scene2d.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+aliens2d: $(ODIR)/aliens2d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 scene3d: $(ODIR)/scene3d.o

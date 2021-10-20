@@ -253,3 +253,12 @@ void color_interpolate(Color *target, Color *start, Color *end, double alpha)
     target->c[1] = (1.0 - alpha) * start->c[1] + alpha * end->c[1];
     target->c[2] = (1.0 - alpha) * start->c[2] + alpha * end->c[2];
 }
+
+void color_random(Color *target)
+{
+    color_set(
+        target,
+        ((float) rand()) / (float) RAND_MAX,
+        ((float) rand()) / (float) RAND_MAX,
+        ((float) rand()) / (float) RAND_MAX);
+}

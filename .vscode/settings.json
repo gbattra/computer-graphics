@@ -17,6 +17,7 @@
         "matrix.h": "c",
         "view.h": "c",
         "stdio.h": "c",
-        "list.h": "c"
+        "list.h": "c",
+        "ppmio.h": "c"
     }
 }

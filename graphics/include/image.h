@@ -325,4 +325,13 @@ void color_print(Color *color, FILE *fp);
  */
 void color_interpolate(Color *target, Color *start, Color *end, double alpha);
 
+/**
+ * Generates a random color.
+ * 
+ * @param target the target color to populate
+ * 
+ * @return void
+ */
+void color_random(Color *target);
+
 #endif

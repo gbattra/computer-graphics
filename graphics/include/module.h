@@ -12,6 +12,8 @@
 #include "line.h"
 #include "polyline.h"
 #include "polygon.h"
+#include "matrix.h"
+#include "drawstate.h"
 
 typedef enum {
   ObjNone,
@@ -50,6 +52,10 @@ typedef struct {
     Element *head;
     Element *tail;
 } Module;
+
+typedef struct {
+
+} Lighting;
 
 /**
  * Allocate and initialize an empty element.
@@ -215,5 +221,134 @@ void module_rotateZ(Module *md, double cth, double sth);
  * @return void
  */
 void module_shear2D(Module *md, double shx, double shy);
+
+/**
+ * Draw the module onto the image using the VTM, GTM and DrawState
+ * by traversing each element in the module.
+ * 
+ * @param md the module to draw
+ * @param vtm the view transformatin matrix
+ * @param gtm the global transformation matrix
+ * @param ds the draw state
+ * @param light the lighting of the scene
+ * @param src the image to draw to
+ * 
+ * @return void
+ */
+void module_draw(
+    Module *md,
+    Matrix *vtm,
+    Matrix *gtm,
+    DrawState *ds,
+    Lighting *light,
+    Image *src);
+
+/**
+ * Operand to add translation transformation to module.
+ * 
+ * @param md the module to update
+ * @param tx the x translation
+ * @param ty the y translation
+ * @param tz the z translation
+ * 
+ * @return void
+ */
+void module_translate(Module *md, double tx, double ty, double tz);
+
+/**
+ * Operand to add scaling transformation matrix to module.
+ * 
+ * @param md the module to update
+ * @param sx the x scale factor
+ * @param sy the y scale factor
+ * @param sz the z scale factor
+ * 
+ * @return void
+ */
+void module_scale(Module *md, double sx, double sy, double sz);
+
+/**
+ * Operant to add rotatin by X axis to module.
+ * 
+ * @param md the module to update
+ * @param cth the cos theta value
+ * @param sth the sin theta value
+ * 
+ * @return void
+ */
+void module_rotateX(Module *md, double cth, double sth);
+
+/**
+ * Operant to add rotatin by Y axis to module.
+ * 
+ * @param md the module to update
+ * @param cth the cos theta value
+ * @param sth the sin theta value
+ * 
+ * @return void
+ */
+void module_rotateY(Module *md, double cth, double sth);
+
+/**
+ * Operant to add rotatin by XYY axis to module.
+ * 
+ * @param md the module to update
+ * @param u orthonormal x axis
+ * @param v orthonormal y axis
+ * @param w orthonormal z axis
+ * 
+ * @return void
+ */
+void module_rotateXYZ(Module *md, Vector *u, Vector *v, Vector *w);
+
+/**
+ * Adds a unit cube to the module.
+ * 
+ * @param md the module to update
+ * @param solid flag dictating whether to draw cube outline or fill
+ * 
+ * @return void
+ */
+void module_cube(Module *md, int solid);
+
+/**
+ * Adds the foreground color to the tail of module list.
+ * 
+ * @param md the module to update
+ * @param c the color to set
+ * 
+ * @return void
+ */
+void module_color(Module *md, Color c);
+
+/**
+ * Adds the body color to the tail of module list.
+ * 
+ * @param md the module to update
+ * @param c the color to set
+ * 
+ * @return void
+ */
+void module_bodyColor(Module *md, Color c);
+
+/**
+ * Adds the surface color to the tail of module list.
+ * 
+ * @param md the module to update
+ * @param c the color to set
+ * 
+ * @return void
+ */
+void module_surfaceColor(Module *md, Color c);
+
+/**
+ * Adds the surface coeff to the tail of module list.
+ * 
+ * @param md the module to update
+ * @param sc the surface coeff value
+ * 
+ * @return void
+ */
+void module_surfaceCoeff(Module *md, float sc);
 
 #endif

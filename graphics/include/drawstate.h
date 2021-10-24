@@ -5,6 +5,9 @@
  * Header file defining the DrawState struct and API.
  */
 
+#ifndef DRAWSTATE
+#define DRAWSTATE
+
 #include "image.h"
 #include "point.h"
 
@@ -115,3 +118,5 @@ void drawstate_free(DrawState *ds);
  * @return void
  */
 void void drawstate_setShade(DrawState *ds, ShadeMethod sm);
+
+#endif

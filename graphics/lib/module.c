@@ -47,9 +47,6 @@ Element *element_init(ObjectType type, void *obj)
         case ObjPolygon:
             polygon_copy(&el->obj.polygon, obj);
             break;
-        case ObjCube:
-            cube_copy(&el->obj.cube, obj);
-            break;
         case ObjIdentity:
             matrix_identity(&el->obj.matrix);
             break;
@@ -58,8 +55,10 @@ Element *element_init(ObjectType type, void *obj)
             break;
         case ObjColor:
             color_copy(&el->obj.color, obj);
+            break;
         case ObjBodyColor:
             color_copy(&el->obj.color, obj);
+            break;
         case ObjSurfaceColor:
             color_copy(&el->obj.color, obj);
             break;
@@ -116,8 +115,8 @@ void module_insert(Module *md, Element *el)
 
 void module_module(Module *md, Module *sub)
 {
-    md->tail->next = sub;
-    md->tail = sub;
+    md->tail->next = element_init(ObjModule, sub);
+    md->tail = md->tail->next;
 }
 
 void module_point(Module *md, Point *p)
@@ -230,8 +229,26 @@ void module_cube(Module *md, int solid)
     Cube *cube;
     cube = cube_create(1, 1, 1, c, solid);
 
-    md->tail->next = element_init(ObjCube, cube);
-    md->tail = md->tail->next;
+    for (int p = 0; p < 6; p++)
+    {
+        if (solid == 0)
+        {
+            module_polygon(md, &cube->sides[p]);
+        }
+        else
+        {
+            Polygon *pgon = &cube->sides[p];
+            Point points[pgon->nVertex + 1];
+            Polyline *pline;
+            pline = polyline_createp(pgon->nVertex, points);
+            for (int l = 0; l < pgon->nVertex; l++)
+            {
+                point_copy(&pline->vertex[l], &pgon->vlist[l]);
+            }
+            point_copy(&pline->vertex[pgon->nVertex], &pgon->vlist[0]);
+            module_polyline(md, pline);
+        }
+    }
 }
 
 void module_color(Module *md, Color c)
@@ -258,23 +275,96 @@ void module_surfaceCoeff(Module *md, float sc)
     md->tail = md->tail->next;
 }
 
-/**
- * Draw the module onto the image using the VTM, GTM and DrawState
- * by traversing each element in the module.
- * 
- * @param md the module to draw
- * @param vtm the view transformatin matrix
- * @param gtm the global transformation matrix
- * @param ds the draw state
- * @param light the lighting of the scene
- * @param src the image to draw to
- * 
- * @return void
- */
 void module_draw(
     Module *md,
     Matrix *vtm,
     Matrix *gtm,
     DrawState *ds,
     Lighting *light,
-    Image *src);
+    Image *src)
+{
+    Matrix *ltm;
+    matrix_identity(ltm);
+
+    Element *el = md->head;
+    while (el)
+    {
+        switch(el->type)
+        {
+            case ObjLine:
+                Line l;
+                line_copy(&l, &el->obj.line);
+                matrix_xformLine(ltm, &l);
+                matrix_xformLine(gtm, &l);
+                matrix_xformLine(vtm, &l);
+                line_normalize(&l);
+                line_draw(&l, src, ds->color);
+                break;
+            case ObjPoint:
+                Point p;
+                point_copy(&p, &el->obj.point);
+                matrix_xformPoint(ltm, &p, &p);
+                matrix_xformPoint(gtm, &p, &p);
+                matrix_xformPoint(vtm, &p, &p);
+                point_normalize(&p);
+                FPixel pix;
+                pix.rgb[0] = ds->color.c[0];
+                pix.rgb[1] = ds->color.c[1];
+                pix.rgb[2] = ds->color.c[2];
+                point_draw(&p, src, pix);
+                break;
+            case ObjPolyline:
+                Polyline *pline;
+                polyline_copy(&pline, &el->obj.polyline);
+                matrix_xformPolyline(ltm, &pline);
+                matrix_xformPolyline(gtm, &pline);
+                matrix_xformPolyline(vtm, &pline);
+                polyline_normalize(&pline);
+                polyline_draw(&pline, src, ds->color);
+                break;
+            case ObjPolygon:
+                Polygon *pgon;
+                polygon_copy(&pgon, &el->obj.polygon);
+                matrix_xformPolygon(ltm, &pgon);
+                matrix_xformPolygon(gtm, &pgon);
+                matrix_xformPolygon(vtm, &pgon);
+                polygon_normalize(&pgon);
+                if (ds->shade == ShadeFrame)
+                {
+                    polygon_draw(&pgon, src, ds->color);
+                }
+                else if (ds->shade == ShadeConstant)
+                {
+                    polygon_drawFill(&pgon, src, ds->color);
+                }
+                break;
+            case ObjIdentity:
+                matrix_identity(ltm);
+                break;
+            case ObjMatrix:
+                matrix_multiply(&el->obj.matrix, ltm, ltm);
+                break;
+            case ObjColor:
+                ds->color = el->obj.color;
+                break;
+            case ObjBodyColor:
+                ds->body = el->obj.color;
+                break;
+            case ObjSurfaceColor:
+                ds->surface = el->obj.color;
+                break;
+            case ObjSurfaceCoeff:
+                ds->surfaceCoeff = el->obj.coeff;
+                break;
+            case ObjModule:
+                Matrix tmp_gtm;
+                matrix_multiply(gtm, ltm, &tmp_gtm);
+                DrawState tmp_ds;
+                drawstate_copy(&tmp_ds, ds);
+                module_draw(&el->obj.module, vtm, &tmp_gtm, &tmp_ds, light, src);
+                break;
+            default:
+                break;
+        }
+    }
+}

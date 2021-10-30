@@ -66,24 +66,24 @@ void cube_setSides(Cube *cube)
     polygon_set(&cube->sides[3], 4, right);
     polygon_set(&cube->sides[4], 4, top);
     polygon_set(&cube->sides[5], 4, bot);
+
+    // @TODO: Add surface normals -> make part of polygon_set
 }
 
 void cube_draw(Cube *cube, Image *src, Color c[6])
 {
-    Color black = {0.0, 0.0, 0.0};
+    for (int i = 0; i < 6; i++)
+    {
+        polygon_draw(&cube->sides[i], src, c[i]);
+    }
+}
+
+void cube_drawFill(Cube *cube, Image *src, Color c[6])
+{
     for (int i = 0; i < 6; i++)
     {
         polygon_drawFill(&cube->sides[i], src, c[i]);
     }
-    for (int i = 0; i < 6; i++)
-    {
-        polygon_draw(&cube->sides[i], src, black);
-    }
-}
-
-void cube_drawFill(Cube *cub, Image *src, Color c[6])
-{
-
 }
 
 void cube_free(Cube *cube)

@@ -37,7 +37,6 @@ typedef union {
   Line  line;
   Polyline polyline;
   Polygon polygon;
-  Cube cube;
   Matrix matrix;
   Color color;
   float coeff;

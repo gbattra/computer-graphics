@@ -193,7 +193,7 @@ void module_scale(Module *md, double sx, double sy, double sz)
 {
     Matrix m;
     matrix_identity(&m);
-    matrix_translate(&m, sx, sy, sz);
+    matrix_scale(&m, sx, sy, sz);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }

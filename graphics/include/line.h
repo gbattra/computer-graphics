@@ -18,6 +18,16 @@ typedef struct
 } Line;
 
 /**
+ * Print a line object into the file pointer.
+ * 
+ * @param l the line to print
+ * @param fp the file pointer to print to
+ * 
+ * @return void
+ */
+void line_print(Line *l, FILE *fp);
+
+/**
  * Set the starting and end points on the line.
  * 
  * @param l the line to set

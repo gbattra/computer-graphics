@@ -12,7 +12,7 @@
 DrawState *drawstate_create(void)
 {
     Point p = {0.0, 0.0, 0.0};
-    Color c = {0.0, 0.0, 0.0};
+    Color c = {1.0, 1.0, 1.0};
     DrawState *ds = (DrawState *) malloc(sizeof(DrawState));
     color_copy(&ds->color, &c);
     color_copy(&ds->flatColor, &c);

@@ -59,5 +59,5 @@ void point_draw(Point *p, Image *src, FPixel c)
 
 void point_print(Point *p, FILE *fp)
 {
-    fprintf(fp, "(%f, %f, %f) | h: %f\n", p->val[0], p->val[1], p->val[2], p->val[3]);
+    fprintf(fp, "(%f, %f, %f) | h: %f", p->val[0], p->val[1], p->val[2], p->val[3]);
 }

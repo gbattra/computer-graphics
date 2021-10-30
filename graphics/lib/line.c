@@ -12,6 +12,15 @@
 #include <math.h>
 
 
+void line_print(Line *l, FILE *fp)
+{
+    fprintf(fp, "Line: ");
+    point_print(&l->a, fp);
+    fprintf(fp, " | ");
+    point_print(&l->b, fp);
+    fprintf(fp, "\n");
+}
+
 void line_set2D(Line *l, double x0, double y0, double x1, double y1)
 {
     point_set2D(&l->a, x0, y0);

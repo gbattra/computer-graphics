@@ -76,7 +76,7 @@ Element *element_init(ObjectType type, void *obj)
 
 void element_delete(Element *el)
 {
-    free(el->next);
+    if (el->next) element_delete(el->next);
     free(el);
 }
 
@@ -84,21 +84,16 @@ Module *module_create(void)
 {
     Module *mod = (Module *) malloc(sizeof(Module));
     mod->head = element_create();
-    mod->tail = element_create();
+    mod->tail = mod->head;
     return mod;
 }
 
 void module_clear(Module *md)
 {
     Element *el = md->head;
-    while (el)
-    {
-        Element *tmp = el->next;
-        element_delete(el);
-        el = tmp;
-    }
-    md->head = NULL;
-    md->tail = NULL;
+    element_delete(el);
+    md->head = element_create();
+    md->tail = md->head;
 }
 
 void module_delete(Module *md)
@@ -152,6 +147,7 @@ void module_identity(Module *md)
 void module_translate2D(Module *md, double tx, double ty)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_translate2D(&m, tx, ty);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -160,6 +156,7 @@ void module_translate2D(Module *md, double tx, double ty)
 void module_scale2D(Module *md, double sx, double sy)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_scale2D(&m, sx, sy);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -168,6 +165,7 @@ void module_scale2D(Module *md, double sx, double sy)
 void module_rotateZ(Module *md, double cth, double sth)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_rotateZ(&m, cth, sth);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -176,6 +174,7 @@ void module_rotateZ(Module *md, double cth, double sth)
 void module_shear2D(Module *md, double shx, double shy)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_shear2D(&m, shx, shy);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -184,6 +183,7 @@ void module_shear2D(Module *md, double shx, double shy)
 void module_translate(Module *md, double tx, double ty, double tz)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_translate(&m, tx, ty, tz);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -192,6 +192,7 @@ void module_translate(Module *md, double tx, double ty, double tz)
 void module_scale(Module *md, double sx, double sy, double sz)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_translate(&m, sx, sy, sz);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -200,6 +201,7 @@ void module_scale(Module *md, double sx, double sy, double sz)
 void module_rotateX(Module *md, double cth, double sth)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_rotateX(&m, cth, sth);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -208,6 +210,7 @@ void module_rotateX(Module *md, double cth, double sth)
 void module_rotateY(Module *md, double cth, double sth)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_rotateY(&m, cth, sth);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
@@ -216,6 +219,7 @@ void module_rotateY(Module *md, double cth, double sth)
 void module_rotateXYZ(Module *md, Vector *u, Vector *v, Vector *w)
 {
     Matrix m;
+    matrix_identity(&m);
     matrix_rotateXYZ(&m, u, v, w);
     md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;

@@ -83,8 +83,8 @@ void element_delete(Element *el)
 Module *module_create(void)
 {
     Module *mod = (Module *) malloc(sizeof(Module));
-    mod->head = NULL;
-    mod->tail = NULL;
+    mod->head = element_create();
+    mod->tail = element_create();
     return mod;
 }
 
@@ -151,73 +151,73 @@ void module_identity(Module *md)
 
 void module_translate2D(Module *md, double tx, double ty)
 {
-    Matrix *m = NULL;
-    matrix_translate2D(m, tx, ty);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_translate2D(&m, tx, ty);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_scale2D(Module *md, double sx, double sy)
 {
-    Matrix *m = NULL;
-    matrix_scale2D(m, sx, sy);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_scale2D(&m, sx, sy);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_rotateZ(Module *md, double cth, double sth)
 {
-    Matrix *m = NULL;
-    matrix_rotateZ(m, cth, sth);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_rotateZ(&m, cth, sth);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_shear2D(Module *md, double shx, double shy)
 {
-    Matrix *m = NULL;
-    matrix_shear2D(m, shx, shy);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_shear2D(&m, shx, shy);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_translate(Module *md, double tx, double ty, double tz)
 {
-    Matrix *m = NULL;
-    matrix_translate(m, tx, ty, tz);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_translate(&m, tx, ty, tz);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_scale(Module *md, double sx, double sy, double sz)
 {
-    Matrix *m = NULL;
-    matrix_translate(m, sx, sy, sz);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_translate(&m, sx, sy, sz);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_rotateX(Module *md, double cth, double sth)
 {
-    Matrix *m = NULL;
-    matrix_rotateX(m, cth, sth);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_rotateX(&m, cth, sth);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_rotateY(Module *md, double cth, double sth)
 {
-    Matrix *m = NULL;
-    matrix_rotateY(m, cth, sth);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_rotateY(&m, cth, sth);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
 void module_rotateXYZ(Module *md, Vector *u, Vector *v, Vector *w)
 {
-    Matrix *m = NULL;
-    matrix_rotateXYZ(m, u, v, w);
-    md->tail->next = element_init(ObjMatrix, m);
+    Matrix m;
+    matrix_rotateXYZ(&m, u, v, w);
+    md->tail->next = element_init(ObjMatrix, &m);
     md->tail = md->tail->next;
 }
 
@@ -283,8 +283,8 @@ void module_draw(
     Lighting *light,
     Image *src)
 {
-    Matrix *ltm = NULL;
-    matrix_identity(ltm);
+    Matrix ltm;
+    matrix_identity(&ltm);
 
     Element *el = md->head;
     while (el)
@@ -295,7 +295,7 @@ void module_draw(
             {
                 Line l;
                 line_copy(&l, &el->obj.line);
-                matrix_xformLine(ltm, &l);
+                matrix_xformLine(&ltm, &l);
                 matrix_xformLine(gtm, &l);
                 matrix_xformLine(vtm, &l);
                 line_normalize(&l);
@@ -306,7 +306,7 @@ void module_draw(
             {
                 Point p;
                 point_copy(&p, &el->obj.point);
-                matrix_xformPoint(ltm, &p, &p);
+                matrix_xformPoint(&ltm, &p, &p);
                 matrix_xformPoint(gtm, &p, &p);
                 matrix_xformPoint(vtm, &p, &p);
                 point_normalize(&p);
@@ -321,7 +321,7 @@ void module_draw(
             {
                 Polyline *pline = polyline_create();
                 polyline_copy(pline, &el->obj.polyline);
-                matrix_xformPolyline(ltm, pline);
+                matrix_xformPolyline(&ltm, pline);
                 matrix_xformPolyline(gtm, pline);
                 matrix_xformPolyline(vtm, pline);
                 polyline_normalize(pline);
@@ -332,7 +332,7 @@ void module_draw(
             {
                 Polygon *pgon = polygon_create();
                 polygon_copy(pgon, &el->obj.polygon);
-                matrix_xformPolygon(ltm, pgon);
+                matrix_xformPolygon(&ltm, pgon);
                 matrix_xformPolygon(gtm, pgon);
                 matrix_xformPolygon(vtm, pgon);
                 polygon_normalize(pgon);
@@ -347,10 +347,10 @@ void module_draw(
                 break;
             }
             case ObjIdentity:
-                matrix_identity(ltm);
+                matrix_identity(&ltm);
                 break;
             case ObjMatrix:
-                matrix_multiply(&el->obj.matrix, ltm, ltm);
+                matrix_multiply(&el->obj.matrix, &ltm, &ltm);
                 break;
             case ObjColor:
                 ds->color = el->obj.color;
@@ -367,7 +367,7 @@ void module_draw(
             case ObjModule:
             {
                 Matrix tmp_gtm;
-                matrix_multiply(gtm, ltm, &tmp_gtm);
+                matrix_multiply(gtm, &ltm, &tmp_gtm);
                 DrawState tmp_ds;
                 drawstate_copy(&tmp_ds, ds);
                 module_draw(el->obj.module, vtm, &tmp_gtm, &tmp_ds, light, src);
@@ -376,5 +376,6 @@ void module_draw(
             default:
                 break;
         }
+        el = el->next;
     }
 }

@@ -61,7 +61,8 @@ EXECUTABLES = ppmtest \
 			  test5c \
 			  scene2d \
 			  scene3d \
-			  aliens2d
+			  aliens2d \
+			  test6a
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -111,6 +112,9 @@ lab4execs:
 
 lab5execs:
 	for i in $(LAB5_EXECUTABLES); do (make $$i); done
+
+lab6execs:
+	for i in $(LAB6_EXECUTABLES); do (make $$i); done
 
 # put the specific executable rules here
 ppmtest: $(ODIR)/ppmmain.o

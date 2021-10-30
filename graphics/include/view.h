@@ -35,6 +35,20 @@ typedef struct
 } View3D;
 
 /**
+ * Sets the params on the view 2d struct.
+ * 
+ * @param view the view to set
+ * @param vrp the view reference point
+ * @param dx the width of the view port
+ * @param x the direction of the x axis
+ * @param screenx the number of cols on the image
+ * @param screeny the number of rows on the image
+ * 
+ * @return void
+ */
+void view2D_set(View2D *view, Point *vrp, double dx, Vector *x, int screenx, int screeny);
+
+/**
  * Transforms VTM by the specified View2D struct.
  * 
  * @param vtm the matrix to transform

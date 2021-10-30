@@ -11,6 +11,15 @@
 #include "point.h"
 #include <math.h>
 
+void view2D_set(View2D *view, Point *vrp, double dx, Vector *x, int screenx, int screeny)
+{
+    point_copy(&view->vrp, vrp);
+    vector_copy(&view->x, x);
+    view->dx = dx;
+    view->screenx = screenx;
+    view->screeny = screeny;
+}
+
 void matrix_setView2D(Matrix *vtm, View2D *v)
 {
     double dy = (v->dx * ((double) v->screeny)) / ((double) v->screenx);

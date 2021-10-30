@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
   view2D_set( &view, &vrp, 2, &xaxis, 640, 360 );
   matrix_setView2D( &vtm, &view );
 
-  // create a body
+//   // create a body
   body = module_create();
 
   point_set2D(&p[0], 0, 0);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
   line_set2D( &l, 1.1, 0.08, 1.1, 0.42 );
   module_line( body, &l );
 
-  // create an engine
+//   // create an engine
   engine = module_create();
   
   point_set2D( &p[0], 0, 0 );
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
     module_line( engine, &l );
   }
 
-  // make a wing
+//   // make a wing
   wing = module_create();
 
   point_set2D(&p[0], 0.5, 0);
@@ -146,13 +146,13 @@ int main(int argc, char *argv[]) {
   module_translate2D(formation, 0, -5 );
   module_module( formation, xwing );
 
-  // make a scene
+//   // make a scene
   scene = module_create();
   module_scale2D( scene, 0.1, 0.1 );
   module_translate2D( scene, 0.2, 0 );
   module_module( scene, formation );
   
-	// draw stars into the scene
+// 	// draw stars into the scene
   module_identity(scene);
   for(i=0;i<30;i++) {
     point_set2D( &(p[0]), drand48()*2 - 1, drand48()*1 - 0.5 );
@@ -160,25 +160,25 @@ int main(int argc, char *argv[]) {
   }
 
 
-	// create the image and draw the module
+// 	// create the image and draw the module
   src = image_create( view.screeny, view.screenx );
   ds = drawstate_create(); // default color is white
   module_draw( scene, &vtm, &gtm, ds, NULL, src );
 
-	// write out the image
+// 	// write out the image
   image_write( src, "xwings.ppm" );
 
-	// free modules
+// 	// free modules
   module_delete( scene );
   module_delete( formation );
   module_delete( xwing );
   module_delete( body );
   module_delete( wing );
 
-	// free drawstate
+// 	// free drawstate
   free( ds );
 
-	// free image
+// 	// free image
   image_free( src );
 
   return(0);

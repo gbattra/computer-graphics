@@ -75,6 +75,7 @@ LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
 
 LAB5_EXECUTABLES = test5a test5b test5c scene2d scene3d aliens2d
 
+LAB6_EXECUTABLES = test6a
 
 # put a list of all the object files here for all executables (with .o endings)
 _OBJ = tiffmain.o ppmmain.o
@@ -198,6 +199,10 @@ aliens2d: $(ODIR)/aliens2d.o
 
 scene3d: $(ODIR)/scene3d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test6a: $(ODIR)/test6a.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
 
 .PHONY: clean
 

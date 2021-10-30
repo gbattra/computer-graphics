@@ -206,7 +206,6 @@ static LinkedList *setupEdgeList( Polygon *p, Image *src) {
  */
 static void fillScan( int scan, LinkedList *active, Image *src, LinkedList *llist ) {
   Edge *p1, *p2;
-  int i, f;
 
 	// loop over the lis
   p1 = ll_head( active );

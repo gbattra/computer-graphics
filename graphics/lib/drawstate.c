@@ -22,6 +22,8 @@ DrawState *drawstate_create(void)
     point_copy(&ds->viewer, &p);
     ds->zBuffer = 1;
     ds->surfaceCoeff = 0;
+
+    return ds;
 }
 
 void drawstate_setColor(DrawState *ds, Color c)

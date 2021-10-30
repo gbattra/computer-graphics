@@ -117,6 +117,6 @@ void drawstate_free(DrawState *ds);
  * 
  * @return void
  */
-void void drawstate_setShade(DrawState *ds, ShadeMethod sm);
+void drawstate_setShade(DrawState *ds, ShadeMethod sm);
 
 #endif

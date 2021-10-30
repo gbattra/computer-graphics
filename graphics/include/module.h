@@ -21,6 +21,7 @@ typedef enum {
   ObjPoint,
   ObjPolyline,
   ObjPolygon,
+  ObjCube,
   ObjIdentity,
   ObjMatrix,
   ObjColor,
@@ -36,6 +37,7 @@ typedef union {
   Line  line;
   Polyline polyline;
   Polygon polygon;
+  Cube cube;
   Matrix matrix;
   Color color;
   float coeff;

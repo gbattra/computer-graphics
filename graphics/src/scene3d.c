@@ -27,14 +27,13 @@ static void draw_cubes(Image *src, Matrix *vtm)
     {
         for (int j = 0; j < nCubes; j++)
         {
-            // printf("%i - %i\n", i, j);
             Color colors[6] = {cols[j], cols[j], cols[j], cols[j], cols[j], cols[j]};
 
             Point cp;
             point_set3D(&cp, x, y, z);
 
             Cube *cube;
-            cube = cube_create(1, 1, 1, cp);
+            cube = cube_create(1, 1, 1, cp, 0);
             matrix_xformCube(vtm, cube);
             cube_normalize(cube);
             cube_draw(cube, src, colors);
@@ -44,7 +43,6 @@ static void draw_cubes(Image *src, Matrix *vtm)
         }
         z += 2;
         x = 0;
-        // y += delta;
     }
 }
 

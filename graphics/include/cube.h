@@ -14,6 +14,7 @@
 
 typedef struct
 {
+    int solidFlag;
     double h;
     double w;
     double l;
@@ -28,10 +29,11 @@ typedef struct
  * @param w the width of the cube
  * @param l the length of the cube
  * @param c the center point of the cube
+ * @param solid whether the cube is drawn as a solid or outline
  * 
  * @return void
  */
-Cube *cube_create(double h, double w, double l, Point c);
+Cube *cube_create(double h, double w, double l, Point c, int solid);
 
 /**
  * Given a preconfigured cube, setup the polygon sides.
@@ -100,9 +102,20 @@ void cube_normalize(Cube *cube);
  * @param w the width of the cube
  * @param l the length of the cube
  * @param c the center point of the cube
+ * @param solid whether the cube is drawn as a solid or outline
  * 
  * @return void
  */
-void cube_set(Cube *cube, double h, double w, double l, Point c);
+void cube_set(Cube *cube, double h, double w, double l, Point c, int solid);
+
+/**
+ * Copy the contents of one cube to another.
+ * 
+ * @param to the target cube
+ * @param from the source cube
+ * 
+ * @return void
+ */
+void cube_copy(Cube *to, Cube *from);
 
 #endif

@@ -312,7 +312,7 @@ int main(int argc, char *argv[]) {
   module_draw( scene, &vtm, &gtm, ds, NULL, src );
 
 	// write out the scene
-  image_write( src, "wings.ppm" );
+  image_write( src, "output/lab6/wings.ppm" );
 
 	// free the polygon data
   polygon_clear( &p );

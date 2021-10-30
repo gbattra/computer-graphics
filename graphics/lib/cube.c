@@ -8,10 +8,9 @@
 #include "cube.h"
 
 
-Cube *cube_create(double h, double w, double l, Point c, int solidFlag)
+Cube *cube_create(double h, double w, double l, Point c)
 {
     Cube *cube = (Cube *) malloc(sizeof(Cube));
-    cube->solidFlag = solidFlag;
     cube->h = h;
     cube->l = l;
     cube->w = w;
@@ -22,9 +21,8 @@ Cube *cube_create(double h, double w, double l, Point c, int solidFlag)
     return cube;
 }
 
-void cube_set(Cube *cube, double h, double w, double l, Point c, int solidFlag)
+void cube_set(Cube *cube, double h, double w, double l, Point c)
 {
-    cube->solidFlag = solidFlag;
     cube->h = h;
     cube->l = l;
     cube->w = w;
@@ -66,8 +64,6 @@ void cube_setSides(Cube *cube)
     polygon_set(&cube->sides[3], 4, right);
     polygon_set(&cube->sides[4], 4, top);
     polygon_set(&cube->sides[5], 4, bot);
-
-    // @TODO: Add surface normals -> make part of polygon_set
 }
 
 void cube_draw(Cube *cube, Image *src, Color c[6])
@@ -112,7 +108,6 @@ void cube_normalize(Cube *cube)
 
 void cube_copy(Cube *to, Cube *from)
 {
-    to->solidFlag = from->solidFlag;
     to->h = from->h;
     to->w = from->w;
     to->l = from->l;

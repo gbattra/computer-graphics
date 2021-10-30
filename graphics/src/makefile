@@ -63,7 +63,8 @@ EXECUTABLES = ppmtest \
 			  scene3d \
 			  aliens2d \
 			  test6a \
-			  test6b
+			  test6b \
+			  lab6cube
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -77,7 +78,7 @@ LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
 
 LAB5_EXECUTABLES = test5a test5b test5c scene2d scene3d aliens2d
 
-LAB6_EXECUTABLES = test6a test6b
+LAB6_EXECUTABLES = test6a test6b lab6cube
 
 # put a list of all the object files here for all executables (with .o endings)
 _OBJ = tiffmain.o ppmmain.o
@@ -209,6 +210,9 @@ test6a: $(ODIR)/test6a.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test6b: $(ODIR)/test6b.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+lab6cube: $(ODIR)/lab6cube.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 

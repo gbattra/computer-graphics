@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
   module_draw( scene, &vtm, &gtm, ds, NULL, src );
 
 // 	// write out the image
-  image_write( src, "xwings.ppm" );
+  image_write( src, "output/lab6/xwings.ppm" );
 
 // 	// free modules
   module_delete( scene );

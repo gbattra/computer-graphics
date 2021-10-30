@@ -228,14 +228,14 @@ void module_rotateXYZ(Module *md, Vector *u, Vector *v, Vector *w)
 void module_cube(Module *md, int solid)
 {
     Point c;
-    point_set2D(&c, 0, 0);
+    point_set3D(&c, 0, 0, 0);
 
     Cube *cube;
-    cube = cube_create(1, 1, 1, c, solid);
+    cube = cube_create(1, 1, 1, c);
 
     for (int p = 0; p < 6; p++)
     {
-        if (solid == 0)
+        if (solid == 1)
         {
             module_polygon(md, &cube->sides[p]);
         }
@@ -244,13 +244,14 @@ void module_cube(Module *md, int solid)
             Polygon *pgon = &cube->sides[p];
             Point points[pgon->nVertex + 1];
             Polyline *pline;
-            pline = polyline_createp(pgon->nVertex, points);
-            for (int l = 0; l < pgon->nVertex; l++)
+            pline = polyline_createp(pgon->nVertex + 1, points);
+            for (int p= 0; p < pgon->nVertex; p++)
             {
-                point_copy(&pline->vertex[l], &pgon->vlist[l]);
+                point_copy(&pline->vertex[p], &pgon->vlist[p]);
             }
             point_copy(&pline->vertex[pgon->nVertex], &pgon->vlist[0]);
             module_polyline(md, pline);
+            polyline_free(pline);
         }
     }
 }

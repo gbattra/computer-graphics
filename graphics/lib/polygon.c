@@ -22,7 +22,7 @@ Polygon *polygon_createp(int nVertex, Point *vlist)
     Polygon *pgon = (Polygon *) malloc(sizeof(Polygon));
     pgon->nVertex = nVertex;
     pgon->zBuffer = 1;
-    pgon->vlist = (Point *) malloc(sizeof(Point) * nVertex);
+    pgon->vlist = (Point *) malloc(sizeof(Point) * nVertex); 
     for (int i = 0; i < nVertex; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
@@ -49,9 +49,11 @@ void polygon_init(Polygon *pgon)
 
 void polygon_set(Polygon *pgon, int numV, Point *vlist)
 {
+    free(pgon->vlist);
+    // free(pgon->nlist);
     pgon->nVertex = numV;
-    // if (pgon->vlist) free(pgon->vlist);
     pgon->vlist = (Point *) malloc(sizeof(Point) * numV);
+    pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
     for (int i = 0; i < numV; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
@@ -60,9 +62,9 @@ void polygon_set(Polygon *pgon, int numV, Point *vlist)
 
 void polygon_clear(Polygon *pgon)
 {
-    if (pgon->vlist) free(pgon->vlist);
+    free(pgon->vlist);
     // free(pgon->clist);
-    // free(pgon->vlist);
+    // free(pgon->nlist);
     polygon_init(pgon);
 }
 

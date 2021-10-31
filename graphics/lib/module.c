@@ -235,24 +235,7 @@ void module_cube(Module *md, int solid)
 
     for (int p = 0; p < 6; p++)
     {
-        if (solid == 1)
-        {
-            module_polygon(md, &cube->sides[p]);
-        }
-        else
-        {
-            Polygon *pgon = &cube->sides[p];
-            Point points[pgon->nVertex + 1];
-            Polyline *pline;
-            pline = polyline_createp(pgon->nVertex + 1, points);
-            for (int p= 0; p < pgon->nVertex; p++)
-            {
-                point_copy(&pline->vertex[p], &pgon->vlist[p]);
-            }
-            point_copy(&pline->vertex[pgon->nVertex], &pgon->vlist[0]);
-            module_polyline(md, pline);
-            polyline_free(pline);
-        }
+        module_polygon(md, &cube->sides[p]);
     }
 }
 

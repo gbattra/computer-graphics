@@ -7,6 +7,7 @@
 
 #include "point.h"
 #include "image.h"
+#include "list.h"
 
 typedef struct
 {
@@ -18,7 +19,7 @@ typedef struct
 typedef struct
 {
     int zBuffer;
-    Point vlist[16]
+    Point vlist[16];
 } BezierSurface;
 
 /**
@@ -78,6 +79,20 @@ void bezierCurve_zBuffer(BezierCurve *bc, int flag);
  * @return void
  */
 void bezierSurface_zBuffer(BezierSurface *bs, int flag);
+
+/**
+ * Implementation of the decastlejau algorithm to subdivide a bezier curve.
+ * 
+ * @param bc the current bezier curve to subdivide
+ * @param curves linked-list to store final bezier curves
+ * @param divs_remaining the remaining subdivisions
+ * 
+ * @return void
+ */
+void bezierCurve_divide(
+    BezierCurve *bc,
+    LinkedList *curves,
+    int divs_remaining);
 
 /**
  * Draw the Bezier curve onto the image in the given color.

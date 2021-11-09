@@ -14,6 +14,7 @@
 #include "polygon.h"
 #include "matrix.h"
 #include "drawstate.h"
+#include "bezier.h"
 
 typedef enum {
   ObjNone,
@@ -351,5 +352,16 @@ void module_surfaceColor(Module *md, Color c);
  * @return void
  */
 void module_surfaceCoeff(Module *md, float sc);
+
+/**
+ * Draw the bezier curve using the decasteljau algorithm.
+ * 
+ * @param md the module to add the curve to
+ * @param bc the bezier curve to add
+ * @param divisions the number of divisions for the bezier curve
+ * 
+ * @return void
+ */
+void module_bezierCurve(Module *md, BezierCurve *bc, int divisions);
 
 #endif

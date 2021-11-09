@@ -7,7 +7,8 @@
 
 #include "matrix.h"
 #include "bezier.h"
-#include "point.h" 
+#include "point.h"
+#include <math.h>
 
 
 void bezierCurve_init(BezierCurve *bc)
@@ -70,16 +71,48 @@ void bezierSurface_zBuffer(BezierSurface *bs, int flag)
     bs->zBuffer = flag;
 }
 
-static void bezierCurve_drawRecursive(Point *vlist, Image *src, Color c)
+/**
+ * Compare two bezier curves.
+ * 
+ * @param one the first curve
+ * @param two the second curve
+ * 
+ * @return -1 if one < two, 0 if equal, 1 if two < one
+ */
+static int bezierCurve_compare(const void *one, const void *two)
 {
-    Point left[4], right[4], plist[4];
-    point_copyList(plist, vlist, 4);
+    BezierCurve *bc_one = (BezierCurve *) one;
+    BezierCurve *bc_two = (BezierCurve *) two;
+
+    if (bc_one->vlist[0].val[0] < bc_two->vlist[0].val[0])
+    {
+        return -1;
+    }
+    if (bc_one->vlist[0].val[0] > bc_two->vlist[0].val[0])
+    {
+        return 1;
+    }
+    return 0;
+}
+
+void bezierCurve_divide(
+    BezierCurve *bc,
+    LinkedList *curves,
+    int divs_remaining)
+{
+    BezierCurve *left = NULL;
+    BezierCurve *right = NULL;
+    bezierCurve_init(left);
+    bezierCurve_init(right);
+
+    Point plist[4];
+    point_copyList(plist, bc->vlist, 4);
 
     int r = 0;
     while (r < 3)
     {
-        point_copy(&left[r], &plist[r]);
-        point_copy(&right[3-r], &plist[3-r]);
+        point_copy(&left->vlist[r], &plist[r]);
+        point_copy(&right->vlist[3-r], &plist[3-r]);
         Point tmp_plist[3-r];
         for (int i = 0; i < 3 - r; i++)
         {
@@ -93,13 +126,28 @@ static void bezierCurve_drawRecursive(Point *vlist, Image *src, Color c)
             point_set(&midpoint, x, y, z, 1.0);
             point_copy(&tmp_plist[i], &midpoint);
         }
-        point_copyList(&plist, &tmp_plist, 3 - r);
+        point_copyList(plist, tmp_plist, 3 - r);
         r += 1;
     }
 
-    Point midpoint;
-    point_copy(&midpoint, &plist[0]);
-    
+    point_copy(&left->vlist[3], &plist[0]);
+    point_copy(&right->vlist[0], &plist[0]);
+
+    divs_remaining = divs_remaining / 2;
+    if (divs_remaining <= 1)
+    {
+        ll_insert(curves, left, &bezierCurve_compare);
+        ll_insert(curves, right, &bezierCurve_compare);
+        return;
+    }
+
+    bezierCurve_divide(left, curves, divs_remaining);
+    bezierCurve_divide(right, curves, divs_remaining);
+
+    free(left);
+    free(right);
+
+    return;
 }
 
 void bezierCurve_draw(BezierCurve *bc, Image *src, Color c)
@@ -118,8 +166,8 @@ void bezierCurve_draw(BezierCurve *bc, Image *src, Color c)
         if (y < min_y) min_y = y;
         if (y > max_y) max_y = y;
     }
-    float width = abs(max_x - min_x);
-    float height = abs(max_y - min_y);
+    float width = fabsf(max_x - min_x);
+    float height = fabsf(max_y - min_y);
     if (width <= pix_thresh && height <= pix_thresh)
     {
         // draw line between start and end of bez curve

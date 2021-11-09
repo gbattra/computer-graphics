@@ -15,6 +15,7 @@
 #include "matrix.h"
 #include "module.h"
 #include <stdio.h>
+#include "list.h"
 
 /**
  * Allocate and initialize an empty element.
@@ -261,6 +262,29 @@ void module_surfaceCoeff(Module *md, float sc)
 {
     md->tail->next = element_init(ObjSurfaceCoeff, &sc);
     md->tail = md->tail->next;
+}
+
+void module_bezierCurve(Module *md, BezierCurve *bc, int divisions)
+{
+    LinkedList *curves = ll_new();
+    bezierCurve_divide(bc, curves, divisions);
+    
+    BezierCurve *curr = (BezierCurve *) ll_pop(curves);
+    while (curr)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Line l;
+            line_set2D(
+                &l,
+                curr->vlist[i].val[0],
+                curr->vlist[i].val[1],
+                curr->vlist[i+1].val[0],
+                curr->vlist[i+1].val[1]);
+            module_line(md, &l);
+        }
+        curr = ll_pop(curves);
+    }
 }
 
 void module_draw(

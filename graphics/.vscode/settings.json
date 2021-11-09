@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "bezier.h": "c",
+        "point.h": "c"
+    }
+}

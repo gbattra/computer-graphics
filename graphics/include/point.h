@@ -94,4 +94,15 @@ void point_draw(Point *p, Image *src, FPixel c);
  */
 void point_print(Point *p, FILE *fp);
 
+/**
+ * Copy a list of points into another list of points.
+ * 
+ * @param to_plist the target list
+ * @param from_plist the source list
+ * @param n_points the size of the lists
+ * 
+ * @return void
+ */
+void point_copyList(Point *to_plist, Point *from_plist, int n_points);
+
 #endif

@@ -88,4 +88,4 @@ void bezierSurface_zBuffer(BezierSurface *bs, int flag);
  * 
  * @return void
  */
-void bezierCurve_draw(BezierSurface *bc, Image *src, Color c);
+void bezierCurve_draw(BezierCurve *bc, Image *src, Color c);

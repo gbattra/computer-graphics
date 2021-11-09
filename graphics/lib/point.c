@@ -61,3 +61,11 @@ void point_print(Point *p, FILE *fp)
 {
     fprintf(fp, "(%f, %f, %f) | h: %f\n", p->val[0], p->val[1], p->val[2], p->val[3]);
 }
+
+void point_copyList(Point *to_plist, Point *from_plist, int n_points)
+{
+    for (int i = 0; i < n_points; i++)
+    {
+        point_copy(&to_plist[i], &from_plist[i]);
+    }
+}

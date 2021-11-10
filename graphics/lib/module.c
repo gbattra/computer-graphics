@@ -303,8 +303,7 @@ void module_bezierSurface(Module *m, BezierSurface *bs, int n_divs, int solid)
         {
             for (int j = 0; j < 4; j++)
             {
-                printf("%i\n", (i*4) + j);
-                if (j < 4)
+                if (j < 3)
                 {
                     Line d;
                     line_set3D(
@@ -312,14 +311,13 @@ void module_bezierSurface(Module *m, BezierSurface *bs, int n_divs, int solid)
                         curr->vlist[(i*4) + j].val[0],
                         curr->vlist[(i*4) + j].val[1],
                         curr->vlist[(i*4) + j].val[2],
-                        curr->vlist[(i*4) + j + 1].val[0],
-                        curr->vlist[(i*4) + j + 1].val[1],
-                        curr->vlist[(i*4) + j + 1].val[2]);
+                        curr->vlist[(i*4) + j+1].val[0],
+                        curr->vlist[(i*4) + j+1].val[1],
+                        curr->vlist[(i*4) + j+1].val[2]);
                     module_line(m, &d);
-                    line_print(&d, stdout);
                 }
 
-                if (i < 4)
+                if (i < 3)
                 {
                     Line a;
                     line_set3D(
@@ -331,7 +329,6 @@ void module_bezierSurface(Module *m, BezierSurface *bs, int n_divs, int solid)
                         curr->vlist[((i+1)*4) + j].val[1],
                         curr->vlist[((i+1)*4) + j].val[2]);
                     module_line(m, &a);
-                    line_print(&a, stdout);
                 }
             }
         }

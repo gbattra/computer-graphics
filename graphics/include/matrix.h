@@ -17,6 +17,7 @@
 #include "circle.h"
 #include "elipse.h"
 #include "cube.h"
+#include "curve.h"
 
 typedef struct
 {
@@ -310,6 +311,17 @@ void matrix_shearZ(Matrix *m, double sx, double sy);
  * @return void
  */
 void matrix_perspective(Matrix *m, double d);
+
+/**
+ * Transform the points in the bezier curve by the transformation matrix.
+ * 
+ * @param m the transformation matrix
+ * @param source the source bezier curve to transform
+ * @param target the target bezier curve after transformation
+ * 
+ * @return void
+ */
+void matrix_xformBezierCurve(Matrix *m, BezierCurve *source, BezierCurve *target);
 
 #endif
 

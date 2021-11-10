@@ -14,7 +14,7 @@
 #include "polygon.h"
 #include "matrix.h"
 #include "drawstate.h"
-#include "bezier.h"
+#include "curve.h"
 
 typedef enum {
   ObjNone,
@@ -23,6 +23,7 @@ typedef enum {
   ObjPolyline,
   ObjPolygon,
   ObjCube,
+  ObjBezier,
   ObjIdentity,
   ObjMatrix,
   ObjColor,
@@ -38,6 +39,7 @@ typedef union {
   Line  line;
   Polyline polyline;
   Polygon polygon;
+  BezierCurve bezier;
   Matrix matrix;
   Color color;
   float coeff;
@@ -358,10 +360,22 @@ void module_surfaceCoeff(Module *md, float sc);
  * 
  * @param md the module to add the curve to
  * @param bc the bezier curve to add
- * @param divisions the number of divisions for the bezier curve
+ * @param n_divs the number of divisions
  * 
  * @return void
  */
-void module_bezierCurve(Module *md, BezierCurve *bc, int divisions);
+void module_bezierCurve(Module *md, BezierCurve *bc, int n_divs);
+
+/**
+ * Add a bezier surface module to the graph.
+ * 
+ * @param m the module to add to
+ * @param b the bezier surface to add
+ * @param n_divs the number of times to divide the surface
+ * @param solid wireframe or polygons?
+ * 
+ * @return void
+ */
+void module_bezierSurface(Module *m, BezierSurface *b, int n_divs, int solid);
 
 #endif

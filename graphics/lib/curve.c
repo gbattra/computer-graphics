@@ -6,8 +6,9 @@
  */
 
 #include "matrix.h"
-#include "bezier.h"
+#include "curve.h"
 #include "point.h"
+#include "list.h"
 #include <math.h>
 
 
@@ -17,9 +18,10 @@ void bezierCurve_init(BezierCurve *bc)
 
     float val = 0.0;
     float delim = 1.0/4.0;
+
     for (int i = 0; i < 4; i++)
     {
-        point_set3D(&bc->vlist[i], val, 0, 0);
+        // point_set3D(&bc->vlist[i], val, 0, 0);
         val += delim;
     }
 }
@@ -71,6 +73,20 @@ void bezierSurface_zBuffer(BezierSurface *bs, int flag)
     bs->zBuffer = flag;
 }
 
+void bezierCurve_copy(BezierCurve *to, BezierCurve *from)
+{
+    to->zBuffer = from->zBuffer;
+    bezierCurve_set(to, from->vlist);
+}
+
+void bezierCurve_normalize(BezierCurve *bc)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        point_normalize(&bc->vlist[i]);
+    }
+}
+
 /**
  * Compare two bezier curves.
  * 
@@ -100,8 +116,8 @@ void bezierCurve_divide(
     LinkedList *curves,
     int divs_remaining)
 {
-    BezierCurve *left = NULL;
-    BezierCurve *right = NULL;
+    BezierCurve *left = (BezierCurve *) malloc(sizeof(BezierCurve));
+    BezierCurve *right = (BezierCurve *) malloc(sizeof(BezierCurve));
     bezierCurve_init(left);
     bezierCurve_init(right);
 
@@ -111,7 +127,7 @@ void bezierCurve_divide(
     int r = 0;
     while (r < 3)
     {
-        point_copy(&left->vlist[r], &plist[r]);
+        point_copy(&left->vlist[r], &plist[0]);
         point_copy(&right->vlist[3-r], &plist[3-r]);
         Point tmp_plist[3-r];
         for (int i = 0; i < 3 - r; i++)
@@ -120,10 +136,9 @@ void bezierCurve_divide(
             Point *end = &plist[i + 1];
             float x = (start->val[0] + end->val[0]) / 2.0;
             float y = (start->val[1] + end->val[1]) / 2.0;
-            float z = (start->val[2] + end->val[2]) / 2.0;
 
             Point midpoint;
-            point_set(&midpoint, x, y, z, 1.0);
+            point_set2D(&midpoint, x, y);
             point_copy(&tmp_plist[i], &midpoint);
         }
         point_copyList(plist, tmp_plist, 3 - r);
@@ -151,47 +166,28 @@ void bezierCurve_divide(
 }
 
 void bezierCurve_draw(BezierCurve *bc, Image *src, Color c)
-{
-    float pix_thresh = 10.0;
-    float min_x = bc->vlist[0].val[0];
-    float min_y = bc->vlist[0].val[1];
-    float max_x = bc->vlist[0].val[0];
-    float max_y = bc->vlist[0].val[1];
-    for (int i = 1; i < 4; i++)
+{   
+    int n_divs = ((float) src->rows / (float) src->cols) * 20.0;
+    LinkedList *curves = ll_new();
+    bezierCurve_divide(bc, curves, n_divs);
+
+    BezierCurve *curr = (BezierCurve *) ll_pop(curves);
+    while (curr)
     {
-        float x = bc->vlist[i].val[0];
-        float y = bc->vlist[i].val[1];
-        if (x < min_x) min_x = x;
-        if (x > max_x) max_x = x;
-        if (y < min_y) min_y = y;
-        if (y > max_y) max_y = y;
-    }
-    float width = fabsf(max_x - min_x);
-    float height = fabsf(max_y - min_y);
-    if (width <= pix_thresh && height <= pix_thresh)
-    {
-        // draw line between start and end of bez curve
-        Line l;
-        line_set2D(
-            &l,
-            bc->vlist[0].val[0],
-            bc->vlist[0].val[1],
-            bc->vlist[3].val[0],
-            bc->vlist[3].val[1]);
-        line_draw(&l, src, c);
-        return;
-    }
-    
-    for (int i = 0; i < 3; i++)
-    {
-        Line l;
-        line_set2D(
-            &l,
-            bc->vlist[i].val[0],
-            bc->vlist[i].val[1],
-            bc->vlist[i+1].val[0],
-            bc->vlist[i+1].val[1]);
-        line_draw(&l, src, c);
+        for (int i = 0; i < 3; i++)
+        {
+            Line l;
+            line_set2D(
+                &l,
+                curr->vlist[i].val[0],
+                curr->vlist[i].val[1],
+                curr->vlist[i+1].val[0],
+                curr->vlist[i+1].val[1]);
+            line_draw(&l, src, c);
+        }
+        // bezierCurve_draw(curr, src, c);
+        free(curr);
+        curr = ll_pop(curves);
     }
 }
 

@@ -33,7 +33,7 @@ static void draw_cubes(Image *src, Matrix *vtm)
             point_set3D(&cp, x, y, z);
 
             Cube *cube;
-            cube = cube_create(1, 1, 1, cp, 0);
+            cube = cube_create(1, 1, 1, cp);
             matrix_xformCube(vtm, cube);
             cube_normalize(cube);
             cube_draw(cube, src, colors);

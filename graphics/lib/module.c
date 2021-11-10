@@ -69,6 +69,9 @@ Element *element_init(ObjectType type, void *obj)
         case ObjModule:
             el->obj.module = obj;
             break;
+        case ObjBezier:
+            bezierCurve_copy(&el->obj.bezier, obj);
+            break;
         default:
             break;
     }
@@ -264,11 +267,11 @@ void module_surfaceCoeff(Module *md, float sc)
     md->tail = md->tail->next;
 }
 
-void module_bezierCurve(Module *md, BezierCurve *bc, int divisions)
+void module_bezierCurve(Module *md, BezierCurve *bc, int n_divs)
 {
     LinkedList *curves = ll_new();
-    bezierCurve_divide(bc, curves, divisions);
-    
+    bezierCurve_divide(bc, curves, n_divs);
+
     BezierCurve *curr = (BezierCurve *) ll_pop(curves);
     while (curr)
     {
@@ -283,6 +286,8 @@ void module_bezierCurve(Module *md, BezierCurve *bc, int divisions)
                 curr->vlist[i+1].val[1]);
             module_line(md, &l);
         }
+
+        free(curr);
         curr = ll_pop(curves);
     }
 }
@@ -384,6 +389,16 @@ void module_draw(
                 drawstate_copy(&tmp_ds, ds);
                 module_draw(el->obj.module, vtm, &tmp_gtm, &tmp_ds, light, src);
                 break;
+            }
+            case ObjBezier:
+            {
+                BezierCurve bc;
+                bezierCurve_copy(&bc, &el->obj.bezier);
+                matrix_xformBezierCurve(&ltm, &bc, &bc);
+                matrix_xformBezierCurve(gtm, &bc, &bc);
+                matrix_xformBezierCurve(vtm, &bc, &bc);
+                bezierCurve_normalize(&bc);
+                bezierCurve_draw(&bc, src, ds->color);
             }
             default:
                 break;

@@ -1,6 +1,11 @@
 {
     "files.associations": {
         "bezier.h": "c",
-        "point.h": "c"
+        "point.h": "c",
+        "stdio.h": "c",
+        "graphics.h": "c",
+        "drawstate.h": "c",
+        "module.h": "c",
+        "matrix.h": "c"
     }
 }

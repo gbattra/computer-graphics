@@ -5,6 +5,9 @@
  * Header file defining API for Bezier curves.
  */
 
+#ifndef CURVE
+#define CURVE
+
 #include "point.h"
 #include "image.h"
 #include "list.h"
@@ -51,6 +54,16 @@ void bezierSurface_init(BezierSurface *bs);
 void bezierCurve_set(BezierCurve *bc, Point *vlist);
 
 /**
+ * Copy from one curve to another.
+ * 
+ * @param to the target curve
+ * @param from the source curve
+ * 
+ * @return void
+ */
+void bezierCurve_copy(BezierCurve *to, BezierCurve *from);
+
+/**
  * Sets the control poits of the surface to the points in the vlist.
  * 
  * @param bs the bezier surface to set
@@ -81,6 +94,15 @@ void bezierCurve_zBuffer(BezierCurve *bc, int flag);
 void bezierSurface_zBuffer(BezierSurface *bs, int flag);
 
 /**
+ * Normalize the points in the bezier curve.
+ * 
+ * @param bc the bezier curve to normalize
+ * 
+ * @return void
+ */
+void bezierCurve_normalize(BezierCurve *bc);
+
+/**
  * Implementation of the decastlejau algorithm to subdivide a bezier curve.
  * 
  * @param bc the current bezier curve to subdivide
@@ -104,3 +126,6 @@ void bezierCurve_divide(
  * @return void
  */
 void bezierCurve_draw(BezierCurve *bc, Image *src, Color c);
+
+
+#endif

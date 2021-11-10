@@ -24,6 +24,7 @@
 #include "cube.h"
 #include "matrix.h"
 #include "view.h"
+#include "curve.h"
 #include "drawstate.h"
 #include "module.h"
 

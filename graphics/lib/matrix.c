@@ -378,3 +378,11 @@ void matrix_perspective(Matrix *m, double d)
 
     matrix_multiply(&P, m, m);
 }
+
+void matrix_xformBezierCurve(Matrix *m, BezierCurve *source, BezierCurve *target)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        matrix_xformPoint(m, &source->vlist[i], &target->vlist[i]);
+    }
+}

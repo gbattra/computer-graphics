@@ -26,8 +26,7 @@ LIBS = -limageIO -lm
 LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here
-_DEPS = ppmIO.h graphics.h image.h fractals.h noise.h line.h point.h circle.h elipse.h polyline.h stack.h \
-		floodfill.h polygon.h vector.h matrix.h view.h
+_DEPS = ppmIO.h graphics.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
@@ -36,7 +35,8 @@ DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 EXECUTABLES = ppmtest lab1 mask composite image_api fractalstest fractalmain perlinnoise \
 			  test3d circletest elipsetest test3a test3b test3c illustration testbench \
 			  floodfilltest polygontest test4a test4c test4b rocket barycentricimg test5a \
-			  test5b test5c scene2d scene3d aliens2d test6a test6b lab6cube restaurant
+			  test5b test5c scene2d scene3d aliens2d test6a test6b lab6cube restaurant \
+			  test7a test7b
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -51,6 +51,8 @@ LAB4_EXECUTABLES = polygontest test4a test4c test4b rocket barycentricimg
 LAB5_EXECUTABLES = test5a test5b test5c scene2d scene3d aliens2d
 
 LAB6_EXECUTABLES = test6a test6b lab6cube restaurant
+
+LAB7_EXECUTABLES = test7a test7b
 
 # put a list of all the object files here for all executables (with .o endings)
 _OBJ = tiffmain.o ppmmain.o
@@ -89,6 +91,9 @@ lab5execs:
 
 lab6execs:
 	for i in $(LAB6_EXECUTABLES); do (make $$i); done
+
+lab7execs:
+	for i in $(LAB7_EXECUTABLES); do (make $$i); done
 
 # put the specific executable rules here
 ppmtest: $(ODIR)/ppmmain.o
@@ -188,6 +193,12 @@ lab6cube: $(ODIR)/lab6cube.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 restaurant: $(ODIR)/restaurant.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test7a: $(ODIR)/test7a.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test7b: $(ODIR)/test7b.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

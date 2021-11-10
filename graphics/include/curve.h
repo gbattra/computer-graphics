@@ -103,6 +103,17 @@ void bezierSurface_zBuffer(BezierSurface *bs, int flag);
 void bezierCurve_normalize(BezierCurve *bc);
 
 /**
+ * Divide a set of control points once using De Castlejau's algo.
+ * 
+ * @param points the source points to split
+ * @param left the resulting left side control points
+ * @param right the resulting right side control points
+ * 
+ * @return void
+ */
+void bezier_divideControlPoints(Point *points, Point *left, Point *right);
+
+/**
  * Implementation of the decastlejau algorithm to subdivide a bezier curve.
  * 
  * @param bc the current bezier curve to subdivide

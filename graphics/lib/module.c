@@ -69,9 +69,6 @@ Element *element_init(ObjectType type, void *obj)
         case ObjModule:
             el->obj.module = obj;
             break;
-        case ObjBezier:
-            bezierCurve_copy(&el->obj.bezier, obj);
-            break;
         default:
             break;
     }
@@ -389,16 +386,6 @@ void module_draw(
                 drawstate_copy(&tmp_ds, ds);
                 module_draw(el->obj.module, vtm, &tmp_gtm, &tmp_ds, light, src);
                 break;
-            }
-            case ObjBezier:
-            {
-                BezierCurve bc;
-                bezierCurve_copy(&bc, &el->obj.bezier);
-                matrix_xformBezierCurve(&ltm, &bc, &bc);
-                matrix_xformBezierCurve(gtm, &bc, &bc);
-                matrix_xformBezierCurve(vtm, &bc, &bc);
-                bezierCurve_normalize(&bc);
-                bezierCurve_draw(&bc, src, ds->color);
             }
             default:
                 break;

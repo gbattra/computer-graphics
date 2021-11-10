@@ -23,7 +23,6 @@ typedef enum {
   ObjPolyline,
   ObjPolygon,
   ObjCube,
-  ObjBezier,
   ObjIdentity,
   ObjMatrix,
   ObjColor,
@@ -39,7 +38,6 @@ typedef union {
   Line  line;
   Polyline polyline;
   Polygon polygon;
-  BezierCurve bezier;
   Matrix matrix;
   Color color;
   float coeff;

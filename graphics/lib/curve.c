@@ -111,24 +111,16 @@ static int bezierCurve_compare(const void *one, const void *two)
     return 0;
 }
 
-void bezierCurve_divide(
-    BezierCurve *bc,
-    LinkedList *curves,
-    int divs_remaining)
+void bezier_divideControlPoints(Point *points, Point *left, Point *right)
 {
-    BezierCurve *left = (BezierCurve *) malloc(sizeof(BezierCurve));
-    BezierCurve *right = (BezierCurve *) malloc(sizeof(BezierCurve));
-    bezierCurve_init(left);
-    bezierCurve_init(right);
-
     Point plist[4];
-    point_copyList(plist, bc->vlist, 4);
+    point_copyList(plist, points, 4);
 
     int r = 0;
     while (r < 3)
     {
-        point_copy(&left->vlist[r], &plist[0]);
-        point_copy(&right->vlist[3-r], &plist[3-r]);
+        point_copy(&left[r], &plist[0]);
+        point_copy(&right[3-r], &plist[3-r]);
         Point tmp_plist[3-r];
         for (int i = 0; i < 3 - r; i++)
         {
@@ -145,10 +137,23 @@ void bezierCurve_divide(
         r += 1;
     }
 
-    point_copy(&left->vlist[3], &plist[0]);
-    point_copy(&right->vlist[0], &plist[0]);
+    point_copy(&left[3], &plist[0]);
+    point_copy(&right[0], &plist[0]);
+}
 
-    divs_remaining = divs_remaining / 2;
+void bezierCurve_divide(
+    BezierCurve *bc,
+    LinkedList *curves,
+    int n_divs)
+{
+    BezierCurve *left = (BezierCurve *) malloc(sizeof(BezierCurve));
+    BezierCurve *right = (BezierCurve *) malloc(sizeof(BezierCurve));
+    bezierCurve_init(left);
+    bezierCurve_init(right);
+
+    bezier_divideControlPoints(bc->vlist, left->vlist, right->vlist);
+
+    int divs_remaining = n_divs / 2;
     if (divs_remaining <= 1)
     {
         ll_insert(curves, left, &bezierCurve_compare);

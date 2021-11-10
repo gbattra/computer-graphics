@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 	Module *curves;
 	View3D view;
 	Matrix VTM, GTM;
-	int divisions = 4;
+	int divisions = 8;
 	int rows = 300, cols = 400;
 	Image *src = image_create(rows, cols);
 

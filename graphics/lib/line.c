@@ -27,6 +27,12 @@ void line_set2D(Line *l, double x0, double y0, double x1, double y1)
     point_set2D(&l->b, x1, y1);
 }
 
+void line_set3D(Line *l, double x0, double y0, double z0, double x1, double y1, double z1)
+{
+    point_set3D(&l->a, x0, y0, z0);
+    point_set3D(&l->b, x1, y1, z1);
+}
+
 void line_set(Line *l, Point ta, Point tb)
 {
     point_copy(&l->a, &ta);

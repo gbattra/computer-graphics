@@ -40,6 +40,22 @@ void line_print(Line *l, FILE *fp);
  */
 void line_set2D(Line *l, double x0, double y0, double x1, double y1);
 
+
+/**
+ * Set the starting and end points on the line.
+ * 
+ * @param l the line to set
+ * @param x0 the start x
+ * @param y0 the start y
+ * @param z0 the start z
+ * @param x1 the end x
+ * @param y1 the end y
+ * @param z1 the end z
+ *
+ * @return void
+ */
+void line_set3D(Line *l, double x0, double y0, double z0, double x1, double y1, double z1);
+
 /**
  * Initialize a line to ta and tb.
  * 

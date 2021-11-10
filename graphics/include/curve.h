@@ -64,6 +64,16 @@ void bezierCurve_set(BezierCurve *bc, Point *vlist);
 void bezierCurve_copy(BezierCurve *to, BezierCurve *from);
 
 /**
+ * Copy from one surface to another.
+ * 
+ * @param to the target surface
+ * @param from the source surface
+ * 
+ * @return void
+ */
+void bezierSurface_copy(BezierSurface *to, BezierSurface *from);
+
+/**
  * Sets the control poits of the surface to the points in the vlist.
  * 
  * @param bs the bezier surface to set
@@ -118,7 +128,7 @@ void bezier_divideControlPoints(Point *points, Point *left, Point *right);
  * 
  * @param bc the current bezier curve to subdivide
  * @param curves linked-list to store final bezier curves
- * @param divs_remaining the remaining subdivisions
+ * @param n_divs the remaining subdivisions
  * 
  * @return void
  */
@@ -126,6 +136,20 @@ void bezierCurve_divide(
     BezierCurve *bc,
     LinkedList *curves,
     int divs_remaining);
+
+/**
+ * Divide the bezier surface n_divs times.
+ * 
+ * @param bs the bezier surface to divide
+ * @param surfaces the resulting list of surfaces
+ * @param n_divs the number of times to divide the surface
+ * 
+ * @return void
+ */
+void bezierSurface_divide(
+    BezierSurface *bs,
+    LinkedList *surfaces,
+    int n_divs);
 
 /**
  * Draw the Bezier curve onto the image in the given color.

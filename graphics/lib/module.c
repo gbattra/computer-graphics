@@ -275,17 +275,69 @@ void module_bezierCurve(Module *md, BezierCurve *bc, int n_divs)
         for (int i = 0; i < 3; i++)
         {
             Line l;
-            line_set2D(
+            line_set3D(
                 &l,
                 curr->vlist[i].val[0],
                 curr->vlist[i].val[1],
+                curr->vlist[i].val[2],
                 curr->vlist[i+1].val[0],
-                curr->vlist[i+1].val[1]);
+                curr->vlist[i+1].val[1],
+                curr->vlist[i+1].val[2]);
             module_line(md, &l);
         }
 
         free(curr);
         curr = ll_pop(curves);
+    }
+}
+
+void module_bezierSurface(Module *m, BezierSurface *bs, int n_divs, int solid)
+{
+    LinkedList *surfaces = ll_new();
+    bezierSurface_divide(bs, surfaces, n_divs);
+
+    BezierSurface *curr = (BezierSurface *) ll_pop(surfaces);
+    while (curr)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                printf("%i\n", (i*4) + j);
+                if (j < 4)
+                {
+                    Line d;
+                    line_set3D(
+                        &d,
+                        curr->vlist[(i*4) + j].val[0],
+                        curr->vlist[(i*4) + j].val[1],
+                        curr->vlist[(i*4) + j].val[2],
+                        curr->vlist[(i*4) + j + 1].val[0],
+                        curr->vlist[(i*4) + j + 1].val[1],
+                        curr->vlist[(i*4) + j + 1].val[2]);
+                    module_line(m, &d);
+                    line_print(&d, stdout);
+                }
+
+                if (i < 4)
+                {
+                    Line a;
+                    line_set3D(
+                        &a,
+                        curr->vlist[(i*4) + j].val[0],
+                        curr->vlist[(i*4) + j].val[1],
+                        curr->vlist[(i*4) + j].val[2],
+                        curr->vlist[((i+1)*4) + j].val[0],
+                        curr->vlist[((i+1)*4) + j].val[1],
+                        curr->vlist[((i+1)*4) + j].val[2]);
+                    module_line(m, &a);
+                    line_print(&a, stdout);
+                }
+            }
+        }
+
+        free(curr);
+        curr = ll_pop(surfaces);
     }
 }
 

@@ -54,12 +54,9 @@ void bezierCurve_set(BezierCurve *bc, Point *vlist)
 
 void bezierSurface_set(BezierSurface *bs, Point *vlist)
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 16; i++)
     {
-        for (int j = 0; j < 4; j++)
-        {
-            point_copy(&bs->vlist[(i * 4) + j], &vlist[(i * 4) + j]);
-        }
+        point_copy(&bs->vlist[i], &vlist[i]);
     }
 }
 
@@ -87,6 +84,12 @@ void bezierCurve_normalize(BezierCurve *bc)
     }
 }
 
+void bezierSurface_copy(BezierSurface *to, BezierSurface *from)
+{
+    to->zBuffer = from->zBuffer;
+    bezierSurface_set(to, from->vlist);
+}
+
 /**
  * Compare two bezier curves.
  * 
@@ -111,11 +114,34 @@ static int bezierCurve_compare(const void *one, const void *two)
     return 0;
 }
 
+/**
+ * Compare two bezier surfaces.
+ * 
+ * @param one the first surface
+ * @param two the second surface
+ * 
+ * @return -1 if one < two, 0 if equal, 1 if one > two
+ */
+static int bezierSurface_compare(const void *one, const void *two)
+{
+    BezierSurface *bc_one = (BezierSurface *) one;
+    BezierSurface *bc_two = (BezierSurface *) two;
+
+    if (bc_one->vlist[0].val[0] < bc_two->vlist[0].val[0])
+    {
+        return -1;
+    }
+    if (bc_one->vlist[0].val[0] > bc_two->vlist[0].val[0])
+    {
+        return 1;
+    }
+    return 0;
+}
+
 void bezier_divideControlPoints(Point *points, Point *left, Point *right)
 {
     Point plist[4];
     point_copyList(plist, points, 4);
-
     int r = 0;
     while (r < 3)
     {
@@ -128,9 +154,10 @@ void bezier_divideControlPoints(Point *points, Point *left, Point *right)
             Point *end = &plist[i + 1];
             float x = (start->val[0] + end->val[0]) / 2.0;
             float y = (start->val[1] + end->val[1]) / 2.0;
+            float z = (start->val[2] + end->val[2]) / 2.0;
 
             Point midpoint;
-            point_set2D(&midpoint, x, y);
+            point_set3D(&midpoint, x, y, z);
             point_copy(&tmp_plist[i], &midpoint);
         }
         point_copyList(plist, tmp_plist, 3 - r);
@@ -146,33 +173,61 @@ void bezierCurve_divide(
     LinkedList *curves,
     int n_divs)
 {
-    BezierCurve *left = (BezierCurve *) malloc(sizeof(BezierCurve));
-    BezierCurve *right = (BezierCurve *) malloc(sizeof(BezierCurve));
-    bezierCurve_init(left);
-    bezierCurve_init(right);
-
-    bezier_divideControlPoints(bc->vlist, left->vlist, right->vlist);
-
-    int divs_remaining = n_divs / 2;
-    if (divs_remaining <= 1)
+    if (n_divs <= 0)
     {
-        ll_insert(curves, left, &bezierCurve_compare);
-        ll_insert(curves, right, &bezierCurve_compare);
+        BezierCurve *curve = (BezierCurve *) malloc(sizeof(BezierCurve));
+        bezierCurve_copy(curve, bc);
+        ll_insert(curves, curve, &bezierCurve_compare);
         return;
     }
 
-    bezierCurve_divide(left, curves, divs_remaining);
-    bezierCurve_divide(right, curves, divs_remaining);
+    BezierCurve left;
+    BezierCurve right;
+    bezierCurve_init(&left);
+    bezierCurve_init(&right);
 
-    free(left);
-    free(right);
+    bezier_divideControlPoints(bc->vlist, left.vlist, right.vlist);
+
+    int divs_remaining = n_divs - 1;
+    bezierCurve_divide(&left, curves, divs_remaining);
+    bezierCurve_divide(&right, curves, divs_remaining);
+
+    return;
+}
+
+void bezierSurface_divide(
+    BezierSurface *bs,
+    LinkedList *surfaces,
+    int n_divs)
+{
+    if (n_divs <= 0)
+    {
+        BezierSurface *surface = (BezierSurface *) malloc(sizeof(BezierSurface));
+        bezierSurface_copy(surface, bs);
+        ll_insert(surfaces, surface, &bezierSurface_compare);
+        return;
+    }
+
+    BezierSurface left;
+    BezierSurface right;
+    bezierSurface_init(&left);
+    bezierSurface_init(&right);
+
+    for (int i = 0; i < 4; i++)
+    {
+        bezier_divideControlPoints(&bs->vlist[i * 4], &left.vlist[i * 4], &right.vlist[i * 4]);
+    }
+    
+    int divs_remaining = n_divs - 1;
+    bezierSurface_divide(&left, surfaces, divs_remaining);
+    bezierSurface_divide(&right, surfaces, divs_remaining);
 
     return;
 }
 
 void bezierCurve_draw(BezierCurve *bc, Image *src, Color c)
 {   
-    int n_divs = ((float) src->rows / (float) src->cols) * 20.0;
+    int n_divs = ((float) src->rows / (float) src->cols) * 10.0;
     LinkedList *curves = ll_new();
     bezierCurve_divide(bc, curves, n_divs);
 
@@ -190,9 +245,7 @@ void bezierCurve_draw(BezierCurve *bc, Image *src, Color c)
                 curr->vlist[i+1].val[1]);
             line_draw(&l, src, c);
         }
-        // bezierCurve_draw(curr, src, c);
         free(curr);
         curr = ll_pop(curves);
     }
 }
-

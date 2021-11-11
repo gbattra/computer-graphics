@@ -208,19 +208,44 @@ void bezierSurface_divide(
         return;
     }
 
-    BezierSurface left;
-    BezierSurface right;
+    BezierSurface left, right, top, bot, tl, tr, bl, br;
     bezierSurface_init(&left);
     bezierSurface_init(&right);
+    bezierSurface_init(&top);
+    bezierSurface_init(&bot);
+    bezierSurface_init(&tl);
+    bezierSurface_init(&tr);
+    bezierSurface_init(&bl);
+    bezierSurface_init(&br);
 
+    Point lvert[16];
+    Point rvert[16];
     for (int i = 0; i < 4; i++)
     {
         bezier_divideControlPoints(&bs->vlist[i * 4], &left.vlist[i * 4], &right.vlist[i * 4]);
     }
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            point_copy(&lvert[(j*4) + i], &left.vlist[(i*4) + j]);
+            point_copy(&rvert[(j*4) + i], &right.vlist[(i*4) + j]);
+        }
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        bezier_divideControlPoints(&lvert[i * 4], &tl.vlist[i * 4], &bl.vlist[i * 4]);
+        bezier_divideControlPoints(&rvert[i * 4], &tr.vlist[i * 4], &br.vlist[i * 4]);
+    }
+
     
     int divs_remaining = n_divs - 1;
-    bezierSurface_divide(&left, surfaces, divs_remaining);
-    bezierSurface_divide(&right, surfaces, divs_remaining);
+    bezierSurface_divide(&tl, surfaces, divs_remaining);
+    bezierSurface_divide(&bl, surfaces, divs_remaining);
+    bezierSurface_divide(&tr, surfaces, divs_remaining);
+    bezierSurface_divide(&br, surfaces, divs_remaining);
 
     return;
 }

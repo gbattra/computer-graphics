@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 	Module *curve;
 	View3D view;
 	Matrix VTM, GTM;
-	int divisions = 0;
+	int divisions = 1;
 	int rows = 300, cols = 400;
 	Image *src = image_create(rows, cols);
 
@@ -67,28 +67,28 @@ int main(int argc, char *argv[]) {
 	module_color(curve, red);
 	module_bezierSurface(curve, &bc, divisions, 0);
 
-	// // // create a curved surface sitting above the plane
-	// point_set3D(&p[0], 0.0, 0.0, 0.0); // first row, constant x, even spacing in z
-	// point_set3D(&p[1], 0.0, 0.2, 0.33);
-	// point_set3D(&p[2], 0.0, 0.5, 0.66);
-	// point_set3D(&p[3], 0.0, 0.1, 1.0);
-	// point_set3D(&p[4], 0.33, 0.8, 0.0); // second row
-	// point_set3D(&p[5], 0.33, -0.1, 0.33);
-	// point_set3D(&p[6], 0.33, 0.0, 0.66);
-	// point_set3D(&p[7], 0.33, 0.3, 1.0);
-	// point_set3D(&p[8], 0.66, 0.3, 0.0); // third row
-	// point_set3D(&p[9], 0.66, 0.8, 0.33);
-	// point_set3D(&p[10], 0.66, 0.9, 0.66);
-	// point_set3D(&p[11], 0.66, 0.5, 1.0);
-	// point_set3D(&p[12], 1.0, 0.4, 0.0); // fourth row
-	// point_set3D(&p[13], 1.0, 0.2, 0.33);
-	// point_set3D(&p[14], 1.0, 0.5, 0.66);
-	// point_set3D(&p[15], 1.0, 1.0, 1.0);
-	// bezierSurface_set(&bc, p);
+	// create a curved surface sitting above the plane
+	point_set3D(&p[0], 0.0, 0.0, 0.0); // first row, constant x, even spacing in z
+	point_set3D(&p[1], 0.0, 0.2, 0.33);
+	point_set3D(&p[2], 0.0, 0.5, 0.66);
+	point_set3D(&p[3], 0.0, 0.1, 1.0);
+	point_set3D(&p[4], 0.33, 0.8, 0.0); // second row
+	point_set3D(&p[5], 0.33, -0.1, 0.33);
+	point_set3D(&p[6], 0.33, 0.0, 0.66);
+	point_set3D(&p[7], 0.33, 0.3, 1.0);
+	point_set3D(&p[8], 0.66, 0.3, 0.0); // third row
+	point_set3D(&p[9], 0.66, 0.8, 0.33);
+	point_set3D(&p[10], 0.66, 0.9, 0.66);
+	point_set3D(&p[11], 0.66, 0.5, 1.0);
+	point_set3D(&p[12], 1.0, 0.4, 0.0); // fourth row
+	point_set3D(&p[13], 1.0, 0.2, 0.33);
+	point_set3D(&p[14], 1.0, 0.5, 0.66);
+	point_set3D(&p[15], 1.0, 1.0, 1.0);
+	bezierSurface_set(&bc, p);
 
-	// // put the curve into a module
-	// module_color(curve, green);
-	// module_bezierSurface(curve, &bc, divisions, 0);
+	// put the curve into a module
+	module_color(curve, green);
+	module_bezierSurface(curve, &bc, divisions, 0);
 
 	// set up the drawstate
 	drawstate_setColor(&ds, white);

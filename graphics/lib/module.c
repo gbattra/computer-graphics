@@ -14,6 +14,7 @@
 #include "cube.h"
 #include "matrix.h"
 #include "module.h"
+#include "pyramid.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -233,11 +234,6 @@ void module_rotateXYZ(Module *md, Vector *u, Vector *v, Vector *w)
 
 void module_cube(Module *md, int solid)
 {
-    if (!solid)
-    {
-        module_shadeMethod(md, ShadeFrame);
-    }
-    
     Point c;
     point_set3D(&c, 0, 0, 0);
 
@@ -246,7 +242,16 @@ void module_cube(Module *md, int solid)
 
     for (int p = 0; p < 6; p++)
     {
-        module_polygon(md, &cube->sides[p]);
+        if (solid)
+        {
+            module_polygon(md, &cube->sides[p]);
+        }
+        else
+        {
+            Line lines[4];
+            polygon_toLines(&cube->sides[p], lines);
+            module_line(md, lines);
+        }
     }
 }
 
@@ -357,11 +362,6 @@ void module_bezierSurface(Module *m, BezierSurface *bs, int n_divs, int solid)
 // implementation inspired by cylinder() function in test6b.c authored by Prof. Maxwell
 void module_cylinder(Module *m, int n_divs, int solid)
 {
-    if (!solid)
-    {
-        module_shadeMethod(m, ShadeFrame);
-    }
-
     Polygon top, bot, face;
     Point xtop, xbot;
     double x1, x2, z1, z2;
@@ -386,14 +386,12 @@ void module_cylinder(Module *m, int n_divs, int solid)
         point_set3D( &pt[2], x2, 1.0, z2 );
 
         polygon_set( &top, 3, pt );
-        module_polygon( m, &top );
 
         point_copy( &pt[0], &xbot );
         point_set3D( &pt[1], x1, 0.0, z1 );
         point_set3D( &pt[2], x2, 0.0, z2 );
 
         polygon_set( &bot, 3, pt );
-        module_polygon( m, &bot );
     
         point_set3D( &pt[0], x1, 0.0, z1 );
         point_set3D( &pt[1], x2, 0.0, z2 );
@@ -401,12 +399,73 @@ void module_cylinder(Module *m, int n_divs, int solid)
         point_set3D( &pt[3], x1, 1.0, z1 );
 
         polygon_set( &face, 4, pt );
-        module_polygon( m, &face );
+
+        if (solid)
+        {
+            module_polygon(m, &top);
+            module_polygon(m, &bot);
+            module_polygon(m, &face);
+        }
+        else
+        {
+            Line toplines[3];
+            Line botlines[3];
+            Line facelines[4];
+
+            polygon_toLines(&top, toplines);
+            polygon_toLines(&bot, botlines);
+            polygon_toLines(&face, facelines);
+
+            module_lines(m, toplines, 3);
+            module_lines(m, botlines, 3);
+            module_lines(m, facelines, 4);
+        }
     }
 
     polygon_clear( &top );
     polygon_clear( &bot );
     polygon_clear( &face );
+}
+
+void module_lines(Module *m, Line *lines, int n_lines)
+{
+    for (int l = 0; l < n_lines; l++)
+    {
+        module_line(m, &lines[l]);
+    }
+}
+
+void module_pyramid(Module *m, int solid)
+{
+    Point cp;
+    point_set3D(&cp, 0, 0, 0);
+    Pyramid *pmd = pyramid_create(&cp, 1.0, 1.0, 1.0);
+    for (int f = 0; f < 3; f++)
+    {
+        if (solid)
+        {
+            module_polygon(m, &pmd->faces[f]);
+        }
+        else
+        {
+            Line lines[3];
+            polygon_toLines(&pmd->faces[f], lines);
+            module_lines(m, lines, 3);
+        }
+    }
+
+    if (solid)
+    {
+        module_polygon(m, pmd->base);
+    }
+    else
+    {
+        Line lines[4];
+        polygon_toLines(pmd->base, lines);
+        module_lines(m, lines, 4);
+    }
+
+    pyramid_free(pmd);
 }
 
 void module_draw(

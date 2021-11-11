@@ -25,6 +25,7 @@
 #include "matrix.h"
 #include "view.h"
 #include "curve.h"
+#include "pyramid.h"
 #include "drawstate.h"
 #include "module.h"
 

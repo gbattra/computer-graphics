@@ -17,6 +17,20 @@ Polygon *polygon_create(void)
     return pgon;
 }
 
+Triangle *triangle_create(void)
+{
+    Triangle *trgl = (Triangle *) malloc(sizeof(Triangle));
+    trgl->nVertex = 3;
+    trgl->vlist = (Point *) malloc(sizeof(Point) * 3);
+    return trgl;
+}
+
+Triangle *triangle_createp(Point *vlist)
+{
+    Triangle *trgl = (Triangle *) polygon_createp(3, vlist);
+    return trgl;
+}
+
 Polygon *polygon_createp(int nVertex, Point *vlist)
 {
     Polygon *pgon = (Polygon *) malloc(sizeof(Polygon));
@@ -62,29 +76,26 @@ void polygon_set(Polygon *pgon, int numV, Point *vlist)
 
 void polygon_toLines(Polygon *pgon, Line *lines)
 {
-    for (int l = 0; l < pgon->nVertex; l++)
+    for (int l = 0; l < pgon->nVertex - 1; l++)
     {
         Line line;
-        line_set3D(
-            &line,
-            pgon->vlist[l].val[0],
-            pgon->vlist[l].val[1],
-            pgon->vlist[l].val[2],
-            pgon->vlist[l+1].val[0],
-            pgon->vlist[l+1].val[1],
-            pgon->vlist[l+1].val[2]);
+        point_copy(
+            &line.a,
+            &pgon->vlist[l]);
+        point_copy(
+            &line.b,
+            &pgon->vlist[l+1]);
         line_copy(&lines[l], &line);
     }
+
     Line line;
-    line_set3D(
-        &line,
-        pgon->vlist[pgon->nVertex - 1].val[0],
-        pgon->vlist[pgon->nVertex - 1].val[1],
-        pgon->vlist[pgon->nVertex - 1].val[2],
-        pgon->vlist[0].val[0],
-        pgon->vlist[0].val[1],
-        pgon->vlist[0].val[2]);
-    line_copy(&lines[pgon->nVertex], &line);
+    point_copy(
+        &line.a,
+        &pgon->vlist[pgon->nVertex - 1]);
+    point_copy(
+        &line.b,
+        &pgon->vlist[0]);
+    line_copy(&lines[pgon->nVertex-1], &line);
 }
 
 void polygon_clear(Polygon *pgon)

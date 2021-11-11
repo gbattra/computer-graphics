@@ -24,6 +24,8 @@ typedef struct
     Vector *nlist;
 } Polygon;
 
+typedef Polygon Triangle;
+
 /**
  * Returns an allocated Polygon pointer initialized so that numVertex is 0 and
  * vertex is NULL.
@@ -31,6 +33,22 @@ typedef struct
  * @return initialized polygon
  */
 Polygon *polygon_create(void);
+
+/**
+ * Create a triangle.
+ * 
+ * @return an initialized triangle
+ */
+Triangle *triangle_create(void);
+
+/**
+ * Create a triangle from the points list.
+ * 
+ * @param vlist the corners of the triangle
+ * 
+ * @return instantiated triangle
+ */
+Triangle *triangle_createp(Point *vlist);
 
 /**
  * Returns an allocated Polygon pointer with the vertex list initialized to a

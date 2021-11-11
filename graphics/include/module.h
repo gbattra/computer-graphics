@@ -399,4 +399,25 @@ void module_bezierSurface(Module *m, BezierSurface *b, int n_divs, int solid);
  */
 void module_cylinder(Module *m, int n_divs, int solid);
 
+/**
+ * Add lines to the module
+ * 
+ * @param m the module to add to
+ * @param lines the lines to add
+ * @param n_lines the number of lines to add
+ * 
+ * @return void
+ */
+void module_lines(Module *m, Line *lines, int n_lines);
+
+/**
+ * Add a unit pyramid to the module.
+ * 
+ * @param m the module to add to
+ * @param solid whether the pyramid should be solid or outline
+ * 
+ * @return void
+ */
+void module_pyramid(Module *m, int solid);
+
 #endif

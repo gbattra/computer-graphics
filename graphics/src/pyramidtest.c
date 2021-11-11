@@ -2,7 +2,7 @@
  * Greg Attra
  * 11/10/2021
  * 
- * Demo of the cylinder module.
+ * Executable demoing the pyramid functionality.
  */
 
 #include "graphics.h"
@@ -10,7 +10,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-
 
 int main(int argc, char *argv[])
 {
@@ -42,11 +41,10 @@ int main(int argc, char *argv[])
 
     Module *m = module_create();
     module_color(m, white);
-    module_shadeMethod(m, ShadeConstant);
     module_scale(m, 1, 3, 1);
-    module_cylinder(m, 20, 0);
+    module_pyramid(m, 0);
     module_translate(m, 2, 0, 2);
-    module_cylinder(m, 20, 1);
+    module_pyramid(m, 1);
 
 	// Create the animation by adjusting the GTM
 	for(frame=0;frame<60;frame++) {
@@ -55,7 +53,7 @@ int main(int argc, char *argv[])
 		matrix_rotateY(&GTM, cos(M_PI/30.0), sin(M_PI/30.0) );
 		module_draw( m, &VTM, &GTM, &ds, NULL, src );
 
-		sprintf(buffer, "output/lab7/cylinder/cylinder_frame%03d.ppm", frame);
+		sprintf(buffer, "output/lab7/pyramid/pyramid_frame%03d.ppm", frame);
 		image_write(src, buffer);
 		image_reset(src);
 	}

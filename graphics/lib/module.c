@@ -15,6 +15,8 @@
 #include "matrix.h"
 #include "module.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #include "list.h"
 
 /**
@@ -64,10 +66,13 @@ Element *element_init(ObjectType type, void *obj)
             color_copy(&el->obj.color, obj);
             break;
         case ObjSurfaceCoeff:
-            el->obj.coeff = *(float*) obj;
+            el->obj.coeff = *(float *) obj;
             break;
         case ObjModule:
             el->obj.module = obj;
+            break;
+        case ObjShadeMethod:
+            el->obj.shadeMethod = *(ShadeMethod *) obj;
             break;
         default:
             break;
@@ -228,6 +233,11 @@ void module_rotateXYZ(Module *md, Vector *u, Vector *v, Vector *w)
 
 void module_cube(Module *md, int solid)
 {
+    if (!solid)
+    {
+        module_shadeMethod(md, ShadeFrame);
+    }
+    
     Point c;
     point_set3D(&c, 0, 0, 0);
 
@@ -261,6 +271,12 @@ void module_surfaceColor(Module *md, Color c)
 void module_surfaceCoeff(Module *md, float sc)
 {
     md->tail->next = element_init(ObjSurfaceCoeff, &sc);
+    md->tail = md->tail->next;
+}
+
+void module_shadeMethod(Module *md, ShadeMethod sm)
+{
+    md->tail->next = element_init(ObjShadeMethod, &sm);
     md->tail = md->tail->next;
 }
 
@@ -336,6 +352,61 @@ void module_bezierSurface(Module *m, BezierSurface *bs, int n_divs, int solid)
         free(curr);
         curr = ll_pop(surfaces);
     }
+}
+
+// implementation inspired by cylinder() function in test6b.c authored by Prof. Maxwell
+void module_cylinder(Module *m, int n_divs, int solid)
+{
+    if (!solid)
+    {
+        module_shadeMethod(m, ShadeFrame);
+    }
+
+    Polygon top, bot, face;
+    Point xtop, xbot;
+    double x1, x2, z1, z2;
+    int i;
+
+    polygon_init( &top );
+    polygon_init( &bot );
+    polygon_init( &face );
+    point_set3D( &xtop, 0, 1.0, 0.0 );
+    point_set3D( &xbot, 0, 0.0, 0.0 );
+
+    for(i=0;i<n_divs;i++) {
+        Point pt[4];
+
+        x1 = cos( i * M_PI * 2.0 / n_divs );
+        z1 = sin( i * M_PI * 2.0 / n_divs );
+        x2 = cos( ( (i+1)%n_divs ) * M_PI * 2.0 / n_divs );
+        z2 = sin( ( (i+1)%n_divs ) * M_PI * 2.0 / n_divs );
+
+        point_copy( &pt[0], &xtop );
+        point_set3D( &pt[1], x1, 1.0, z1 );
+        point_set3D( &pt[2], x2, 1.0, z2 );
+
+        polygon_set( &top, 3, pt );
+        module_polygon( m, &top );
+
+        point_copy( &pt[0], &xbot );
+        point_set3D( &pt[1], x1, 0.0, z1 );
+        point_set3D( &pt[2], x2, 0.0, z2 );
+
+        polygon_set( &bot, 3, pt );
+        module_polygon( m, &bot );
+    
+        point_set3D( &pt[0], x1, 0.0, z1 );
+        point_set3D( &pt[1], x2, 0.0, z2 );
+        point_set3D( &pt[2], x2, 1.0, z2 );
+        point_set3D( &pt[3], x1, 1.0, z1 );
+
+        polygon_set( &face, 4, pt );
+        module_polygon( m, &face );
+    }
+
+    polygon_clear( &top );
+    polygon_clear( &bot );
+    polygon_clear( &face );
 }
 
 void module_draw(
@@ -426,6 +497,9 @@ void module_draw(
                 break;
             case ObjSurfaceCoeff:
                 ds->surfaceCoeff = el->obj.coeff;
+                break;
+            case ObjShadeMethod:
+                ds->shade = el->obj.shadeMethod;
                 break;
             case ObjModule:
             {

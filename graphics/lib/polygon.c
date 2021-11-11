@@ -60,6 +60,33 @@ void polygon_set(Polygon *pgon, int numV, Point *vlist)
     }
 }
 
+void polygon_toLines(Polygon *pgon, Line *lines)
+{
+    for (int l = 0; l < pgon->nVertex; l++)
+    {
+        Line line;
+        line_set3D(
+            &line,
+            pgon->vlist[l].val[0],
+            pgon->vlist[l].val[1],
+            pgon->vlist[l].val[2],
+            pgon->vlist[l+1].val[0],
+            pgon->vlist[l+1].val[1],
+            pgon->vlist[l+1].val[2]);
+        line_copy(&lines[l], &line);
+    }
+    Line line;
+    line_set3D(
+        &line,
+        pgon->vlist[pgon->nVertex - 1].val[0],
+        pgon->vlist[pgon->nVertex - 1].val[1],
+        pgon->vlist[pgon->nVertex - 1].val[2],
+        pgon->vlist[0].val[0],
+        pgon->vlist[0].val[1],
+        pgon->vlist[0].val[2]);
+    line_copy(&lines[pgon->nVertex], &line);
+}
+
 void polygon_clear(Polygon *pgon)
 {
     free(pgon->vlist);

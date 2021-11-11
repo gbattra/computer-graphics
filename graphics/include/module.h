@@ -29,6 +29,7 @@ typedef enum {
   ObjBodyColor,
   ObjSurfaceColor,
   ObjSurfaceCoeff,
+  ObjShadeMethod,
   ObjLight,
   ObjModule
 } ObjectType;
@@ -40,6 +41,7 @@ typedef union {
   Polygon polygon;
   Matrix matrix;
   Color color;
+  ShadeMethod shadeMethod;
   float coeff;
   void *module;
 } Object;
@@ -354,6 +356,16 @@ void module_surfaceColor(Module *md, Color c);
 void module_surfaceCoeff(Module *md, float sc);
 
 /**
+ * Set the shade method of the draw state.
+ * 
+ * @param md the module to add to
+ * @param sm the shade method to set
+ * 
+ * @return void
+ */
+void module_shadeMethod(Module *md, ShadeMethod sm);
+
+/**
  * Draw the bezier curve using the decasteljau algorithm.
  * 
  * @param md the module to add the curve to
@@ -365,7 +377,7 @@ void module_surfaceCoeff(Module *md, float sc);
 void module_bezierCurve(Module *md, BezierCurve *bc, int n_divs);
 
 /**
- * Add a bezier surface module to the graph.
+ * Add a bezier surface element to the graph.
  * 
  * @param m the module to add to
  * @param b the bezier surface to add
@@ -375,5 +387,16 @@ void module_bezierCurve(Module *md, BezierCurve *bc, int n_divs);
  * @return void
  */
 void module_bezierSurface(Module *m, BezierSurface *b, int n_divs, int solid);
+
+/**
+ * Add a cylinder element to the module graph.
+ * 
+ * @param m the module graph to add to
+ * @param n_divs the number of times to subdivide
+ * @param solid draw polygons or lines?
+ * 
+ * @return void
+ */
+void module_cylinder(Module *m, int n_divs, int solid);
 
 #endif

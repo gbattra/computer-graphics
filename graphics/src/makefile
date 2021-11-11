@@ -36,7 +36,7 @@ EXECUTABLES = ppmtest lab1 mask composite image_api fractalstest fractalmain per
 			  test3d circletest elipsetest test3a test3b test3c illustration testbench \
 			  floodfilltest polygontest test4a test4c test4b rocket barycentricimg test5a \
 			  test5b test5c scene2d scene3d aliens2d test6a test6b lab6cube restaurant \
-			  test7a test7b test7c
+			  test7a test7b test7c cylinder
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -52,7 +52,7 @@ LAB5_EXECUTABLES = test5a test5b test5c scene2d scene3d aliens2d
 
 LAB6_EXECUTABLES = test6a test6b lab6cube restaurant
 
-LAB7_EXECUTABLES = test7a test7b test7c
+LAB7_EXECUTABLES = test7a test7b test7c cylinder
 
 # put a list of all the object files here for all executables (with .o endings)
 _OBJ = tiffmain.o ppmmain.o
@@ -202,6 +202,9 @@ test7b: $(ODIR)/test7b.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test7c: $(ODIR)/test7c.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+cylinder: $(ODIR)/cylinder.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

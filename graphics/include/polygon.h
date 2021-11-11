@@ -11,6 +11,7 @@
 #include "image.h"
 #include "point.h"
 #include "vector.h"
+#include "line.h"
 #include <stdlib.h>
 
 typedef struct
@@ -111,6 +112,16 @@ void polygon_setColors(Polygon *pgon, int numV, Color *clist);
  * @return void
  */
 void polygon_setNormals(Polygon *pgon, int numV, Vector *nlist);
+
+/**
+ * Convert polygon to list of lines.
+ * 
+ * @param pgon the polygon to convert
+ * @param lines where to save the lines
+ * 
+ * @return void
+ */
+void polygon_toLines(Polygon *pgon, Line *lines);
 
 /**
  * Sets all the properties of the polygon.

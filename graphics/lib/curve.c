@@ -239,7 +239,6 @@ void bezierSurface_divide(
         bezier_divideControlPoints(&lvert[i * 4], &tl.vlist[i * 4], &bl.vlist[i * 4]);
         bezier_divideControlPoints(&rvert[i * 4], &tr.vlist[i * 4], &br.vlist[i * 4]);
     }
-
     
     int divs_remaining = n_divs - 1;
     bezierSurface_divide(&tl, surfaces, divs_remaining);

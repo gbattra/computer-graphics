@@ -6,6 +6,9 @@
         "graphics.h": "c",
         "drawstate.h": "c",
         "module.h": "c",
-        "matrix.h": "c"
+        "matrix.h": "c",
+        "polygon.h": "c",
+        "stdlib.h": "c",
+        "list.h": "c"
     }
 }

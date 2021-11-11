@@ -437,9 +437,9 @@ void module_lines(Module *m, Line *lines, int n_lines)
 
 void module_pyramid(Module *m, int solid)
 {
-    Point cp;
-    point_set3D(&cp, 0, 0, 0);
-    Pyramid *pmd = pyramid_create(&cp, 1.0, 1.0, 1.0);
+    Point top;
+    point_set3D(&top, 0, 0, 0);
+    Pyramid *pmd = pyramid_create(&top, 1.0, 1.0, 1.0);
     for (int f = 0; f < 3; f++)
     {
         if (solid)

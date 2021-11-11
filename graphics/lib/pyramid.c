@@ -31,10 +31,11 @@ Pyramid *pyramid_create(Point *top, float h, float w, float l)
     {
         int next_f = f + 1;
         if (next_f == 4) next_f = 0;
+        
         Point vlist[3];
         point_copy(&vlist[0], top);
         point_copy(&vlist[1], &base[f]);
-        point_copy(&vlist[1], &base[next_f]);
+        point_copy(&vlist[2], &base[next_f]);
 
         Triangle *face = triangle_createp(vlist);
         polygon_copy(&pmd->faces[f], face);
@@ -47,9 +48,5 @@ Pyramid *pyramid_create(Point *top, float h, float w, float l)
 void pyramid_free(Pyramid *pmd)
 {
     polygon_free(pmd->base);
-    for (int f = 0; f < 4; f++)
-    {
-        polygon_free(&pmd->faces[f]);
-    }
     free(pmd);
 }

@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
     rows = 600;
     cols = 900;
 
-    point_set3D(&(view.vrp), 0.0, 5, -12.0 );
-	vector_set( &(view.vpn), 0.0, -4, 12 );
-	vector_set( &(view.vup), 0.0, 2.0, 0.0 );
+    point_set3D(&(view.vrp), 5, 5, 5 );
+	vector_set( &(view.vpn), -5, -5, -5 );
+	vector_set( &(view.vup), 0.0, 1.0, 0.0 );
 	view.d = 1.5;
 	view.du = 1.0;
 	view.dv = 1.0*rows/cols;
@@ -40,16 +40,15 @@ int main(int argc, char *argv[])
     src = image_create(rows, cols);
 
     Module *m = module_create();
+	module_shadeMethod(m, ShadeConstant);
     module_color(m, white);
-    module_scale(m, 1, 3, 1);
     module_pyramid(m, 0);
-    module_translate(m, 2, 0, 2);
+    module_translate(m, 1, 0, 1);
     module_pyramid(m, 1);
 
 	// Create the animation by adjusting the GTM
 	for(frame=0;frame<60;frame++) {
 		char buffer[256];
-		
 		matrix_rotateY(&GTM, cos(M_PI/30.0), sin(M_PI/30.0) );
 		module_draw( m, &VTM, &GTM, &ds, NULL, src );
 

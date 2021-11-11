@@ -47,8 +47,8 @@ Polygon *polygon_createp(int nVertex, Point *vlist)
 void polygon_free(Polygon *pgon)
 {
     free(pgon->vlist);
-    free(pgon->clist);
-    free(pgon->nlist);
+    // free(pgon->clist);
+    // free(pgon->nlist);
     free(pgon);
 }
 

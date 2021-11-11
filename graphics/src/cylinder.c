@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     point_set3D(&(view.vrp), 0.0, 5, -12.0 );
 	vector_set( &(view.vpn), 0.0, -4, 12 );
-	vector_set( &(view.vup), 0.0, 2.0, 0.0 );
+	vector_set( &(view.vup), 0.0, 1.0, 0.0 );
 	view.d = 1.5;
 	view.du = 1.0;
 	view.dv = 1.0*rows/cols;

@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     module_scale(m, 1.0, 1.5, 1.0);
     module_cone(m, 1, 0);
     module_translate(m, 2, 0, 1);
-    module_cone(m, 1, 1);
+    // module_cone(m, 2, 1);
 
 	// Create the animation by adjusting the GTM
 	for(frame=0;frame<60;frame++) {

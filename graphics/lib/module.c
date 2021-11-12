@@ -486,7 +486,7 @@ void module_cone(Module *m, int n_divs, int solid)
         module_lines(m, lines, cone->base->nVertex);
     }
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < cone->base->nVertex; i++)
     {
         if (solid)
         {
@@ -499,7 +499,6 @@ void module_cone(Module *m, int n_divs, int solid)
             module_lines(m, lines, 3);
         }
     }
-    cone_free(cone);
 }
 
 void module_draw(

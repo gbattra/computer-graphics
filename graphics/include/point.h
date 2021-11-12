@@ -105,4 +105,16 @@ void point_print(Point *p, FILE *fp);
  */
 void point_copyList(Point *to_plist, Point *from_plist, int n_points);
 
+/**
+ * Project a point a given distance from a center point.
+ * 
+ * @param p the point to project
+ * @param cp the center point to project from
+ * @param d the distance to project
+ * @param dst the resulting point
+ * 
+ * @return void
+ */
+void point_project(Point *p, Point *cp, float d, Point *dst);
+
 #endif

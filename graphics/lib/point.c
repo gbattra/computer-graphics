@@ -8,6 +8,7 @@
 #include "point.h"
 #include "image.h"
 #include <stdio.h>
+#include <math.h>
 
 void point_set2D(Point *p, double x, double y)
 {
@@ -68,4 +69,27 @@ void point_copyList(Point *to_plist, Point *from_plist, int n_points)
     {
         point_copy(&to_plist[i], &from_plist[i]);
     }
+}
+
+void point_project(Point *p, Point *cp, float d, Point *dst)
+{
+
+    Point tmp;
+    point_set3D(
+        &tmp,
+        p->val[0] - cp->val[0],
+        p->val[1] - cp->val[1],
+        p->val[2] - cp->val[2]);
+    
+    float mag = sqrtf((tmp.val[0]*tmp.val[0]) + (tmp.val[1]*tmp.val[1]) + (tmp.val[2]*tmp.val[2]));
+    tmp.val[3] = mag;
+    point_normalize(&tmp);
+
+    point_set3D(
+        &tmp,
+        tmp.val[0] * d,
+        tmp.val[1] * d,
+        tmp.val[2] * d);
+
+    point_copy(dst, &tmp);
 }

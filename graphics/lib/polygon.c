@@ -236,8 +236,11 @@ void polygon_divide(Polygon *pgon, int n_divs)
         {
             point_copy(&pnts[i*2], &tmpgon->vlist[i]);
 
+            int next_i = i+1;
+            if (next_i == tmpgon->nVertex) next_i = 0;
+
             Point *start = &tmpgon->vlist[i];
-            Point *end = &tmpgon->vlist[i+1];
+            Point *end = &tmpgon->vlist[next_i];
             Point mid;
             point_set3D(
                 &mid,
@@ -252,5 +255,5 @@ void polygon_divide(Polygon *pgon, int n_divs)
     }
     polygon_clear(pgon);
     polygon_set(pgon, tmpgon->nVertex, tmpgon->vlist);
-    // polygon_free(tmpgon);
+    polygon_free(tmpgon);
 }

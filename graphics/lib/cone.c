@@ -83,6 +83,10 @@ void cone_divide(Cone *cone, int n_divs)
 {
     Polygon *base = polygon_createp(cone->base->nVertex, cone->base->vlist);
     polygon_divide(base, n_divs);
+    for (int p = 0; p < base->nVertex; p++)
+    {   
+        point_project(&base->vlist[p], &cone->cp, cone->r, &base->vlist[p]);
+    }
 
     Point top;
     point_set3D(&top, cone->cp.val[0], cone->cp.val[1] + cone->h, cone->cp.val[2]);
@@ -101,6 +105,5 @@ void cone_divide(Cone *cone, int n_divs)
         polygon_set(&faces[i], 3, vlist);
     }
     
-    // cone_clear(cone);
     cone_set(cone, cone->h, cone->r, faces, base);
 }

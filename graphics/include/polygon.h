@@ -12,6 +12,7 @@
 #include "point.h"
 #include "vector.h"
 #include "line.h"
+#include "list.h"
 #include <stdlib.h>
 
 typedef struct
@@ -49,6 +50,27 @@ Triangle *triangle_create(void);
  * @return instantiated triangle
  */
 Triangle *triangle_createp(Point *vlist);
+
+/**
+ * Compare two triangles.
+ * 
+ * @param one the first to compare
+ * @param two the second to compare
+ * 
+ * @return void
+ */
+int triangle_compare(const void *one, const void *two);
+
+/**
+ * Split the triangle into 4 triangles.
+ * 
+ * @param trgl the triangle to split
+ * @param trgls the resulting triangles
+ * @param n_divs the times to divide
+ * 
+ * @return void
+ */
+void triangle_divide(Triangle *trgl, LinkedList *trgls, int n_divs);
 
 /**
  * Returns an allocated Polygon pointer with the vertex list initialized to a

@@ -7,12 +7,14 @@
 
 #include "polygon.h"
 #include "line.h"
+#include "list.h"
 #include <stdlib.h>
 
 Polygon *polygon_create(void)
 {
     Polygon *pgon = (Polygon *) malloc(sizeof(Polygon));
     pgon->nVertex = 0;
+    pgon->zBuffer = 1;
     pgon->vlist = NULL;
     return pgon;
 }
@@ -21,6 +23,7 @@ Triangle *triangle_create(void)
 {
     Triangle *trgl = (Triangle *) malloc(sizeof(Triangle));
     trgl->nVertex = 3;
+    trgl->zBuffer = 1;
     trgl->vlist = (Point *) malloc(sizeof(Point) * 3);
     return trgl;
 }
@@ -257,4 +260,55 @@ void polygon_divide(Polygon *pgon, int n_divs)
     polygon_clear(pgon);
     polygon_set(pgon, tmpgon->nVertex, tmpgon->vlist);
     polygon_free(tmpgon);
+}
+
+int triangle_compare(const void *one, const void *two)
+{
+    return 0;
+}
+
+void triangle_divide(Triangle *trgl, LinkedList *trgls, int n_divs)
+{
+    if (n_divs <= 0)
+    {
+        Triangle *t = triangle_createp(trgl->vlist);
+        ll_insert(trgls, t, &triangle_compare);
+        return;
+    }
+
+    Point pnts[12];
+    for (int i = 0; i < 3; i++)
+    {
+        point_copy(&pnts[i*2], &trgl->vlist[i]);
+
+        int next_i = i+1;
+        if (next_i == 3) next_i = 0;
+
+        Point *start = &trgl->vlist[i];
+        Point *end = &trgl->vlist[next_i];
+        Point mid;
+        point_set3D(
+            &mid,
+            (start->val[0] + end->val[0]) / 2.0,
+            (start->val[1] + end->val[1]) / 2.0,
+            (start->val[2] + end->val[2]) / 2.0);
+        point_copy(&pnts[(i*2) + 1], &mid);
+    }
+
+    for (int i = 0; i < 5; i += 2)
+    {
+        int c1 = i;
+        int c2 = i + 1;
+        int c3 = i - 1;
+        if (c3 < 0) c3 = 5;
+
+        Triangle *tmp = triangle_create();
+        point_copy(&tmp->vlist[0], &pnts[c1]);
+        point_copy(&tmp->vlist[1], &pnts[c2]);
+        point_copy(&tmp->vlist[2], &pnts[c3]);
+        
+        triangle_divide(tmp, trgls, n_divs - 1);
+        
+        polygon_free(tmp);
+    }
 }

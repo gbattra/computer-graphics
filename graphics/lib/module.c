@@ -16,6 +16,7 @@
 #include "cone.h"
 #include "module.h"
 #include "pyramid.h"
+#include "sphere.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -498,6 +499,37 @@ void module_cone(Module *m, int n_divs, int solid)
             polygon_toLines(&cone->faces[i], lines);
             module_lines(m, lines, 3);
         }
+    }
+}
+
+void module_hemisphere(Module *m, int n_divs, int solid)
+{
+    Point cp;
+    point_set3D(&cp, 0, 0, 0);
+    Hemisphere *hsphere = hemisphere_createp(&cp, 1.0);
+    
+    LinkedList *triangles = ll_new();
+    for (int i = 0; i < 4; i++)
+    {
+        triangle_divide(&hsphere->top->faces[i], triangles, n_divs);
+        triangle_divide(&hsphere->bot->faces[i], triangles, n_divs);
+    }
+
+    Triangle *curr = (Triangle *) ll_pop(triangles);
+    while (curr)
+    {
+        if (solid)
+        {
+            module_polygon(m, curr);
+        }
+        else
+        {
+            Line lines[3];
+            polygon_toLines(curr, lines);
+            module_lines(m, lines, 3);
+        }
+        polygon_free(curr);
+        curr = (Triangle *) ll_pop(triangles);
     }
 }
 

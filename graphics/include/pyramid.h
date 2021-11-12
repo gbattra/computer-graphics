@@ -19,20 +19,20 @@ typedef struct
     int zBuffer;
     Triangle faces[4];
     Polygon *base;
-    Point top;
+    Point cp;
 } Pyramid;
 
 /**
  * Create a pyramid instance.
  * 
- * @param top the top point of the pyramid
+ * @param cp the center point of the pyramid
  * @param h the height of the pyramid
  * @param w the width of the pyramid
  * @param l the length of the pyramid
  * 
  * @return void
  */
-Pyramid *pyramid_create(Point *top, float h, float w, float l);
+Pyramid *pyramid_create(Point *cp, float h, float w, float l);
 
 /**
  * Free the pyramid.

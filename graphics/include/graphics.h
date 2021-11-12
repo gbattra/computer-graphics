@@ -27,6 +27,7 @@
 #include "curve.h"
 #include "pyramid.h"
 #include "cone.h"
+#include "sphere.h"
 #include "drawstate.h"
 #include "module.h"
 

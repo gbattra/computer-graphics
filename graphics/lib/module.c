@@ -509,15 +509,51 @@ void module_hemisphere(Module *m, int n_divs, int solid)
     Hemisphere *hsphere = hemisphere_createp(&cp, 1.0);
     
     LinkedList *triangles = ll_new();
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
     {
-        triangle_divide(&hsphere->top->faces[i], triangles, n_divs);
-        triangle_divide(&hsphere->bot->faces[i], triangles, n_divs);
+        triangle_divide(&hsphere->cone->faces[i], triangles, n_divs);
     }
 
     Triangle *curr = (Triangle *) ll_pop(triangles);
     while (curr)
     {
+        point_project(&curr->vlist[0], &hsphere->cp, hsphere->radius, &curr->vlist[0]);
+        point_project(&curr->vlist[1], &hsphere->cp, hsphere->radius, &curr->vlist[1]);
+        point_project(&curr->vlist[2], &hsphere->cp, hsphere->radius, &curr->vlist[2]);
+        if (solid)
+        {
+            module_polygon(m, curr);
+        }
+        else
+        {
+            Line lines[3];
+            polygon_toLines(curr, lines);
+            module_lines(m, lines, 3);
+        }
+        polygon_free(curr);
+        curr = (Triangle *) ll_pop(triangles);
+    }
+}
+
+void module_sphere(Module *m, int n_divs, int solid)
+{
+    Point cp;
+    point_set3D(&cp, 0, 0, 0);
+    Sphere *sphere = sphere_createp(&cp, 1.0);
+    
+    LinkedList *triangles = ll_new();
+    for (int i = 0; i < 3; i++)
+    {
+        triangle_divide(&sphere->top->faces[i], triangles, n_divs);
+        triangle_divide(&sphere->bot->faces[i], triangles, n_divs);
+    }
+
+    Triangle *curr = (Triangle *) ll_pop(triangles);
+    while (curr)
+    {
+        point_project(&curr->vlist[0], &sphere->cp, sphere->radius, &curr->vlist[0]);
+        point_project(&curr->vlist[1], &sphere->cp, sphere->radius, &curr->vlist[1]);
+        point_project(&curr->vlist[2], &sphere->cp, sphere->radius, &curr->vlist[2]);
         if (solid)
         {
             module_polygon(m, curr);

@@ -295,6 +295,7 @@ void triangle_divide(Triangle *trgl, LinkedList *trgls, int n_divs)
         point_copy(&pnts[(i*2) + 1], &mid);
     }
 
+    Triangle *tmp = triangle_create();
     for (int i = 0; i < 5; i += 2)
     {
         int c1 = i;
@@ -302,13 +303,16 @@ void triangle_divide(Triangle *trgl, LinkedList *trgls, int n_divs)
         int c3 = i - 1;
         if (c3 < 0) c3 = 5;
 
-        Triangle *tmp = triangle_create();
         point_copy(&tmp->vlist[0], &pnts[c1]);
         point_copy(&tmp->vlist[1], &pnts[c2]);
         point_copy(&tmp->vlist[2], &pnts[c3]);
-        
         triangle_divide(tmp, trgls, n_divs - 1);
-        
-        polygon_free(tmp);
     }
+
+    point_copy(&tmp->vlist[0], &pnts[1]);
+    point_copy(&tmp->vlist[1], &pnts[3]);
+    point_copy(&tmp->vlist[2], &pnts[5]);
+    triangle_divide(tmp, trgls, n_divs - 1);
+
+    polygon_free(tmp);
 }

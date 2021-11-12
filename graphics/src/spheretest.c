@@ -28,8 +28,9 @@ int main(int argc, char *argv[])
 		if( tmp >= 0 && tmp < 10 )
 			divisions = tmp;
 	}
-    point_set3D(&(view.vrp), 5, 5, 5 );
-	vector_set( &(view.vpn), -5, -4.5, -5 );
+	float d = 15.0;
+	point_set3D(&view.vrp, d, d, d);
+	vector_set( &(view.vpn), -d, -d, -d);
 	vector_set( &(view.vup), 0.0, 1.0, 0.0 );
 	view.d = 1.5;
 	view.du = 1.0;
@@ -48,21 +49,24 @@ int main(int argc, char *argv[])
     Module *m = module_create();
 	module_shadeMethod(m, ShadeConstant);
     module_color(m, white);
-    module_scale(m, 1.0, 1.5, 1.0);
     module_hemisphere(m, divisions, 0);
-    module_translate(m, 2, 0, 1);
-    // module_hemisphere(m, divisions, 1);
+    module_translate(m, 0, 0, 4);
+    module_hemisphere(m, divisions, 1);
+    module_translate(m, 4, 0, -4);
+    module_sphere(m, divisions, 0);
+    module_translate(m, 0, 0, 4);
+    module_sphere(m, divisions, 1);
 
-	// Create the animation by adjusting the GTM
 	for(frame=0;frame<60;frame++) {
 		char buffer[256];
-		matrix_rotateY(&GTM, cos(M_PI/30.0), sin(M_PI/30.0) );
+		matrix_rotateY(&GTM, cos(M_PI/60.0), sin(M_PI/60.0) );
 		module_draw( m, &VTM, &GTM, &ds, NULL, src );
 
-		sprintf(buffer, "output/lab7/hsphere/hsphere_frame%03d.ppm", frame);
+		sprintf(buffer, "output/lab7/sphere/sphere_frame%03d.ppm", frame);
 		image_write(src, buffer);
 		image_reset(src);
 	}
+
 
     image_free(src);
     module_delete(m);

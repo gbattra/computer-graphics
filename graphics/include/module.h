@@ -432,7 +432,7 @@ void module_pyramid(Module *m, int solid);
 void module_cone(Module *m, int n_divs, int solid);
 
 /**
- * Add a unit bezier hemisphere to the scene graph.
+ * Add a unit hemisphere to the scene graph.
  * 
  * @param m the module to add to
  * @param n_divs the number of times to divide the hemisphere
@@ -441,5 +441,17 @@ void module_cone(Module *m, int n_divs, int solid);
  * @return void
  */
 void module_hemisphere(Module *m, int n_divs, int solid);
+
+/**
+ * Add a unit sphere to the scene graph.
+ * 
+ * @param m the module ot add to
+ * @param n_divs the number of subdivisions
+ * @param solid wireframe or solid?
+ * 
+ * @return void
+ */
+void module_sphere(Module *m, int n_divs, int solid);
+
 
 #endif

@@ -50,5 +50,57 @@ Cone *cone_create(Point *cp, float r, float h)
     return cone;
 }
 
+void cone_free(Cone *cone)
+{
+    cone_clear(cone);
+    free(cone);
+}
 
-void cone_divide(Cone *cone, int n_divs);
+void cone_clear(Cone *cone)
+{
+    cone->h = 0;
+    cone->r = 0;
+    point_set3D(&cone->cp, 0, 0, 0);
+    for (int i = 0; i < cone->base->nVertex; i++)
+    {
+        polygon_free(&cone->faces[i]);
+    }
+    polygon_free(cone->base);
+}
+
+void cone_set(Cone *cone, float h, float r, Triangle *faces, Polygon *base)
+{
+    cone->h = h;
+    cone->r = r;
+    cone->base = polygon_createp(base->nVertex, base->vlist);
+    for (int i = 0; i < base->nVertex; i++)
+    {
+        polygon_copy(&cone->faces[i], &faces[i]);
+    }
+}
+
+void cone_divide(Cone *cone, int n_divs)
+{
+    Polygon *base = polygon_createp(cone->base->nVertex, cone->base->vlist);
+    polygon_divide(base, n_divs);
+
+    Point top;
+    point_set3D(&top, cone->cp.val[0], cone->cp.val[1] + cone->h, cone->cp.val[2]);
+
+    Triangle faces[base->nVertex];
+    for (int i = 0; i < base->nVertex; i++)
+    {
+        int i_next = i+1;
+        if (i == base->nVertex - 1) i_next = 0;
+
+        Point vlist[3];
+        point_copy(&vlist[0], &top);
+        point_copy(&vlist[1], &base->vlist[i]);
+        point_copy(&vlist[2], &base->vlist[i_next]);
+
+        polygon_set(&faces[i], 3, vlist);
+    }
+    
+    // cone_clear(cone);
+    cone_set(cone, cone->h, cone->r, faces, base);
+}

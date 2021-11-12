@@ -284,4 +284,14 @@ Point *polygon_minX(Polygon *pgon);
 
 // void polygon_shade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
 
+/**
+ * Divide the polygon n_divs times.
+ * 
+ * @param pgon the polygon to divide
+ * @param n_divs the number of times to divide
+ * 
+ * @return void
+ */
+void polygon_divide(Polygon *pgon, int n_divs);
+
 #endif

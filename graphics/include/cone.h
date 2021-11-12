@@ -32,6 +32,37 @@ typedef struct
 Cone *cone_create(Point *cp, float r, float h);
 
 /**
+ * Free a cone struct.
+ * 
+ * @param cone the cone to free
+ * 
+ * @return void
+ */
+void cone_free(Cone *cone);
+
+/**
+ * Clear a cone struct.
+ * 
+ * @param cone the cone to clear
+ * 
+ * @return void
+ */
+void cone_clear(Cone *cone);
+
+/**
+ * Set the faces and base on the cone.
+ * 
+ * @param cone the cone to update
+ * @param h the height of the cone
+ * @param r the radius of the cone
+ * @param faces the faces to set
+ * @param base the base polygon to set
+ * 
+ * @return void
+ */
+void cone_set(Cone *cone, float h, float r, Triangle *faces, Polygon *base);
+
+/**
  * Divide the cone n_divs times.
  * 
  * @param cone the cone to divide

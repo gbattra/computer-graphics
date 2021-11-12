@@ -63,11 +63,10 @@ void polygon_init(Polygon *pgon)
 
 void polygon_set(Polygon *pgon, int numV, Point *vlist)
 {
-    free(pgon->vlist);
     // free(pgon->nlist);
     pgon->nVertex = numV;
     pgon->vlist = (Point *) malloc(sizeof(Point) * numV);
-    pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
+    // pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
     for (int i = 0; i < numV; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
@@ -100,6 +99,7 @@ void polygon_toLines(Polygon *pgon, Line *lines)
 
 void polygon_clear(Polygon *pgon)
 {
+    pgon->nVertex = 0;
     free(pgon->vlist);
     // free(pgon->clist);
     // free(pgon->nlist);
@@ -223,4 +223,34 @@ Point *polygon_maxX(Polygon *pgon)
     }
 
     return maxX;
+}
+
+void polygon_divide(Polygon *pgon, int n_divs)
+{
+    Polygon *tmpgon = polygon_createp(pgon->nVertex, pgon->vlist);
+    int nVertex = tmpgon->nVertex * 2;
+    while (n_divs > 0)
+    {
+        Point pnts[nVertex];
+        for (int i = 0; i < tmpgon->nVertex; i++)
+        {
+            point_copy(&pnts[i*2], &tmpgon->vlist[i]);
+
+            Point *start = &tmpgon->vlist[i];
+            Point *end = &tmpgon->vlist[i+1];
+            Point mid;
+            point_set3D(
+                &mid,
+                (start->val[0] + end->val[0]) / 2.0,
+                (start->val[1] + end->val[1]) / 2.0,
+                (start->val[2] + end->val[2]) / 2.0);
+            point_copy(&pnts[(i*2) + 1], &mid);
+        }
+        polygon_set(tmpgon, nVertex, pnts);
+        nVertex *= 2;
+        n_divs -= 1;
+    }
+    polygon_clear(pgon);
+    polygon_set(pgon, tmpgon->nVertex, tmpgon->vlist);
+    // polygon_free(tmpgon);
 }

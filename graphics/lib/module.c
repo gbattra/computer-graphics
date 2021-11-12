@@ -474,6 +474,7 @@ void module_cone(Module *m, int n_divs, int solid)
     Point cp;
     point_set3D(&cp, 0, 0, 0);
     Cone *cone = cone_create(&cp, 1.0, 1.0);
+    cone_divide(cone, n_divs);
     if (solid)
     {
         module_polygon(m, cone->base);
@@ -498,6 +499,7 @@ void module_cone(Module *m, int n_divs, int solid)
             module_lines(m, lines, 3);
         }
     }
+    cone_free(cone);
 }
 
 void module_draw(

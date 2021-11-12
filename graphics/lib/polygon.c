@@ -249,6 +249,7 @@ void polygon_divide(Polygon *pgon, int n_divs)
                 (start->val[2] + end->val[2]) / 2.0);
             point_copy(&pnts[(i*2) + 1], &mid);
         }
+        polygon_clear(tmpgon);
         polygon_set(tmpgon, nVertex, pnts);
         nVertex *= 2;
         n_divs -= 1;

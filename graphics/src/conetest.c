@@ -22,6 +22,12 @@ int main(int argc, char *argv[])
     rows = 600;
     cols = 900;
 
+	int divisions = 0;
+	if(argc > 1) {
+		int tmp = atoi(argv[1]);
+		if( tmp >= 0 && tmp < 10 )
+			divisions = tmp;
+	}
     point_set3D(&(view.vrp), 5, 5, 5 );
 	vector_set( &(view.vpn), -5, -4.5, -5 );
 	vector_set( &(view.vup), 0.0, 1.0, 0.0 );
@@ -43,9 +49,9 @@ int main(int argc, char *argv[])
 	module_shadeMethod(m, ShadeConstant);
     module_color(m, white);
     module_scale(m, 1.0, 1.5, 1.0);
-    module_cone(m, 1, 0);
+    module_cone(m, divisions, 0);
     module_translate(m, 2, 0, 1);
-    // module_cone(m, 2, 1);
+    module_cone(m, divisions, 1);
 
 	// Create the animation by adjusting the GTM
 	for(frame=0;frame<60;frame++) {

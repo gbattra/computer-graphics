@@ -73,6 +73,7 @@ void cone_set(Cone *cone, float h, float r, Triangle *faces, Polygon *base)
     cone->h = h;
     cone->r = r;
     cone->base = polygon_createp(base->nVertex, base->vlist);
+    cone->faces = (Triangle *) malloc(sizeof(Triangle) * base->nVertex);
     for (int i = 0; i < base->nVertex; i++)
     {
         polygon_copy(&cone->faces[i], &faces[i]);
@@ -104,6 +105,6 @@ void cone_divide(Cone *cone, int n_divs)
 
         polygon_set(&faces[i], 3, vlist);
     }
-    
     cone_set(cone, cone->h, cone->r, faces, base);
+    polygon_free(base);
 }

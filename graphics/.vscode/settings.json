@@ -9,6 +9,7 @@
         "matrix.h": "c",
         "polygon.h": "c",
         "stdlib.h": "c",
-        "list.h": "c"
+        "list.h": "c",
+        "cone.h": "c"
     }
 }

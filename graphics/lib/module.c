@@ -13,6 +13,7 @@
 #include "polygon.h"
 #include "cube.h"
 #include "matrix.h"
+#include "cone.h"
 #include "module.h"
 #include "pyramid.h"
 #include <stdio.h>
@@ -437,9 +438,9 @@ void module_lines(Module *m, Line *lines, int n_lines)
 
 void module_pyramid(Module *m, int solid)
 {
-    Point top;
-    point_set3D(&top, 0, 0, 0);
-    Pyramid *pmd = pyramid_create(&top, 1.0, 1.0, 1.0);
+    Point cp;
+    point_set3D(&cp, 0, 0, 0);
+    Pyramid *pmd = pyramid_create(&cp, 1.0, 1.0, 1.0);
     for (int f = 0; f < 3; f++)
     {
         if (solid)
@@ -466,6 +467,37 @@ void module_pyramid(Module *m, int solid)
     }
 
     pyramid_free(pmd);
+}
+
+void module_cone(Module *m, int n_divs, int solid)
+{
+    Point cp;
+    point_set3D(&cp, 0, 0, 0);
+    Cone *cone = cone_create(&cp, 1.0, 1.0);
+    if (solid)
+    {
+        module_polygon(m, cone->base);
+    }
+    else
+    {
+        Line lines[cone->base->nVertex];
+        polygon_toLines(cone->base, lines);
+        module_lines(m, lines, cone->base->nVertex);
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (solid)
+        {
+            module_polygon(m, &cone->faces[i]);
+        }
+        else
+        {
+            Line lines[3];
+            polygon_toLines(&cone->faces[i], lines);
+            module_lines(m, lines, 3);
+        }
+    }
 }
 
 void module_draw(

@@ -420,4 +420,15 @@ void module_lines(Module *m, Line *lines, int n_lines);
  */
 void module_pyramid(Module *m, int solid);
 
+/**
+ * Add a unit cone to the graph.
+ * 
+ * @param m the module to add to
+ * @param n_divs the number of times to subdivide the cone
+ * @param solid wireframe or filled polygons?
+ * 
+ * @return void
+ */
+void module_cone(Module *m, int n_divs, int solid);
+
 #endif

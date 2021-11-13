@@ -66,11 +66,10 @@ int triangle_compare(const void *one, const void *two);
  * 
  * @param trgl the triangle to split
  * @param trgls the resulting triangles
- * @param n_divs the times to divide
  * 
  * @return void
  */
-void triangle_divide(Triangle *trgl, LinkedList *trgls, int n_divs);
+void triangle_divide(Triangle *trgl, Triangle trgls[4]);
 
 /**
  * Returns an allocated Polygon pointer with the vertex list initialized to a

@@ -83,10 +83,14 @@ void cone_set(Cone *cone, float h, float r, Triangle *faces, Polygon *base)
 void cone_divide(Cone *cone, int n_divs)
 {
     Polygon *base = polygon_createp(cone->base->nVertex, cone->base->vlist);
-    polygon_divide(base, n_divs);
-    for (int p = 0; p < base->nVertex; p++)
-    {   
-        point_project(&base->vlist[p], &cone->cp, cone->r, &base->vlist[p]);
+    while(n_divs > 0)
+    {
+        polygon_divide(base, 1);
+        for (int p = 0; p < base->nVertex; p++)
+        {   
+            point_project(&base->vlist[p], &cone->cp, cone->r, &base->vlist[p]);
+        }
+        n_divs -= 1;
     }
 
     Point top;

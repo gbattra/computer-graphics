@@ -23,8 +23,8 @@ typedef struct
 {
     float radius;
     Point cp;
-    Cone *top;
-    Cone *bot;
+    Hemisphere *top;
+    Hemisphere *bot;
 } Sphere;
 
 /**
@@ -47,5 +47,17 @@ Hemisphere *hemisphere_createp(Point *cp, float radius);
  * @return void
  */
 Sphere *sphere_createp(Point *cp, float radius);
+
+/**
+ * Divie the hemisphere n_divs times.
+ * 
+ * @param hsphere the hemisphere to divide
+ * @param n_divs the number of divisions to make
+ * @param results the resulting triangles
+ * 
+ * @return void
+ */
+void hemisphere_divide(Hemisphere *hsphere, int n_divs, LinkedList *results);
+
 
 #endif

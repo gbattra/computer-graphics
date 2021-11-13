@@ -267,15 +267,8 @@ int triangle_compare(const void *one, const void *two)
     return 0;
 }
 
-void triangle_divide(Triangle *trgl, LinkedList *trgls, int n_divs)
+void triangle_divide(Triangle *trgl, Triangle trgls[4])
 {
-    if (n_divs <= 0)
-    {
-        Triangle *t = triangle_createp(trgl->vlist);
-        ll_insert(trgls, t, &triangle_compare);
-        return;
-    }
-
     Point pnts[12];
     for (int i = 0; i < 3; i++)
     {
@@ -306,13 +299,13 @@ void triangle_divide(Triangle *trgl, LinkedList *trgls, int n_divs)
         point_copy(&tmp->vlist[0], &pnts[c1]);
         point_copy(&tmp->vlist[1], &pnts[c2]);
         point_copy(&tmp->vlist[2], &pnts[c3]);
-        triangle_divide(tmp, trgls, n_divs - 1);
+        polygon_copy(&trgls[i/2], tmp);
     }
 
     point_copy(&tmp->vlist[0], &pnts[1]);
     point_copy(&tmp->vlist[1], &pnts[3]);
     point_copy(&tmp->vlist[2], &pnts[5]);
-    triangle_divide(tmp, trgls, n_divs - 1);
+    polygon_copy(&trgls[3], tmp);
 
     polygon_free(tmp);
 }

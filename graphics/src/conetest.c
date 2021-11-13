@@ -46,7 +46,6 @@ int main(int argc, char *argv[])
     Image *src;
     src = image_create(rows, cols);
 
-	// Create the animation by adjusting the GTM
     float angle = 0.0;
     float da = 0.1;
 

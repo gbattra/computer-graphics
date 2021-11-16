@@ -57,53 +57,53 @@ void line_copy(Line *to, Line *from)
     point_copy(&to->b, &from->b);
 }
 
-static void line_drawHorizontal(Image *src, int x0, int y0, int x1, Color ca, Color cb)
+static void line_drawHorizontal(Image *src, Line *l, Color ca, Color cb)
 {
     Color c;
     color_copy(&c, &ca);
 
-    int dx = abs(x1 - x0);
-    int x = x0;
-    if (x0 > x1) x = x1;
+    int dx = fabs(l->b.val[0] - l->a.val[0]);
+    int x = l->a.val[0];
+    if (l->a.val[0] > l->b.val[0]) x = l->b.val[0];
     
     for (int i = 0; i < dx; i++)
     {
         double mag = ((double) i) / ((double) dx);
         color_interpolate(&c, &ca, &cb, mag);
-        image_setColor(src, y0, x, c);
+        image_setColor(src, l->a.val[1], x, c);
         x++;
     }
 }
 
-static void line_drawVertical(Image *src, int x0, int y0, int y1, Color ca, Color cb)
+static void line_drawVertical(Image *src, Line *l, Color ca, Color cb)
 {
     Color c;
     color_copy(&c, &ca);
 
-    int dy = abs(y1 - y0);
-    int y = y0;
-    if (y0 > y1) y = y1;
+    int dy = fabs(l->b.val[1] - l->a.val[1]);
+    int y = l->a.val[1];
+    if (l->a.val[1] > l->b.val[1]) y = l->b.val[1];
 
     for (int i = 0; i < dy; i++)
     {
         double mag = ((double) i) / ((double) dy);
         color_interpolate(&c, &ca, &cb, mag);
-        image_setColor(src, y, x0, c);
+        image_setColor(src, y, l->a.val[0], c);
         y++;
     }
 }
 
-static void line_draw1(Image *src, int x0, int y0, int x1, int y1, Color ca, Color cb)
+static void line_draw1(Image *src, Line *l, Color ca, Color cb)
 {
     Color c;
     color_copy(&c, &ca);
 
-    int dy = y1 - y0;
-    int dx = x1 - x0;
+    int dy = l->b.val[1] - l->a.val[1];
+    int dx = l->b.val[0] - l->a.val[0];
     int e = 2*dy - dx;
 
-    int y = y0;
-    int x = x0;
+    int y = l->a.val[1];
+    int x = l->a.val[0];
     for (int i = 0; i < abs(dx); i++)
     {
         double mag = ((double) i) / ((double) dx);
@@ -120,17 +120,18 @@ static void line_draw1(Image *src, int x0, int y0, int x1, int y1, Color ca, Col
     }
 }
 
-static void line_draw2(Image *src, int x0, int y0, int x1, int y1, Color ca, Color cb)
+static void line_draw2(Image *src, Line *l, Color ca, Color cb)
 {
     Color c;
     color_copy(&c, &ca);
 
-    int dy = y1 - y0;
-    int dx = x1 - x0;
-    int e = 2*dx - dy;
+    int dy = l->b.val[1] - l->a.val[1];
+    int dx = l->b.val[0] - l->a.val[0];
 
-    int x = x0;
-    int y = y0;
+    int y = l->a.val[1];
+    int x = l->a.val[0];
+
+    int e = 2*dx - dy;
     for (int i = 0; i < abs(dy); i++)
     {
         double mag = ((double) i) / ((double) dy);
@@ -147,17 +148,19 @@ static void line_draw2(Image *src, int x0, int y0, int x1, int y1, Color ca, Col
     }
 }
 
-static void line_draw3(Image *src, int x0, int y0, int x1, int y1, Color ca, Color cb)
+static void line_draw3(Image *src, Line *l, Color ca, Color cb)
 {
     Color c;
     color_copy(&c, &ca);
 
-    int dy = y1 - y0;
-    int dx = x1 - x0;
+    int dy = l->b.val[1] - l->a.val[1];
+    int dx = l->b.val[0] - l->a.val[0];
+
+    int y = l->b.val[1];
+    int x = l->b.val[0];
+
     int e = 2*dx + dy;
 
-    int x = x1;
-    int y = y1;
     for (int i = 0; i < abs(dy); i++)
     {
         if (e > 0)
@@ -175,17 +178,18 @@ static void line_draw3(Image *src, int x0, int y0, int x1, int y1, Color ca, Col
     
 }
 
-static void line_draw4(Image *src, int x0, int y0, int x1, int y1, Color ca, Color cb)
+static void line_draw4(Image *src, Line *l, Color ca, Color cb)
 {
     Color c;
     color_copy(&c, &ca);
 
-    int dy = y1 - y0;
-    int dx = x1 - x0;
-    int e = 2*dy + dx;
+    int dy = l->b.val[1] - l->a.val[1];
+    int dx = l->b.val[0] - l->a.val[0];
 
-    int y = y1;
-    int x = x1;
+    int y = l->b.val[1];
+    int x = l->b.val[0];
+
+    int e = 2*dy + dx;
     for (int i = 0; i < abs(dx); i++)
     {
         if (e > 0)
@@ -225,14 +229,19 @@ void line_drawG(Line *l, Image *src, Color ca, Color cb)
         y1 = yt;
     }
 
-    if (y0 == y1) return line_drawHorizontal(src, x0, y0, x1, ca, cb);
-    if (x0 == x1) return line_drawVertical(src, x0, y0, y1, ca, cb);
+    Line tmp;
+    tmp.zBuffer = l->zBuffer;
+    line_set3D(&tmp, x0, y0, l->a.val[2], x1, y1, l->b.val[2]);
+
+    if (y0 == y1) return line_drawHorizontal(src, &tmp, ca, cb);
+    if (x0 == x1) return line_drawVertical(src, &tmp, ca, cb);
 
     int dx = x1 - x0;
     int dy = y1 - y0;
     float m = (float) dy / (float) dx;
-    if (0 < m && m <= 1) return line_draw1(src, x0, y0, x1, y1, ca, cb);
-    if (m > 1) return line_draw2(src, x0, y0, x1, y1, ca, cb);
-    if (m < -1) return line_draw3(src, x0, y0, x1, y1, ca, cb);
-    if (0 > m && m >= -1) return line_draw4(src, x0, y0, x1, y1, ca, cb);
+
+    if (0 < m && m <= 1) return line_draw1(src, &tmp, ca, cb);
+    if (m > 1) return line_draw2(src, &tmp, ca, cb);
+    if (m < -1) return line_draw3(src, &tmp, ca, cb);
+    if (0 > m && m >= -1) return line_draw4(src, &tmp, ca, cb);
 }

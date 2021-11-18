@@ -98,10 +98,10 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	edge = (Edge *) malloc(sizeof(Edge));
 	edge->x0 = start.val[0];
 	edge->y0 = start.val[1];
-	edge->z0 = 1.0/start.val[2];
+	edge->z0 = start.val[2];
 	edge->x1 = end.val[0];
 	edge->y1 = end.val[1];
-	edge->z1 = 1.0/end.val[2];
+	edge->z1 = end.val[2];
 
 	// turn on an edge only if the edge starts in the top half of it or
 	// the lower half of the pixel above it.  In other words, round the
@@ -124,7 +124,7 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 
 	// Calculate the slope, dxPerScan
 	edge->dxPerScan = (edge->x1 - edge->x0) / dscan;
-	edge->dzPerScan = (edge->z1 - edge->z0) /  dscan;
+	edge->dzPerScan = ((1.0/edge->z1) - (1.0/edge->z0)) /  dscan;
 
 	// Calculate xIntersect, adjusting for the fraction of the point in the pixel.
 	// Scanlines go through the middle of pixels
@@ -132,7 +132,8 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	float mod = (0.5 + (floor(start.val[1]) - start.val[1])) * edge->dxPerScan;
 	if (start.val[1] - floor(start.val[1]) > 0.5) mod = (1.0 + (floor(start.val[1]) - start.val[1]) + 0.5) * edge->dxPerScan;
     edge->xIntersect = mod + edge->x0;
-	edge->zIntersect = mod + edge->z0;
+	edge->zIntersect = 1.0/(edge->z0);
+	// edge->zIntersect = mod + edge->z0;
 
 	// adjust if the edge starts above the image
 	// move the intersections down to scanline zero
@@ -142,17 +143,17 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
     //   update x0
 	//   update yStart
 
-	if (edge->y0 < 0)
-	{
-		edge->xIntersect = mod + (fabsf(edge->y0) / edge->dxPerScan) + edge->x0;
-		edge->y0 = 0;
-		edge->x0 = edge->xIntersect;
-		edge->yStart = (int) edge->y0;
-	}
+	// if (edge->y0 < 0)
+	// {
+	// 	edge->xIntersect = mod + (fabsf(edge->y0) / edge->dxPerScan) + edge->x0;
+	// 	edge->y0 = 0;
+	// 	edge->x0 = edge->xIntersect;
+	// 	edge->yStart = (int) edge->y0;
+	// }
 
 	// check for really bad cases with steep slopes where xIntersect has gone beyond the end of the edge
-	if (edge->dxPerScan > 0 && edge->xIntersect > edge->x1) edge->xIntersect = edge->x1;
-	if (edge->dxPerScan < 0 && edge->xIntersect > edge->x0) edge->xIntersect = edge->x0;
+	// if (edge->dxPerScan > 0 && edge->xIntersect > edge->x1) edge->xIntersect = edge->x1;
+	// if (edge->dxPerScan < 0 && edge->xIntersect > edge->x0) edge->xIntersect = edge->x0;
 
 	// return the newly created edge data structure
 	return( edge );
@@ -232,37 +233,38 @@ static void fillScan( int scan, LinkedList *active, Image *src, DrawState *ds) {
 		/**** Your code goes here ****/
 	  // identify the starting column
 	  int startX = p1->xIntersect;
-	  int startZ = p1->zIntersect;
+	  float startZ = p1->zIntersect;
 	  // clip to the left side of the image
-	  if (startX < 0)
-	  {
-		  startX = 0;
-	  }
+	//   if (startX < 0)
+	//   {
+	// 	  startX = 0;
+	//   }
 	  // identify the ending column
 	  int endX = p2->xIntersect;
-	  int endZ = p2->zIntersect;
+	  float endZ = p2->zIntersect;
 	  // clip to the right side of the image
 	  if (endX > src->cols) endX = src->cols;
 
 	  int x = startX;
-	  int z = startZ;
+	  float z = startZ;
+	  float dzPerCol = (endZ - startZ) / (endX - startX);
 	  // loop over start to end and draw pix
 	  for (int i = startX; i < endX; i++)
 	  {
-		//   if (z > image_getz(src, scan, x))
-		// 	{
-				Color c = ds->color;
-				FPixel pix;
-				pix.a = 1.0;
-				pix.rgb[0] = c.c[0];
-				pix.rgb[1] = c.c[1];
-				pix.rgb[2] = c.c[2];
-				pix.z = z;
-				image_setf(src, scan, x, pix);
-			// }
+		if (z > image_getz(src, scan, x))
+		{
+			Color c = ds->color;
+			FPixel pix;
+			pix.a = 1.0;
+			pix.rgb[0] = (1.0 - (1.0/z)) * c.c[0];
+			pix.rgb[1] = (1.0 - (1.0/z)) * c.c[1];
+			pix.rgb[2] = (1.0 - (1.0/z)) * c.c[2];
+			pix.z = z;
+			image_setf(src, scan, x, pix);
+		}
 
 		  x++;
-		  z += p1->dzPerScan;
+		  z += dzPerCol;
 	  }
 
 	  // move ahead to the next pair of edges
@@ -316,15 +318,18 @@ static int processEdgeList( LinkedList *edges, Image *src, DrawState *ds) {
 
 				// update the edge information with the dPerScan values
 				tedge->xIntersect += tedge->dxPerScan;
+				tedge->zIntersect += tedge->dzPerScan;
 
 				// adjust in the case of partial overlap
 				if( tedge->dxPerScan < 0.0 && tedge->xIntersect < tedge->x1 ) {
 					a = (tedge->xIntersect - tedge->x1) / tedge->dxPerScan;
 					tedge->xIntersect = tedge->x1;
+					tedge->zIntersect = 1.0/tedge->z1;
 				}
 				else if( tedge->dxPerScan > 0.0 && tedge->xIntersect > tedge->x1 ) {
 					a = (tedge->xIntersect - tedge->x1) / tedge->dxPerScan;
 					tedge->xIntersect = tedge->x1;
+					tedge->zIntersect = 1.0/tedge->z1;
 				}
 
 				ll_insert( tmplist, tedge, compXIntersect );

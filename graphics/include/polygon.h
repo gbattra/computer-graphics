@@ -13,6 +13,7 @@
 #include "vector.h"
 #include "line.h"
 #include "list.h"
+#include "drawstate.h"
 #include <stdlib.h>
 
 typedef struct
@@ -239,11 +240,11 @@ void polygon_draw(Polygon *pgon, Image *src, Color c);
  * 
  * @param pgon the polygon to draw
  * @param src the image to draw on
- * @param c the color of the polygon
+ * @param ds the draw state to use
  * 
  * @return void
  */
-void polygon_drawFill(Polygon *pgon, Image *src, Color c);
+void polygon_drawFill(Polygon *pgon, Image *src, DrawState *ds);
 
 /**
  * Draws and fills the polygon using the barycentric coordinates.
@@ -269,19 +270,6 @@ void polygon_drawFillB(Polygon *pgon, Image *src, Color color);
  * @return void
  */
 void polygon_blendFillB(Polygon *pgon, Image *src, Color ac, Color bc, Color cc);
-
-/**
- * Fill a polygon with a gradient from one color to another.
- * 
- * @param pgon the polygon to draw
- * @param src the image to draw on
- * @param ca the start color
- * @param cb the end color
- * @param vert flag for vertical gradient (0 = horizontal by default)
- * 
- * @return void
- */
-void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert);
 
 /**
  * Gets the furthest point right.

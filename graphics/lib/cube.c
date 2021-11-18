@@ -78,7 +78,7 @@ void cube_drawFill(Cube *cube, Image *src, Color c[6])
 {
     for (int i = 0; i < 6; i++)
     {
-        polygon_drawFill(&cube->sides[i], src, c[i]);
+        polygon_drawFillB(&cube->sides[i], src, c[i]);
     }
 }
 

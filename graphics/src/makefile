@@ -54,6 +54,8 @@ LAB6_EXECUTABLES = test6a test6b lab6cube restaurant
 
 LAB7_EXECUTABLES = test7a test7b test7c cylinder pyramidtest conetest spheretest alien3d
 
+LAB8_EXECUTABLES = test8a
+
 # put a list of all the object files here for all executables (with .o endings)
 _OBJ = tiffmain.o ppmmain.o
 
@@ -94,6 +96,9 @@ lab6execs:
 
 lab7execs:
 	for i in $(LAB7_EXECUTABLES); do (make $$i); done
+
+lab8execs:
+	for i in $(LAB8_EXECUTABLES); do (make $$i); done
 
 # put the specific executable rules here
 ppmtest: $(ODIR)/ppmmain.o
@@ -217,6 +222,9 @@ spheretest: $(ODIR)/spheretest.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 alien3d: $(ODIR)/alien3d.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test8a: $(ODIR)/test8a.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 

@@ -619,9 +619,9 @@ void module_draw(
                 {
                     polygon_draw(pgon, src, ds->color);
                 }
-                else if (ds->shade == ShadeConstant)
+                else
                 {
-                    polygon_drawFill(pgon, src, ds->color);
+                    polygon_drawFill(pgon, src, ds);
                 }
                 break;
             }

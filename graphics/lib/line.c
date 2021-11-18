@@ -66,14 +66,32 @@ static void line_drawHorizontal(Image *src, Line *l, Color ca, Color cb)
     color_copy(&c, &ca);
 
     float dx = fabs(l->b.val[0] - l->a.val[0]);
+    float dz = ((1.0/l->b.val[2]) - (1.0/l->a.val[2]))/dx;
     float x = l->a.val[0];
-    if (l->a.val[0] > l->b.val[0]) x = l->b.val[0];
+    float z = l->a.val[2];
+    float y = l->a.val[1];
+    if (l->a.val[0] > l->b.val[0])
+    {
+        x = l->b.val[0];
+        z = l->b.val[2];
+        dz = ((1.0/l->a.val[2]) - (1.0/l->b.val[2]))/dx;
+    }
     
     for (int i = 0; i < dx; i++)
     {
         double mag = ((double) i) / ((double) dx);
         color_interpolate(&c, &ca, &cb, mag);
-        image_setColor(src, l->a.val[1], x, c);
+        if ((l->zBuffer == 1 && z > image_getz(src, y, x)) || l->zBuffer == 0)
+        {
+            FPixel pix;
+            pix.a = 1.0;
+            pix.rgb[0] = c.c[0];
+            pix.rgb[1] = c.c[1];
+            pix.rgb[2] = c.c[2];
+            pix.z = z;
+            image_setf(src, y, x, pix);
+        }
+        z += dz;
         x++;
     }
 }
@@ -84,14 +102,32 @@ static void line_drawVertical(Image *src, Line *l, Color ca, Color cb)
     color_copy(&c, &ca);
 
     float dy = fabs(l->b.val[1] - l->a.val[1]);
+    float dz = ((1.0/l->b.val[2]) - (1.0/l->a.val[2]))/dy;
     float y = l->a.val[1];
-    if (l->a.val[1] > l->b.val[1]) y = l->b.val[1];
+    float x = l->a.val[0];
+    float z = 1.0/l->a.val[2];
+    if (l->a.val[1] > l->b.val[1])
+    {
+        y = l->b.val[1];
+        z = l->b.val[2];
+        dz = ((1.0/l->a.val[2]) - (1.0/l->b.val[2]))/dy;
+    }
 
     for (int i = 0; i < dy; i++)
     {
         double mag = ((double) i) / ((double) dy);
         color_interpolate(&c, &ca, &cb, mag);
-        image_setColor(src, y, l->a.val[0], c);
+        if ((l->zBuffer == 1 && z > image_getz(src, y, x)) || l->zBuffer == 0)
+        {
+            FPixel pix;
+            pix.a = 1.0;
+            pix.rgb[0] = c.c[0];
+            pix.rgb[1] = c.c[1];
+            pix.rgb[2] = c.c[2];
+            pix.z = z;
+            image_setf(src, y, x, pix);
+        }
+        z += dz;
         y++;
     }
 }
@@ -109,12 +145,11 @@ static void line_draw1(Image *src, Line *l, Color ca, Color cb)
     float y = l->a.val[1];
     float x = l->a.val[0];
     float z = 1.0/l->a.val[2];
-    printf("1: %f\n", z);
     for (int i = 0; i < abs(dx); i++)
     {
         double mag = ((double) i) / ((double) dx);
         color_interpolate(&c, &ca, &cb, mag);
-        if ((l->zBuffer == 1 && z < image_getz(src, y, x)) || l->zBuffer == 0)
+        if ((l->zBuffer == 1 && z > image_getz(src, y, x)) || l->zBuffer == 0)
         {
             FPixel pix;
             pix.a = 1.0;
@@ -149,13 +184,12 @@ static void line_draw2(Image *src, Line *l, Color ca, Color cb)
     float x = l->a.val[0];
     float z = 1.0/l->a.val[2];
 
-    printf("2: %f\n", z);
     float e = 2*dx - dy;
     for (int i = 0; i < abs(dy); i++)
     {
         double mag = ((double) i) / ((double) dy);
         color_interpolate(&c, &ca, &cb, mag);
-        if ((l->zBuffer == 1 && z < image_getz(src, y, x)) || l->zBuffer == 0)
+        if ((l->zBuffer == 1 && z > image_getz(src, y, x)) || l->zBuffer == 0)
         {
             FPixel pix;
             pix.a = 1.0;
@@ -189,7 +223,6 @@ static void line_draw3(Image *src, Line *l, Color ca, Color cb)
     float y = l->b.val[1];
     float x = l->b.val[0];
     float z = 1.0/l->b.val[2];
-    printf("3: %f\n", z);
 
     float e = 2*dx + dy;
 
@@ -205,7 +238,7 @@ static void line_draw3(Image *src, Line *l, Color ca, Color cb)
         
         double mag = ((double) i) / ((double) dy);
         color_interpolate(&c, &ca, &cb, mag);
-        if ((l->zBuffer == 1 && z < image_getz(src, y, x)) || l->zBuffer == 0)
+        if ((l->zBuffer == 1 && z > image_getz(src, y, x)) || l->zBuffer == 0)
         {
             FPixel pix;
             pix.a = 1.0;
@@ -233,8 +266,6 @@ static void line_draw4(Image *src, Line *l, Color ca, Color cb)
     float x = l->b.val[0];
     float z = 1.0/l->b.val[2];
 
-    printf("4: %f\n", z);
-
     int e = 2*dy + dx;
     for (int i = 0; i < abs(dx); i++)
     {
@@ -248,7 +279,7 @@ static void line_draw4(Image *src, Line *l, Color ca, Color cb)
 
         double mag = ((double) i) / ((double) dx);
         color_interpolate(&c, &ca, &cb, mag);
-        if ((l->zBuffer == 1 && z < image_getz(src, y, x)) || l->zBuffer == 0)
+        if ((l->zBuffer == 1 && z > image_getz(src, y, x)) || l->zBuffer == 0)
         {
             FPixel pix;
             pix.a = 1.0;

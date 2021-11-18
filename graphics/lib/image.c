@@ -103,6 +103,8 @@ float image_getz(Image *src, int i, int j)
 
 void image_setf(Image *src, int i, int j, FPixel val)
 {
+    if (i < 0 || i >= src->rows || j < 0 || j >= src->cols) return;
+
     FPixel *pix = &src->data[(i * src->cols) + j];
     pix->rgb[0] = val.rgb[0];
     pix->rgb[1] = val.rgb[1];

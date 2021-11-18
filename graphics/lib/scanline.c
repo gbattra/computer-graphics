@@ -20,10 +20,11 @@ Scanline Fill Algorithm
 
 // define the struct here, because it is local to only this file
 typedef struct tEdge {
-	float x0, y0;                   /* start point for the edge */
-	float x1, y1;                   /* end point for the edge */
+	float x0, y0, z0;                   /* start point for the edge */
+	float x1, y1, z1;                   /* end point for the edge */
 	int yStart, yEnd;               /* start row and end row */
-  float xIntersect, dxPerScan;    /* where the edge intersects the current scanline and how it changes */
+  float xIntersect, dxPerScan;  
+  float zIntersect, dzPerScan;  /* where the edge intersects the current scanline and how it changes */
 	/* we'll add more here later */
   struct tEdge *next;
 } Edge;
@@ -97,8 +98,10 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	edge = (Edge *) malloc(sizeof(Edge));
 	edge->x0 = start.val[0];
 	edge->y0 = start.val[1];
+	edge->z0 = 1.0/start.val[2];
 	edge->x1 = end.val[0];
 	edge->y1 = end.val[1];
+	edge->z1 = 1.0/end.val[2];
 
 	// turn on an edge only if the edge starts in the top half of it or
 	// the lower half of the pixel above it.  In other words, round the
@@ -117,10 +120,11 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	else edge->yEnd = floor(edge->y1) - 1;
 
 	// Clip yEnd to the number of rows-1.
-	if (edge->yEnd > src->rows) edge->yEnd = src->rows - 1;
+	if (edge->yEnd >= src->rows) edge->yEnd = src->rows - 1;
 
 	// Calculate the slope, dxPerScan
 	edge->dxPerScan = (edge->x1 - edge->x0) / dscan;
+	edge->dzPerScan = (edge->z1 - edge->z0) /  dscan;
 
 	// Calculate xIntersect, adjusting for the fraction of the point in the pixel.
 	// Scanlines go through the middle of pixels
@@ -128,6 +132,7 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	float mod = (0.5 + (floor(start.val[1]) - start.val[1])) * edge->dxPerScan;
 	if (start.val[1] - floor(start.val[1]) > 0.5) mod = (1.0 + (floor(start.val[1]) - start.val[1]) + 0.5) * edge->dxPerScan;
     edge->xIntersect = mod + edge->x0;
+	edge->zIntersect = mod + edge->z0;
 
 	// adjust if the edge starts above the image
 	// move the intersections down to scanline zero
@@ -204,7 +209,7 @@ static LinkedList *setupEdgeList( Polygon *p, Image *src) {
 	Draw one scanline of a polygon given the scanline, the active edges,
 	a DrawState, the image, and some Lights (for Phong shading only).
  */
-static void fillScan( int scan, LinkedList *active, Image *src, LinkedList *llist ) {
+static void fillScan( int scan, LinkedList *active, Image *src, DrawState *ds) {
   Edge *p1, *p2;
 
 	// loop over the lis
@@ -227,16 +232,38 @@ static void fillScan( int scan, LinkedList *active, Image *src, LinkedList *llis
 		/**** Your code goes here ****/
 	  // identify the starting column
 	  int startX = p1->xIntersect;
+	  int startZ = p1->zIntersect;
 	  // clip to the left side of the image
-	  if (startX < 0) startX = 0;
+	  if (startX < 0)
+	  {
+		  startX = 0;
+	  }
 	  // identify the ending column
 	  int endX = p2->xIntersect;
+	  int endZ = p2->zIntersect;
 	  // clip to the right side of the image
 	  if (endX > src->cols) endX = src->cols;
 
-      Line *l = (Line *) malloc(sizeof(Line));
-	  line_set2D(l, startX, scan, endX, scan);
-      ll_insert(llist, l, compLineStart);
+	  int x = startX;
+	  int z = startZ;
+	  // loop over start to end and draw pix
+	  for (int i = startX; i < endX; i++)
+	  {
+		//   if (z > image_getz(src, scan, x))
+		// 	{
+				Color c = ds->color;
+				FPixel pix;
+				pix.a = 1.0;
+				pix.rgb[0] = c.c[0];
+				pix.rgb[1] = c.c[1];
+				pix.rgb[2] = c.c[2];
+				pix.z = z;
+				image_setf(src, scan, x, pix);
+			// }
+
+		  x++;
+		  z += p1->dzPerScan;
+	  }
 
 	  // move ahead to the next pair of edges
 	  p1 = ll_next( active );
@@ -248,7 +275,7 @@ static void fillScan( int scan, LinkedList *active, Image *src, LinkedList *llis
 /* 
 	 Process the edge list, assumes the edges list has at least one entry
 */
-static int processEdgeList( LinkedList *edges, Image *src, LinkedList *llist) {
+static int processEdgeList( LinkedList *edges, Image *src, DrawState *ds) {
 	LinkedList *active = NULL;
 	LinkedList *tmplist = NULL;
 	LinkedList *transfer = NULL;
@@ -278,7 +305,7 @@ static int processEdgeList( LinkedList *edges, Image *src, LinkedList *llist) {
 
 		// if there are active edges
 		// fill out the scanline
-		fillScan( scan, active, src, llist);
+		fillScan( scan, active, src, ds);
 
 		// remove any ending edges and update the rest
 		for( tedge = ll_pop( active ); tedge != NULL; tedge = ll_pop( active ) ) {
@@ -320,83 +347,22 @@ static int processEdgeList( LinkedList *edges, Image *src, LinkedList *llist) {
 /*
 	Draws a filled polygon of the specified color into the image src.
  */
-void polygon_drawFill(Polygon *pgon, Image *src, Color c) {
+void polygon_drawFill(Polygon *pgon, Image *src, DrawState *ds) {
 	LinkedList *edges = NULL;
 
 	// set up the edge list
 	edges = setupEdgeList( pgon, src );
-	if( !edges )
-		return;
-	
-    LinkedList *llist;
-    llist = ll_new();
-	// process the edge list (should be able to take an arbitrary edge list)
-	processEdgeList( edges, src, llist);
+	if( !edges ) return;
 
-    Line *l;
-    l = ll_pop(llist);
-    while (l)
-    {
-        line_draw(l, src, c);
-        l = ll_pop(llist);
-    }
+	// process the edge list (should be able to take an arbitrary edge list)
+	processEdgeList( edges, src, ds);
 
 	// clean up
 	ll_delete( edges, (void (*)(const void *))free );
-	ll_delete( llist, (void (*)(const void *))free );
 
 	return;
 }
 
-void polygon_drawFillG(Polygon *pgon, Image *src, Color ca, Color cb, int vert)
-{
-    LinkedList *edges = NULL;
-
-	// set up the edge list
-	edges = setupEdgeList( pgon, src );
-	if( !edges )
-		return;
-	
-    LinkedList *llist;
-    llist = ll_new();
-	// process the edge list (should be able to take an arbitrary edge list)
-	processEdgeList( edges, src, llist);
-
-    Line *l;
-    l = ll_pop(llist);
-    int i = 0;
-    int size = llist->size;
-    while (l)
-    {
-        if (!vert)
-        {
-            Point *maxX = polygon_maxX(pgon);
-            Point *minX = polygon_minX(pgon);
-            int dx = maxX->val[0] - minX->val[0];
-            for (int x = l->a.val[0]; x < l->b.val[0]; x++)
-            {
-                double alpha = ((double) (x - minX->val[0])) / (double) dx;
-                Color c;
-                color_interpolate(&c, &ca, &cb, alpha);
-
-                image_setColor(src, l->a.val[1], x, c);
-            }
-        }
-        else
-        {
-            Color c;
-            color_interpolate(&c, &ca, &cb, ((double) i) / ((double) size));
-            line_draw(l, src, c);
-        }
-        l = ll_pop(llist);
-        i++;
-    }
-	// clean up
-	ll_delete( edges, (void (*)(const void *))free );
-	ll_delete( llist, (void (*)(const void *))free );
-
-	return;
-}
 
 /****************************************
 End Scanline Fill

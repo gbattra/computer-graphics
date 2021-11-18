@@ -254,11 +254,17 @@ static void fillScan( int scan, LinkedList *active, Image *src, DrawState *ds) {
 		if (z > image_getz(src, scan, x))
 		{
 			Color c = ds->color;
+			if (ds->shade == ShadeDepth)
+			{
+				c.c[0] = (1.0 - (1.0/z)) * c.c[0];
+				c.c[1] = (1.0 - (1.0/z)) * c.c[1];
+				c.c[2] = (1.0 - (1.0/z)) * c.c[2];
+			}
 			FPixel pix;
 			pix.a = 1.0;
-			pix.rgb[0] = (1.0 - (1.0/z)) * c.c[0];
-			pix.rgb[1] = (1.0 - (1.0/z)) * c.c[1];
-			pix.rgb[2] = (1.0 - (1.0/z)) * c.c[2];
+			pix.rgb[0] = c.c[0];
+			pix.rgb[1] = c.c[1];
+			pix.rgb[2] = c.c[2];
 			pix.z = z;
 			image_setf(src, scan, x, pix);
 		}

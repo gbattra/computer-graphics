@@ -54,7 +54,7 @@ LAB6_EXECUTABLES = test6a test6b lab6cube restaurant
 
 LAB7_EXECUTABLES = test7a test7b test7c cylinder pyramidtest conetest spheretest alien3d
 
-LAB8_EXECUTABLES = test8a
+LAB8_EXECUTABLES = test8a cubism
 
 # put a list of all the object files here for all executables (with .o endings)
 _OBJ = tiffmain.o ppmmain.o
@@ -225,6 +225,9 @@ alien3d: $(ODIR)/alien3d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test8a: $(ODIR)/test8a.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+cubism: $(ODIR)/cubism.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 

@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
   module_draw(cube, &VTM, &GTM, ds, NULL, src);
 
   // write out the image
-  image_write(src, "test8a.ppm");
+  image_write(src, "output/lab8/test8a.ppm");
 
   // free stuff here
   module_delete( cube );

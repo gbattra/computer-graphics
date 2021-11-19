@@ -41,6 +41,14 @@ void point_normalize(Point *p)
     p->val[3] = p->val[3] / p->val[3];
 }
 
+void point_normalize_z(Point *p)
+{
+    p->val[0] = p->val[0] / p->val[3];
+    p->val[1] = p->val[1] / p->val[3];
+    p->val[2] = p->val[2] / p->val[3];
+    p->val[3] = p->val[3] / p->val[3];
+}
+
 void point_copy(Point *to, Point *from)
 {
     to->val[0] = from->val[0];
@@ -82,7 +90,7 @@ void point_project(Point *p, Point *cp, float d, Point *dst)
     
     float mag = sqrtf((tmp.val[0]*tmp.val[0]) + (tmp.val[1]*tmp.val[1]) + (tmp.val[2]*tmp.val[2]));
     tmp.val[3] = mag;
-    point_normalize(&tmp);
+    point_normalize_z(&tmp);
 
     point_set3D(
         &tmp,

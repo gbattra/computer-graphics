@@ -64,6 +64,16 @@ void point_set(Point *p, double x, double y, double z, double h);
 void point_normalize(Point *p);
 
 /**
+ * Normalizes the point (including z) using the homogenous coord.
+ * 
+ * @param p the point to normalize
+ * 
+ * @return void
+ */
+void point_normalize_z(Point *p);
+
+
+/**
  * Copies one point to another.
  * 
  * @param to the point to copy to

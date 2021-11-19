@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 			divisions = tmp;
 	}
     float d = 15.0;
-	point_set3D(&view.vrp, 3, d, d/2.0);
-	vector_set( &(view.vpn), 0, -d, -d/2.0);
+	point_set3D(&view.vrp, 1, d, 0);
+	vector_set( &(view.vpn), -1, -d, 0);
 	vector_set( &(view.vup), 0.0, 1.0, 0.0 );
 	view.d = 1.5;
 	view.du = 1.0;
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     float angle = 0.0;
     float da = 0.1;
 
-	for(frame=0;frame<60;frame++) {
+	for(frame=0;frame<1;frame++) {
 		char buffer[256];
 		Module *m = module_create();
 		module_shadeMethod(m, ShadeConstant);
@@ -59,23 +59,23 @@ int main(int argc, char *argv[])
 		module_rotateX(m, cos(angle), sin(angle));
 		module_cone(m, divisions, 0);
 
-		module_identity(m);
-		module_rotateY(m, cos(angle), sin(angle));
-		module_rotateX(m, cos(angle), sin(angle));
-		module_translate(m, 2, 0, 0);
-		module_cone(m, divisions, 1);
+		// module_identity(m);
+		// module_rotateY(m, cos(angle), sin(angle));
+		// module_rotateX(m, cos(angle), sin(angle));
+		// module_translate(m, 2, 0, 0);
+		// module_cone(m, divisions, 1);
 		
-		module_identity(m);
-		module_rotateY(m, cos(angle), sin(angle));
-		module_rotateX(m, cos(angle), sin(angle));
-		module_translate(m, 4, 0, 0);
-		module_cone(m, divisions, 0);
+		// module_identity(m);
+		// module_rotateY(m, cos(angle), sin(angle));
+		// module_rotateX(m, cos(angle), sin(angle));
+		// module_translate(m, 4, 0, 0);
+		// module_cone(m, divisions, 0);
 
-		module_identity(m);
-		module_rotateY(m, cos(angle), sin(angle));
-		module_rotateX(m, cos(angle), sin(angle));
-		module_translate(m, 6, 0, 0);
-		module_cone(m, divisions, 1);
+		// module_identity(m);
+		// module_rotateY(m, cos(angle), sin(angle));
+		// module_rotateX(m, cos(angle), sin(angle));
+		// module_translate(m, 6, 0, 0);
+		// module_cone(m, divisions, 1);
 
 		module_draw( m, &VTM, &GTM, &ds, NULL, src );
 

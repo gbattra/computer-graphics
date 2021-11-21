@@ -29,7 +29,6 @@
 #include "cone.h"
 #include "sphere.h"
 #include "drawstate.h"
-#include "lighting.h"
 #include "module.h"
 
 #endif

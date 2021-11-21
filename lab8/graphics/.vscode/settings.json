@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "bezier.h": "c",
+        "point.h": "c",
+        "stdio.h": "c",
+        "graphics.h": "c",
+        "drawstate.h": "c",
+        "module.h": "c",
+        "matrix.h": "c",
+        "polygon.h": "c",
+        "stdlib.h": "c",
+        "list.h": "c",
+        "cone.h": "c"
+    }
+}

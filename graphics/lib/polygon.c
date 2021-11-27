@@ -16,6 +16,8 @@ Polygon *polygon_create(void)
     pgon->nVertex = 0;
     pgon->zBuffer = 1;
     pgon->vlist = NULL;
+    pgon->nlist = NULL;
+    pgon->clist = NULL;
     return pgon;
 }
 
@@ -25,6 +27,8 @@ Triangle *triangle_create(void)
     trgl->nVertex = 3;
     trgl->zBuffer = 1;
     trgl->vlist = (Point *) malloc(sizeof(Point) * 3);
+    trgl->nlist = (Vector *) malloc(sizeof(Vector) * 3);
+    trgl->clist = (Color *) malloc(sizeof(Color) * 3);
     return trgl;
 }
 
@@ -44,20 +48,19 @@ Polygon *polygon_createp(int nVertex, Point *vlist)
     pgon->clist = (Color *) malloc(sizeof(Color) * nVertex);
 
     Vector *normal;
-    polygon_normal(pgon, normal);
+    polygon_normal(vlist, normal);
     for (int i = 0; i < nVertex; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
         vector_copy(&pgon->nlist[i], normal);
     }
+
     return pgon;
 }
 
 void polygon_free(Polygon *pgon)
 {
-    free(pgon->vlist);
-    free(pgon->clist);
-    free(pgon->nlist);
+    polygon_clear(pgon);
     free(pgon);
 }
 
@@ -72,17 +75,18 @@ void polygon_init(Polygon *pgon)
 
 void polygon_set(Polygon *pgon, int numV, Point *vlist)
 {
+    polygon_clear(pgon);
+
     pgon->nVertex = numV;
     pgon->vlist = (Point *) malloc(sizeof(Point) * numV);
+    pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
+    pgon->clist = (Color *) malloc(sizeof(Color) * numV);
+
+    Vector *normal;
+    polygon_normal(vlist, normal);
     for (int i = 0; i < numV; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
-    }
-
-    Vector *normal;
-    polygon_normal(pgon, normal);
-    for (int i = 0; i < numV; i++)
-    {
         vector_copy(&pgon->nlist[i], normal);
     }
 }
@@ -114,9 +118,9 @@ void polygon_toLines(Polygon *pgon, Line *lines)
 void polygon_clear(Polygon *pgon)
 {
     pgon->nVertex = 0;
-    free(pgon->vlist);
-    free(pgon->clist);
-    free(pgon->nlist);
+    if (pgon->vlist) free(pgon->vlist);
+    if (pgon->nlist) free(pgon->nlist);
+    if (pgon->clist) free(pgon->clist);
     polygon_init(pgon);
 }
 
@@ -136,17 +140,17 @@ void polygon_setColors(Polygon *pgon, int numV, Color *clist)
     }
 }
 
-void polygon_normal(Polygon *pgon, Vector *normal)
+void polygon_normal(Point *vlist, Vector *normal)
 {
     Vector v21;
-    v21.val[0] = pgon->vlist[1].val[0] - pgon->vlist[0].val[0];
-    v21.val[1] = pgon->vlist[1].val[1] - pgon->vlist[0].val[1];
-    v21.val[2] = pgon->vlist[1].val[2] - pgon->vlist[0].val[2];
+    v21.val[0] = vlist[1].val[0] - vlist[0].val[0];
+    v21.val[1] = vlist[1].val[1] - vlist[0].val[1];
+    v21.val[2] = vlist[1].val[2] - vlist[0].val[2];
 
     Vector v31;
-    v21.val[0] = pgon->vlist[2].val[0] - pgon->vlist[0].val[0];
-    v21.val[1] = pgon->vlist[2].val[1] - pgon->vlist[0].val[1];
-    v21.val[2] = pgon->vlist[2].val[2] - pgon->vlist[0].val[2];
+    v21.val[0] = vlist[2].val[0] - vlist[0].val[0];
+    v21.val[1] = vlist[2].val[1] - vlist[0].val[1];
+    v21.val[2] = vlist[2].val[2] - vlist[0].val[2];
 
     vector_cross(&v21, &v31, normal);
 }
@@ -332,4 +336,30 @@ void triangle_divide(Triangle *trgl, Triangle trgls[4])
     polygon_copy(&trgls[3], tmp);
 
     polygon_free(tmp);
+}
+
+void polygon_shade(Polygon *pgon, DrawState *ds, Lighting *light)
+{
+    for (int i = 0; i < pgon->nVertex; i++)
+    {
+        Vector V;
+        V.val[0] = ds->viewer.val[0] - pgon->vlist[i].val[0];
+        V.val[1] = ds->viewer.val[1] - pgon->vlist[i].val[1];
+        V.val[2] = ds->viewer.val[2] - pgon->vlist[i].val[2];
+        lighting_shading(
+            light,
+            &pgon->nlist[i],
+            &V,
+            &pgon->vlist[i],
+            &ds->body,
+            &ds->surface,
+            ds->surfaceCoeff,
+            pgon->oneSided,
+            &pgon->clist[i]);
+    }
+}
+
+void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light)
+{
+
 }

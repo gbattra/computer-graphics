@@ -613,16 +613,19 @@ void module_draw(
                 polygon_copy(pgon, &el->obj.polygon);
                 matrix_xformPolygon(&ltm, pgon);
                 matrix_xformPolygon(gtm, pgon);
+
+                if (ds->shade == ShadeGouraud)
+                    polygon_shade(pgon, ds, light);
+
                 matrix_xformPolygon(vtm, pgon);
                 polygon_normalize(pgon);
+
                 if (ds->shade == ShadeFrame)
-                {
                     polygon_draw(pgon, src, ds->color);
-                }
-                else
-                {
+                else if (ds->shade == ShadeConstant)
                     polygon_drawFill(pgon, src, ds);
-                }
+                else
+                    polygon_drawShade(pgon, src, ds, light);
                 break;
             }
             case ObjIdentity:

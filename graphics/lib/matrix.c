@@ -187,11 +187,8 @@ void matrix_xformPolygon(Matrix *m, Polygon *p)
 {
     for (int i = 0; i < p->nVertex; i++)
     {
-        Point q;
-        matrix_xformPoint(m, &p->vlist[i], &q);
-        point_copy(&p->vlist[i], &q);
-
-        // do same for normals using matrix_xformVector()
+        matrix_xformPoint(m, &p->vlist[i], &p->vlist[i]);
+        matrix_xformVector(m, &p->nlist[i], &p->nlist[i]);
     }
 }
 

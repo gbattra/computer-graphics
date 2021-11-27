@@ -146,12 +146,12 @@ void polygon_setColors(Polygon *pgon, int numV, Color *clist);
 /**
  * Compute the polygon surface normal and store it in the normal vector.
  * 
- * @param pgon the polygon to compute the normal
+ * @param vlist the vertices of the polygon
  * @param normal the vector to store the normal
  * 
  * @return void
  */
-void polygon_normal(Polygon *pgon, Vector *normal);
+void polygon_normal(Point *vlist, Vector *normal);
 
 /**
  * Initializes the normal array to the vectors in nlist.
@@ -300,9 +300,27 @@ Point *polygon_maxX(Polygon *pgon);
  */
 Point *polygon_minX(Polygon *pgon);
 
-// void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
+/**
+ * Shade the polygon using the lighting structure.
+ * 
+ * @param pgon the polygon to draw
+ * @param ds the draw state to use
+ * @param light the lights in the scene
+ * 
+ * @return void
+ */
+void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
 
-// void polygon_shade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light);
+/**
+ * Compute the colors for each vertex using Gouraud shading.
+ * 
+ * @param pgon the polygon to draw
+ * @param ds the draw state to use
+ * @param light the lights in the scene
+ * 
+ * @return void
+ */
+void polygon_shade(Polygon *pgon, DrawState *ds, Lighting *light);
 
 /**
  * Divide the polygon n_divs times.

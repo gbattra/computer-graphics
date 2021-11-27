@@ -57,10 +57,6 @@ typedef struct {
     Element *tail;
 } Module;
 
-typedef struct {
-
-} Lighting;
-
 /**
  * Allocate and initialize an empty element.
  * 

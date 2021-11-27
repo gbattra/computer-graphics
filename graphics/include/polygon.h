@@ -13,6 +13,7 @@
 #include "vector.h"
 #include "line.h"
 #include "list.h"
+#include "lighting.h"
 #include "drawstate.h"
 #include <stdlib.h>
 
@@ -141,6 +142,16 @@ void polygon_setSided(Polygon *pgon, int oneSided);
  * @return void
  */
 void polygon_setColors(Polygon *pgon, int numV, Color *clist);
+
+/**
+ * Compute the polygon surface normal and store it in the normal vector.
+ * 
+ * @param pgon the polygon to compute the normal
+ * @param normal the vector to store the normal
+ * 
+ * @return void
+ */
+void polygon_normal(Polygon *pgon, Vector *normal);
 
 /**
  * Initializes the normal array to the vectors in nlist.

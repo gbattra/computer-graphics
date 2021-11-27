@@ -39,10 +39,16 @@ Polygon *polygon_createp(int nVertex, Point *vlist)
     Polygon *pgon = (Polygon *) malloc(sizeof(Polygon));
     pgon->nVertex = nVertex;
     pgon->zBuffer = 1;
-    pgon->vlist = (Point *) malloc(sizeof(Point) * nVertex); 
+    pgon->vlist = (Point *) malloc(sizeof(Point) * nVertex);
+    pgon->nlist = (Vector *) malloc(sizeof(Vector) * nVertex);
+    pgon->clist = (Color *) malloc(sizeof(Color) * nVertex);
+
+    Vector *normal;
+    polygon_normal(pgon, normal);
     for (int i = 0; i < nVertex; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
+        vector_copy(&pgon->nlist[i], normal);
     }
     return pgon;
 }
@@ -50,8 +56,8 @@ Polygon *polygon_createp(int nVertex, Point *vlist)
 void polygon_free(Polygon *pgon)
 {
     free(pgon->vlist);
-    // free(pgon->clist);
-    // free(pgon->nlist);
+    free(pgon->clist);
+    free(pgon->nlist);
     free(pgon);
 }
 
@@ -66,13 +72,18 @@ void polygon_init(Polygon *pgon)
 
 void polygon_set(Polygon *pgon, int numV, Point *vlist)
 {
-    // free(pgon->nlist);
     pgon->nVertex = numV;
     pgon->vlist = (Point *) malloc(sizeof(Point) * numV);
-    // pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
     for (int i = 0; i < numV; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
+    }
+
+    Vector *normal;
+    polygon_normal(pgon, normal);
+    for (int i = 0; i < numV; i++)
+    {
+        vector_copy(&pgon->nlist[i], normal);
     }
 }
 
@@ -104,8 +115,8 @@ void polygon_clear(Polygon *pgon)
 {
     pgon->nVertex = 0;
     free(pgon->vlist);
-    // free(pgon->clist);
-    // free(pgon->nlist);
+    free(pgon->clist);
+    free(pgon->nlist);
     polygon_init(pgon);
 }
 
@@ -123,6 +134,21 @@ void polygon_setColors(Polygon *pgon, int numV, Color *clist)
     {
         color_copy(&pgon->clist[i], &clist[i]);
     }
+}
+
+void polygon_normal(Polygon *pgon, Vector *normal)
+{
+    Vector v21;
+    v21.val[0] = pgon->vlist[1].val[0] - pgon->vlist[0].val[0];
+    v21.val[1] = pgon->vlist[1].val[1] - pgon->vlist[0].val[1];
+    v21.val[2] = pgon->vlist[1].val[2] - pgon->vlist[0].val[2];
+
+    Vector v31;
+    v21.val[0] = pgon->vlist[2].val[0] - pgon->vlist[0].val[0];
+    v21.val[1] = pgon->vlist[2].val[1] - pgon->vlist[0].val[1];
+    v21.val[2] = pgon->vlist[2].val[2] - pgon->vlist[0].val[2];
+
+    vector_cross(&v21, &v31, normal);
 }
 
 void polygon_setNormals(Polygon *pgon, int numV, Vector *nlist)
@@ -151,8 +177,8 @@ void polygon_setAll(
     int oneSided)
 {
     polygon_set(pgon, numV, vlist);
-    // polygon_setColors(pgon, numV, clist);
-    // polygon_setNormals(pgon, numV, nlist);
+    polygon_setColors(pgon, numV, clist);
+    polygon_setNormals(pgon, numV, nlist);
     polygon_zBuffer(pgon, zBuffer);
     polygon_setSided(pgon, oneSided);
 }
@@ -175,8 +201,6 @@ void polygon_print(Polygon *pgon, FILE *fp)
     for (int i = 0; i < pgon->nVertex; i++)
     {
         point_print(&pgon->vlist[i], fp);
-        // color_print(&pgon->clist[i], fp);
-        // vector_print(&pgon->nlist[i], fp);
     }
 }
 

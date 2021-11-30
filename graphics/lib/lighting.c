@@ -102,6 +102,7 @@ static void point_light(
     Color *cb,
     Color *cs,
     int oneSided,
+    float s,
     Color *c)
 {
     Vector L;
@@ -124,25 +125,21 @@ static void point_light(
     double theta = vector_dot(&L, N);
     double sigma = vector_dot(V, N);
     double beta = vector_dot(&H, N);
-    vector_print(&H, stdout);
-    vector_print(&L, stdout);
-    vector_print(&N, stdout);
-    double beta_prime = pow(beta, light->sharpness);
-    printf("%f ___ %f ___ %f \n", theta, sigma, beta);
+    double beta_prime = pow(beta, s);
 
     Color body;
-    body.c[0] = cb->c[0] * theta;
-    body.c[1] = cb->c[1] * theta;
-    body.c[2] = cb->c[2] * theta;
+    body.c[0] = light->color.c[0] * cb->c[0] * theta;
+    body.c[1] = light->color.c[1] * cb->c[1] * theta;
+    body.c[2] = light->color.c[2] * cb->c[2] * theta;
 
     Color surface;
-    surface.c[0] = cs->c[0] * beta_prime;
-    surface.c[1] = cs->c[1] * beta_prime;
-    surface.c[2] = cs->c[2] * beta_prime;
+    surface.c[0] = light->color.c[0] * cs->c[0] * beta_prime;
+    surface.c[1] = light->color.c[1] * cs->c[1] * beta_prime;
+    surface.c[2] = light->color.c[2] * cs->c[2] * beta_prime;
 
-    c->c[0] += (light->color.c[0] * body.c[0]) + (light->color.c[0] + surface.c[0]);
-    c->c[1] += (light->color.c[1] * body.c[1]) + (light->color.c[1] + surface.c[1]);
-    c->c[2] += (light->color.c[2] * body.c[2]) + (light->color.c[2] + surface.c[2]);
+    c->c[0] += body.c[0] + surface.c[0];
+    c->c[1] += body.c[1] + surface.c[1];
+    c->c[2] += body.c[2] + surface.c[2];
 }
 
 void lighting_shading(
@@ -170,13 +167,9 @@ void lighting_shading(
         {
             case LightAmbient:
                 ambient_light(light, cb, &tmp);
-                printf("Amb: ");
-                color_print(&tmp, stdout);
                 break;
             case LightPoint:
-                printf("Point: ");
-                point_light(light, N, V, p, cb, cs, oneSided, &tmp);
-                color_print(&tmp, stdout);
+                point_light(light, N, V, p, cb, cs, oneSided, s, &tmp);
                 break;
             default:
                 break;

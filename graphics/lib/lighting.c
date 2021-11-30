@@ -90,6 +90,7 @@ static void ambient_light(Light *light, Color *cb, Color *c)
  * @param cb the body color
  * @param cs the surface ref color
  * @param oneSided is the surface one sided
+ * @param s the s coeff for the surface ref term
  * @param c the final surface color
  * 
  * @return void

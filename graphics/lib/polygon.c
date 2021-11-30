@@ -340,41 +340,67 @@ void triangle_divide(Triangle *trgl, Triangle trgls[4])
 
 void polygon_shade(Polygon *pgon, DrawState *ds, Lighting *light)
 {
-    for (int i = 0; i < pgon->nVertex; i++)
+    if (ds->shade == ShadeFrame) return;
+    if (ds->shade == ShadeConstant)
     {
+        for (int i = 0; i < pgon->nVertex; i++)
+        {
+            color_copy(&pgon->clist[i], &ds->color);
+        }
+        return;
+    }
+    if (ds->shade == ShadeFlat)
+    {
+        Color c;
         Vector V;
-        V.val[0] = ds->viewer.val[0] - pgon->vlist[i].val[0];
-        V.val[1] = ds->viewer.val[1] - pgon->vlist[i].val[1];
-        V.val[2] = ds->viewer.val[2] - pgon->vlist[i].val[2];
+        V.val[0] = ds->viewer.val[0] - pgon->vlist[0].val[0];
+        V.val[1] = ds->viewer.val[1] - pgon->vlist[0].val[1];
+        V.val[2] = ds->viewer.val[2] - pgon->vlist[0].val[2];
         lighting_shading(
             light,
-            &pgon->nlist[i],
+            &pgon->nlist[0],
             &V,
-            &pgon->vlist[i],
+            &pgon->vlist[0],
             &ds->body,
             &ds->surface,
             ds->surfaceCoeff,
             pgon->oneSided,
-            &pgon->clist[i]);
+            &c);
+
+        for (int i = 0; i < pgon->nVertex; i++)
+        {
+            color_copy(&pgon->clist[i], &c);
+        }
+        return;
+    }
+    if (ds->shade == ShadeGouraud)
+    {
+        for (int i = 0; i < pgon->nVertex; i++)
+        {
+            Vector V;
+            V.val[0] = ds->viewer.val[0] - pgon->vlist[i].val[0];
+            V.val[1] = ds->viewer.val[1] - pgon->vlist[i].val[1];
+            V.val[2] = ds->viewer.val[2] - pgon->vlist[i].val[2];
+            lighting_shading(
+                light,
+                &pgon->nlist[i],
+                &V,
+                &pgon->vlist[i],
+                &ds->body,
+                &ds->surface,
+                ds->surfaceCoeff,
+                pgon->oneSided,
+                &pgon->clist[i]);
+        }
+        return;
     }
 }
 
 void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light)
 {
-    switch (ds->shade)
-    {
-        case ShadeFrame:
-            polygon_draw(pgon, src, ds->color);
-            break;
-        case ShadeConstant:
-            polygon_drawFill(pgon, src, ds);
-            break;
-        case ShadeFlat:
-            break;
-        case ShadeGouraud:
-            break;
-        default:
-            polygon_drawFill(pgon, src, ds);
-            break;
-    }
+    if (ds->shade == ShadeFrame):
+        polygon_draw(pgon, src, ds->color);
+        return;
+
+    polygon_drawFill(pgon, src, ds);
 }

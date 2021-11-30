@@ -619,13 +619,7 @@ void module_draw(
 
                 matrix_xformPolygon(vtm, pgon);
                 polygon_normalize(pgon);
-
-                if (ds->shade == ShadeFrame)
-                    polygon_draw(pgon, src, ds->color);
-                else if (ds->shade == ShadeConstant)
-                    polygon_drawFill(pgon, src, ds);
-                else
-                    polygon_drawShade(pgon, src, ds, light);
+                polygon_drawShade(pgon, src, ds, light);
                 break;
             }
             case ObjIdentity:

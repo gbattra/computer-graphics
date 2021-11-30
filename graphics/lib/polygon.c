@@ -361,5 +361,20 @@ void polygon_shade(Polygon *pgon, DrawState *ds, Lighting *light)
 
 void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light)
 {
-
+    switch (ds->shade)
+    {
+        case ShadeFrame:
+            polygon_draw(pgon, src, ds->color);
+            break;
+        case ShadeConstant:
+            polygon_drawFill(pgon, src, ds);
+            break;
+        case ShadeFlat:
+            break;
+        case ShadeGouraud:
+            break;
+        default:
+            polygon_drawFill(pgon, src, ds);
+            break;
+    }
 }

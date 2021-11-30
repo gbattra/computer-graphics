@@ -12,7 +12,7 @@
 #include "vector.h"
 #include "image.h"
 
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 64
 
 typedef enum
 {

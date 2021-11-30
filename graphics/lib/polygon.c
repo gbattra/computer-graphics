@@ -47,12 +47,12 @@ Polygon *polygon_createp(int nVertex, Point *vlist)
     pgon->nlist = (Vector *) malloc(sizeof(Vector) * nVertex);
     pgon->clist = (Color *) malloc(sizeof(Color) * nVertex);
 
-    Vector *normal;
-    polygon_normal(vlist, normal);
+    Vector normal;
+    polygon_normal(vlist, &normal);
     for (int i = 0; i < nVertex; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
-        vector_copy(&pgon->nlist[i], normal);
+        vector_copy(&pgon->nlist[i], &normal);
     }
 
     return pgon;
@@ -82,12 +82,12 @@ void polygon_set(Polygon *pgon, int numV, Point *vlist)
     pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
     pgon->clist = (Color *) malloc(sizeof(Color) * numV);
 
-    Vector *normal;
-    polygon_normal(vlist, normal);
+    Vector normal;
+    polygon_normal(vlist, &normal);
     for (int i = 0; i < numV; i++)
     {
         point_copy(&pgon->vlist[i], &vlist[i]);
-        vector_copy(&pgon->nlist[i], normal);
+        vector_copy(&pgon->nlist[i], &normal);
     }
 }
 
@@ -398,9 +398,11 @@ void polygon_shade(Polygon *pgon, DrawState *ds, Lighting *light)
 
 void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light)
 {
-    if (ds->shade == ShadeFrame):
+    if (ds->shade == ShadeFrame)
+    {
         polygon_draw(pgon, src, ds->color);
         return;
+    }
 
     polygon_drawFill(pgon, src, ds);
 }

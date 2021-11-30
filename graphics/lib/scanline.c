@@ -23,10 +23,11 @@ typedef struct tEdge {
 	float x0, y0, z0;                   /* start point for the edge */
 	float x1, y1, z1;                   /* end point for the edge */
 	int yStart, yEnd;               /* start row and end row */
-  float xIntersect, dxPerScan;  
-  float zIntersect, dzPerScan;  /* where the edge intersects the current scanline and how it changes */
+	Color color, dcPerScan, cIntersect;
+	float xIntersect, dxPerScan;  
+	float zIntersect, dzPerScan; /* where the edge intersects the current scanline and how it changes */
 	/* we'll add more here later */
-  struct tEdge *next;
+	struct tEdge *next;
 } Edge;
 
 
@@ -81,7 +82,7 @@ static int compXIntersect( const void *a, const void *b ) {
 	Eventually, the points will be 3D and we'll add color and texture
 	coordinates.
  */
-static Edge *makeEdgeRec( Point start, Point end, Image *src)
+static Edge *makeEdgeRec( Point start, Point end, Image *src, Color *c1, Color *c2)
 {
 	Edge *edge;
 	float dscan = end.val[1] - start.val[1];
@@ -102,6 +103,16 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 	edge->x1 = end.val[0];
 	edge->y1 = end.val[1];
 	edge->z1 = end.val[2];
+
+	color_copy(&edge->color, c1);
+	
+	edge->cIntersect.c[0] = c1->c[0] / start.val[2];
+	edge->cIntersect.c[1] = c1->c[1] / start.val[2];
+	edge->cIntersect.c[2] = c1->c[2] / start.val[2];
+
+	edge->dcPerScan.c[0] = ( c2->c[0]/end.val[2] - c1->c[0]/start.val[2] ) / dscan;
+	edge->dcPerScan.c[1] = ( c2->c[1]/end.val[2] - c1->c[1]/start.val[2] ) / dscan;
+	edge->dcPerScan.c[2] = ( c2->c[2]/end.val[2] - c1->c[2]/start.val[2] ) / dscan;
 
 	// turn on an edge only if the edge starts in the top half of it or
 	// the lower half of the pixel above it.  In other words, round the
@@ -167,18 +178,19 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src)
 static LinkedList *setupEdgeList( Polygon *p, Image *src) {
 	LinkedList *edges = NULL;
 	Point v1, v2;
-	int i;
+	int v1i, v2i;
 
 	// create a linked list
 	edges = ll_new();
 
 	// walk around the polygon, starting with the last point
 	v1 = p->vlist[p->nVertex-1];
+	v2i = p->nVertex - 1;
 
-	for(i=0;i<p->nVertex;i++) {
+	for(v1i=0;v1i<p->nVertex;v1i++) {
 		
 		// the current point (i) is the end of the segment
-		v2 = p->vlist[i];
+		v2 = p->vlist[v1i];
 
 		// if it is not a horizontal line
 		if( (int)(v1.val[1]+0.5) != (int)(v2.val[1]+0.5) ) {
@@ -186,15 +198,16 @@ static LinkedList *setupEdgeList( Polygon *p, Image *src) {
 
 			// if the first coordinate is smaller (top edge)
 			if( v1.val[1] < v2.val[1] )
-				edge = makeEdgeRec( v1, v2, src );
+				edge = makeEdgeRec( v1, v2, src, &p->clist[v1i], &p->clist[v2i]);
 			else
-				edge = makeEdgeRec( v2, v1, src );
+				edge = makeEdgeRec( v2, v1, src, &p->clist[v2i], &p->clist[v1i]);
 
 			// insert the edge into the list of edges if it's not null
 			if( edge )
 				ll_insert( edges, edge, compYStart );
 		}
 		v1 = v2;
+		v2i = v1i;
 	}
 
 	// check for empty edges (like nothing in the viewport)
@@ -260,6 +273,13 @@ static void fillScan( int scan, LinkedList *active, Image *src, DrawState *ds) {
 				c.c[1] = (1.0 - (1.0/z)) * c.c[1];
 				c.c[2] = (1.0 - (1.0/z)) * c.c[2];
 			}
+			else
+			{
+				c.c[0] *= z;
+				c.c[1] *= z;
+				c.c[2] *= z;
+			}
+			
 			FPixel pix;
 			pix.a = 1.0;
 			pix.rgb[0] = c.c[0];
@@ -325,17 +345,29 @@ static int processEdgeList( LinkedList *edges, Image *src, DrawState *ds) {
 				// update the edge information with the dPerScan values
 				tedge->xIntersect += tedge->dxPerScan;
 				tedge->zIntersect += tedge->dzPerScan;
+				tedge->cIntersect.c[0] += tedge->dcPerScan.c[0];
+				tedge->cIntersect.c[1] += tedge->dcPerScan.c[1];
+				tedge->cIntersect.c[2] += tedge->dcPerScan.c[2];
+
 
 				// adjust in the case of partial overlap
 				if( tedge->dxPerScan < 0.0 && tedge->xIntersect < tedge->x1 ) {
 					a = (tedge->xIntersect - tedge->x1) / tedge->dxPerScan;
 					tedge->xIntersect = tedge->x1;
 					tedge->zIntersect = 1.0/tedge->z1;
+
+					tedge->cIntersect.c[0] = tedge->color.c[0] / tedge->z1;
+					tedge->cIntersect.c[1] = tedge->color.c[1] / tedge->z1;
+					tedge->cIntersect.c[2] = tedge->color.c[2] / tedge->z1;
 				}
 				else if( tedge->dxPerScan > 0.0 && tedge->xIntersect > tedge->x1 ) {
 					a = (tedge->xIntersect - tedge->x1) / tedge->dxPerScan;
 					tedge->xIntersect = tedge->x1;
 					tedge->zIntersect = 1.0/tedge->z1;
+
+					tedge->cIntersect.c[0] = tedge->color.c[0] / tedge->z1;
+					tedge->cIntersect.c[1] = tedge->color.c[1] / tedge->z1;
+					tedge->cIntersect.c[2] = tedge->color.c[2] / tedge->z1;
 				}
 
 				ll_insert( tmplist, tedge, compXIntersect );

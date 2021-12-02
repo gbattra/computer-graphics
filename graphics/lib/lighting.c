@@ -128,6 +128,14 @@ static void point_light(
     double beta = vector_dot(&H, N);
     double beta_prime = pow(beta, s);
 
+    if (oneSided == 0 && theta >= 0) return;
+    if ((theta > 0 && sigma > 0) || (theta < 0 && sigma < 0)) return;
+    if (oneSided == 0 && theta < 0)
+    {
+        beta *= -1.0;
+        theta *= -1.0;
+    }
+
     Color body;
     body.c[0] = light->color.c[0] * cb->c[0] * theta;
     body.c[1] = light->color.c[1] * cb->c[1] * theta;

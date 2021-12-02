@@ -37,7 +37,7 @@ EXECUTABLES = ppmtest lab1 mask composite image_api fractalstest fractalmain per
 			  floodfilltest polygontest test4a test4c test4b rocket barycentricimg test5a \
 			  test5b test5c scene2d scene3d aliens2d test6a test6b lab6cube restaurant \
 			  test7a test7b test7c cylinder pyramidtest conetest spheretest alien3d \
-			  test8a cubism aliendepth
+			  test8a cubism aliendepth gouraud
 
 LAB1_EXECUTABLES = lab1 \
 				   mask \
@@ -57,7 +57,7 @@ LAB7_EXECUTABLES = test7a test7b test7c cylinder pyramidtest conetest spheretest
 
 LAB8_EXECUTABLES = test8a cubism aliendepth
 
-LAB9_EXECUTABLES = test9a test9d
+LAB9_EXECUTABLES = test9a test9d gouraud
 
 # put a list of all the object files here for all executables (with .o endings)
 _OBJ = tiffmain.o ppmmain.o
@@ -243,6 +243,9 @@ test9a: $(ODIR)/test9a.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test9d: $(ODIR)/test9d.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+gouraud: $(ODIR)/gouraud.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 

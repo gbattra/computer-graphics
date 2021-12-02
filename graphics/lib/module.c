@@ -614,8 +614,7 @@ void module_draw(
                 matrix_xformPolygon(&ltm, pgon);
                 matrix_xformPolygon(gtm, pgon);
 
-                if (ds->shade == ShadeGouraud)
-                    polygon_shade(pgon, ds, light);
+                polygon_shade(pgon, ds, light);
 
                 matrix_xformPolygon(vtm, pgon);
                 polygon_normalize(pgon);

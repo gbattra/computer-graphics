@@ -123,13 +123,24 @@ static void point_light(
         (L.val[2] + V->val[2] + eps) / 2.0);
     vector_normalize(&H);
 
+    // printf("L: ");
+    // vector_print(&L, stdout);
+    // printf("H: ");
+    // vector_print(&H, stdout);
+    // printf("N: ");
+    // vector_print(N, stdout);
+    // printf("V: ");
+    // vector_print(V, stdout);
+
     double theta = vector_dot(&L, N);
     double sigma = vector_dot(V, N);
     double beta = vector_dot(&H, N);
     double beta_prime = pow(beta, s);
 
-    if (oneSided == 0 && theta >= 0) return;
-    if ((theta > 0 && sigma > 0) || (theta < 0 && sigma < 0)) return;
+    // printf("theta: %f | sigma: %f | beta: %f | beta_prime: %f\n", theta, sigma, beta, beta_prime);
+
+    if (oneSided == 1 && theta < 0) return;
+    if ((theta < 0 && sigma > 0) || (theta > 0 && sigma < 0)) return;
     if (oneSided == 0 && theta < 0)
     {
         beta *= -1.0;
@@ -141,14 +152,20 @@ static void point_light(
     body.c[1] = light->color.c[1] * cb->c[1] * theta;
     body.c[2] = light->color.c[2] * cb->c[2] * theta;
 
+    // color_print(&body, stdout);
+
     Color surface;
     surface.c[0] = light->color.c[0] * cs->c[0] * beta_prime;
     surface.c[1] = light->color.c[1] * cs->c[1] * beta_prime;
     surface.c[2] = light->color.c[2] * cs->c[2] * beta_prime;
 
+    // color_print(&surface, stdout);
+
     c->c[0] += body.c[0] + surface.c[0];
     c->c[1] += body.c[1] + surface.c[1];
     c->c[2] += body.c[2] + surface.c[2];
+
+    // printf("------\n");
 }
 
 void lighting_shading(
@@ -162,7 +179,11 @@ void lighting_shading(
     int oneSided,
     Color *c)
 {
+    // printf("-----\n");
+    // vector_print(N, stdout);
     vector_normalize(N);
+    // vector_print(N, stdout);
+    // printf("-----\n");
     vector_normalize(V);
 
     Color tmp;
@@ -179,6 +200,8 @@ void lighting_shading(
                 break;
             case LightPoint:
                 point_light(light, N, V, p, cb, cs, oneSided, s, &tmp);
+                printf("Point:");
+                color_print(&tmp, stdout);
                 break;
             default:
                 break;

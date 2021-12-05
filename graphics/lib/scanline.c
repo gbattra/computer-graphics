@@ -23,7 +23,7 @@ typedef struct tEdge {
 	float x0, y0, z0;                   /* start point for the edge */
 	float x1, y1, z1;                   /* end point for the edge */
 	int yStart, yEnd;               /* start row and end row */
-	Color color, dcPerScan, cIntersect;
+	Color dcPerScan, cIntersect;
 	float xIntersect, dxPerScan;  
 	float zIntersect, dzPerScan; /* where the edge intersects the current scanline and how it changes */
 	/* we'll add more here later */
@@ -104,15 +104,29 @@ static Edge *makeEdgeRec( Point start, Point end, Image *src, Color *c1, Color *
 	edge->y1 = end.val[1];
 	edge->z1 = end.val[2];
 
-	color_copy(&edge->color, c1);
-	
-	edge->cIntersect.c[0] = c1->c[0] / start.val[2];
-	edge->cIntersect.c[1] = c1->c[1] / start.val[2];
-	edge->cIntersect.c[2] = c1->c[2] / start.val[2];
+	// printf("----\n");
+	// printf("%f\n", start.val[2]);
 
-	edge->dcPerScan.c[0] = ( c2->c[0]/end.val[2] - c1->c[0]/start.val[2] ) / dscan;
-	edge->dcPerScan.c[1] = ( c2->c[1]/end.val[2] - c1->c[1]/start.val[2] ) / dscan;
-	edge->dcPerScan.c[2] = ( c2->c[2]/end.val[2] - c1->c[2]/start.val[2] ) / dscan;
+	// edge->cIntersect.c[0] = c1->c[0] / start.val[2];
+	// edge->cIntersect.c[1] = c1->c[1] / start.val[2];
+	// edge->cIntersect.c[2] = c1->c[2] / start.val[2];
+	
+	// edge->dcPerScan.c[0] = ( c2->c[0]/end.val[2] - c1->c[0]/start.val[2] ) / dscan;
+	// edge->dcPerScan.c[1] = ( c2->c[1]/end.val[2] - c1->c[1]/start.val[2] ) / dscan;
+	// edge->dcPerScan.c[2] = ( c2->c[2]/end.val[2] - c1->c[2]/start.val[2] ) / dscan;
+
+	// printf("------\n");
+	// color_print(c1, stdout);
+	// color_print(&edge->cIntersect, stdout);
+
+
+	edge->cIntersect.c[0] = c1->c[0];
+	edge->cIntersect.c[1] = c1->c[1];
+	edge->cIntersect.c[2] = c1->c[2];
+	
+	edge->dcPerScan.c[0] = ( c2->c[0] - c1->c[0] ) / dscan;
+	edge->dcPerScan.c[1] = ( c2->c[1] - c1->c[1] ) / dscan;
+	edge->dcPerScan.c[2] = ( c2->c[2] - c1->c[2] ) / dscan;
 
 	// turn on an edge only if the edge starts in the top half of it or
 	// the lower half of the pixel above it.  In other words, round the
@@ -185,12 +199,12 @@ static LinkedList *setupEdgeList( Polygon *p, Image *src) {
 
 	// walk around the polygon, starting with the last point
 	v1 = p->vlist[p->nVertex-1];
-	v2i = p->nVertex - 1;
+	v1i = p->nVertex - 1;
 
-	for(v1i=0;v1i<p->nVertex;v1i++) {
+	for(v2i=0;v2i<p->nVertex;v2i++) {
 		
 		// the current point (i) is the end of the segment
-		v2 = p->vlist[v1i];
+		v2 = p->vlist[v2i];
 
 		// if it is not a horizontal line
 		if( (int)(v1.val[1]+0.5) != (int)(v2.val[1]+0.5) ) {
@@ -207,7 +221,7 @@ static LinkedList *setupEdgeList( Polygon *p, Image *src) {
 				ll_insert( edges, edge, compYStart );
 		}
 		v1 = v2;
-		v2i = v1i;
+		v1i = v2i;
 	}
 
 	// check for empty edges (like nothing in the viewport)
@@ -262,35 +276,53 @@ static void fillScan( int scan, LinkedList *active, Image *src, DrawState *ds) {
 	  float z = startZ;
 	  float dzPerCol = (endZ - startZ) / (endX - startX);
 	  // loop over start to end and draw pix
+
+	  Color c1, c2, dcPerCol, c;
+	  color_copy(&c1, &p1->cIntersect);
+	  color_copy(&c2, &p2->cIntersect);
+	  color_copy(&c, &c1);
+
+	  dcPerCol.c[0] = (c2.c[0] - c1.c[0]) / (endX - startX);
+	  dcPerCol.c[1] = (c2.c[1] - c1.c[1]) / (endX - startX);
+	  dcPerCol.c[2] = (c2.c[2] - c1.c[2]) / (endX - startX);
+
+	//   color_print(&dcPerCol, stdout);
+	  
 	  for (int i = startX; i < endX; i++)
 	  {
+		//   printf("z: %f\n", z);
+		Color tmp;
 		if (z > image_getz(src, scan, x))
 		{
-			Color c = ds->color;
 			if (ds->shade == ShadeDepth)
 			{
-				c.c[0] = (1.0 - (1.0/z)) * c.c[0];
-				c.c[1] = (1.0 - (1.0/z)) * c.c[1];
-				c.c[2] = (1.0 - (1.0/z)) * c.c[2];
+				tmp.c[0] = (1.0 - (1.0/z)) * c.c[0];
+				tmp.c[1] = (1.0 - (1.0/z)) * c.c[1];
+				tmp.c[2] = (1.0 - (1.0/z)) * c.c[2];
 			}
-			else
+			else color_copy(&tmp, &c);
+
+			// color_set(&tmp, tmp.c[0] * (1.0/z), tmp.c[1] * (1.0/z), tmp.c[2] * (1.0/z));
+			if (tmp.c[0] >= .9 || tmp.c[1] >= .9 || tmp.c[2] >= .9)
 			{
-				c.c[0] *= z;
-				c.c[1] *= z;
-				c.c[2] *= z;
+				color_print(&tmp, stdout);
+				printf("%i: %i - %i | %i\n", i, startX, endX, scan);
 			}
-			
+
 			FPixel pix;
 			pix.a = 1.0;
-			pix.rgb[0] = c.c[0];
-			pix.rgb[1] = c.c[1];
-			pix.rgb[2] = c.c[2];
+			pix.rgb[0] = tmp.c[0];
+			pix.rgb[1] = tmp.c[1];
+			pix.rgb[2] = tmp.c[2];
 			pix.z = z;
 			image_setf(src, scan, x, pix);
 		}
 
-		  x++;
-		  z += dzPerCol;
+		x++;
+		z += dzPerCol;
+		// c.c[0] += dcPerCol.c[0];
+		// c.c[1] += dcPerCol.c[1];
+		// c.c[2] += dcPerCol.c[2];
 	  }
 
 	  // move ahead to the next pair of edges
@@ -355,19 +387,13 @@ static int processEdgeList( LinkedList *edges, Image *src, DrawState *ds) {
 					a = (tedge->xIntersect - tedge->x1) / tedge->dxPerScan;
 					tedge->xIntersect = tedge->x1;
 					tedge->zIntersect = 1.0/tedge->z1;
-
-					tedge->cIntersect.c[0] = tedge->color.c[0] / tedge->z1;
-					tedge->cIntersect.c[1] = tedge->color.c[1] / tedge->z1;
-					tedge->cIntersect.c[2] = tedge->color.c[2] / tedge->z1;
+					printf("< 0\n");
 				}
 				else if( tedge->dxPerScan > 0.0 && tedge->xIntersect > tedge->x1 ) {
 					a = (tedge->xIntersect - tedge->x1) / tedge->dxPerScan;
 					tedge->xIntersect = tedge->x1;
 					tedge->zIntersect = 1.0/tedge->z1;
-
-					tedge->cIntersect.c[0] = tedge->color.c[0] / tedge->z1;
-					tedge->cIntersect.c[1] = tedge->color.c[1] / tedge->z1;
-					tedge->cIntersect.c[2] = tedge->color.c[2] / tedge->z1;
+					printf("> 0\n");
 				}
 
 				ll_insert( tmplist, tedge, compXIntersect );

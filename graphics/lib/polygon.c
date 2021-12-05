@@ -15,6 +15,7 @@ Polygon *polygon_create(void)
     Polygon *pgon = (Polygon *) malloc(sizeof(Polygon));
     pgon->nVertex = 0;
     pgon->zBuffer = 1;
+    pgon->oneSided = 0;
     pgon->vlist = NULL;
     pgon->nlist = NULL;
     pgon->clist = NULL;
@@ -26,6 +27,7 @@ Triangle *triangle_create(void)
     Triangle *trgl = (Triangle *) malloc(sizeof(Triangle));
     trgl->nVertex = 3;
     trgl->zBuffer = 1;
+    trgl->oneSided = 0;
     trgl->vlist = (Point *) malloc(sizeof(Point) * 3);
     trgl->nlist = (Vector *) malloc(sizeof(Vector) * 3);
     trgl->clist = (Color *) malloc(sizeof(Color) * 3);
@@ -43,6 +45,7 @@ Polygon *polygon_createp(int nVertex, Point *vlist)
     Polygon *pgon = (Polygon *) malloc(sizeof(Polygon));
     pgon->nVertex = nVertex;
     pgon->zBuffer = 1;
+    pgon->oneSided = 0;
     pgon->vlist = (Point *) malloc(sizeof(Point) * nVertex);
     pgon->nlist = (Vector *) malloc(sizeof(Vector) * nVertex);
     pgon->clist = (Color *) malloc(sizeof(Color) * nVertex);
@@ -67,6 +70,7 @@ void polygon_free(Polygon *pgon)
 void polygon_init(Polygon *pgon)
 {
     pgon->nVertex = 0;
+    pgon->oneSided = 0;
     pgon->zBuffer = 1;
     pgon->vlist = NULL;
     pgon->clist = NULL;
@@ -76,7 +80,7 @@ void polygon_init(Polygon *pgon)
 void polygon_set(Polygon *pgon, int numV, Point *vlist)
 {
     polygon_clear(pgon);
-
+    polygon_init(pgon);
     pgon->nVertex = numV;
     pgon->vlist = (Point *) malloc(sizeof(Point) * numV);
     pgon->nlist = (Vector *) malloc(sizeof(Vector) * numV);
@@ -148,9 +152,9 @@ void polygon_normal(Point *vlist, Vector *normal)
     v21.val[2] = vlist[1].val[2] - vlist[0].val[2];
 
     Vector v31;
-    v21.val[0] = vlist[2].val[0] - vlist[0].val[0];
-    v21.val[1] = vlist[2].val[1] - vlist[0].val[1];
-    v21.val[2] = vlist[2].val[2] - vlist[0].val[2];
+    v31.val[0] = vlist[2].val[0] - vlist[0].val[0];
+    v31.val[1] = vlist[2].val[1] - vlist[0].val[1];
+    v31.val[2] = vlist[2].val[2] - vlist[0].val[2];
 
     vector_cross(&v21, &v31, normal);
 }
@@ -213,6 +217,7 @@ void polygon_normalize(Polygon *pgon)
     for (int i = 0; i < pgon->nVertex; i++)
     {
         point_normalize(&pgon->vlist[i]);
+        vector_normalize(&pgon->nlist[i]);
     }
 }
 
@@ -400,6 +405,7 @@ void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light
 {
     if (ds->shade == ShadeFrame)
     {
+        printf("frame\n");
         polygon_draw(pgon, src, ds->color);
         return;
     }

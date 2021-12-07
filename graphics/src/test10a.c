@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     ds = drawstate_create();
     point_copy(&ds->viewer, &(view.vrp));
     ds->shade = ShadeGouraud;
+    // ds->shade = ShadeFlat;
     ds->fill = BarycentricFill;
 
     light = lighting_create();
@@ -53,6 +54,7 @@ int main(int argc, char *argv[])
     Module *md;
     md = module_create();
 
+    module_scale(md, 3, 1, 2 );
     module_color(md, White);
     module_bodyColor(md, White);
     module_surfaceColor(md, DkGrey);
@@ -60,7 +62,7 @@ int main(int argc, char *argv[])
     module_draw(md, &VTM, &GTM, ds, light, src);
     module_delete(md);
     
-    image_write(src, "test10a.c");
+    image_write(src, "test10a.ppm");
     image_free(src);
 
     return 0;

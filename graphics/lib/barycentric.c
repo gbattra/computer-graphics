@@ -77,8 +77,6 @@ void polygon_drawFillB(Polygon *pgon, Image *src)
 
     for (int i = minY; i < maxY; i++)
     {
-        FPixel *row = &src->data[(i * src->cols)];
-
         for (int j = minX; j < maxX; j++)
         {   
             double x = ((double) j) + 0.5;
@@ -86,17 +84,19 @@ void polygon_drawFillB(Polygon *pgon, Image *src)
             double beta = barycentric_coord(x, y, c, a, b);
             double gamma = barycentric_coord(x, y, a, b, c);
             double alpha = 1.0 - beta - gamma;
-
+            
             if ((0 <= alpha) && (alpha <= 1) && (0 <= beta) && (beta <= 1) && (0 <= gamma) && (gamma <= 1))
             {
-                FPixel *pix = &row[j];
+                double z = 1.0 / ((alpha * a->val[2]) + (beta * b->val[2]) + (gamma * c->val[2]));
+                if (z < image_getz(src, i, j)) continue;
 
-                double z = (alpha * a->val[2]) + (beta * b->val[2]) + (gamma * c->val[2]);
-                if (z < pix->z) return;
-
-                pix->rgb[0] = (alpha * ac->c[0]) + (beta * bc->c[0]) + (gamma * cc->c[0]);
-                pix->rgb[1] = (alpha * ac->c[1]) + (beta * bc->c[1]) + (gamma * cc->c[1]);
-                pix->rgb[2] = (alpha * ac->c[2]) + (beta * bc->c[2]) + (gamma * cc->c[2]);
+                FPixel pix;
+                pix.a = 1.0;
+                pix.rgb[0] = (alpha * ac->c[0]) + (beta * bc->c[0]) + (gamma * cc->c[0]);
+                pix.rgb[1] = (alpha * ac->c[1]) + (beta * bc->c[1]) + (gamma * cc->c[1]);
+                pix.rgb[2] = (alpha * ac->c[2]) + (beta * bc->c[2]) + (gamma * cc->c[2]);
+                pix.z = z;
+                image_setf(src, i, j, pix);
             }
         }
     }

@@ -149,8 +149,8 @@ void module_polygon(Module *md, Polygon *pgon)
     {
         md->tail->next = element_init(ObjPolygon, &tgls[t]);
         md->tail = md->tail->next;
-        polygon_free(&tgls[t]);
     }
+    free(tgls);
 }
 
 void module_identity(Module *md)

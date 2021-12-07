@@ -416,17 +416,17 @@ void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light
 
 Triangle *polygon_toTriangles(Polygon *pgon, int *nTgls)
 {
-    nTgls = (pgon->nVertex / 3) + (pgon->nVertex % 3);
+    *nTgls = (pgon->nVertex / 3) + (pgon->nVertex % 3);
     Triangle *tgls = (Triangle *) malloc(sizeof(Triangle) * (*nTgls));
 
     Point *pnts = (Point *) malloc(sizeof(Point) * 3);
-    point_copy(&pnts[0], &pgon->nlist[0]);
+    point_copy(&pnts[0], &pgon->vlist[0]);
     int left = 1;
     int right = 2;
-    for (int i = 0; i < nTgls; i++)
+    for (int i = 0; i < *nTgls; i++)
     {
-        point_copy(&pnts[1], &pgon->nlist[left]);
-        point_copy(&pnts[2], &pgon->nlist[right]);
+        point_copy(&pnts[1], &pgon->vlist[left]);
+        point_copy(&pnts[2], &pgon->vlist[right]);
         polygon_set(
             &tgls[i],
             3,

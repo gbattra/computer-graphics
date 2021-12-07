@@ -143,8 +143,14 @@ void module_polyline(Module *md, Polyline *pl)
 
 void module_polygon(Module *md, Polygon *pgon)
 {
-    md->tail->next = element_init(ObjPolygon, pgon);
-    md->tail = md->tail->next;
+    int nTgls;
+    Triangle *tgls = polygon_toTriangles(pgon, &nTgls);
+    for (int t = 0; t < nTgls; t++)
+    {
+        md->tail->next = element_init(ObjPolygon, &tgls[t]);
+        md->tail = md->tail->next;
+        polygon_free(&tgls[t]);
+    }
 }
 
 void module_identity(Module *md)

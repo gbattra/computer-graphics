@@ -47,20 +47,10 @@ static double barycentric_coord(double x, double y, Point *top0, Point *top1, Po
     return numerator / denominator;
 }
 
-/**
- * Draws and fills the polygon using the barycentric coords.
- * 
- * @param pgon the polygon to draw
- * @param src the image to draw on
- *
- * @return void
- */
-static void polygon_fillB(Polygon *pgon, Image *src)
+void polygon_drawFillB(Polygon *pgon, Image *src)
 {
     if (pgon->nVertex != 3)
-    {
         printf("%s\n", "Invalid polygon does not have exactly 3 vertices");
-    }
 
     Point *p = &pgon->vlist[0];
     double minX = p->val[0];
@@ -109,15 +99,5 @@ static void polygon_fillB(Polygon *pgon, Image *src)
                 pix->rgb[2] = (alpha * ac->c[2]) + (beta * bc->c[2]) + (gamma * cc->c[2]);
             }
         }
-    }
-}
-
-void polygon_drawFillB(Polygon *pgon, Image *src)
-{
-    int nTgls;
-    Triangle *triangles = polygon_toTriangles(pgon, &nTgls);
-    for (int t = 0; t < nTgls; t++)
-    {
-        polygon_fillB(&triangles[t], src);
     }
 }

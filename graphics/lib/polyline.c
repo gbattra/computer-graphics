@@ -106,4 +106,3 @@ void polyline_draw(Polyline *pline, Image *src, Color c)
         line_draw(&l, src, c);
     }
 }
-

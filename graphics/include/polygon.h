@@ -54,6 +54,16 @@ Triangle *triangle_create(void);
 Triangle *triangle_createp(Point *vlist);
 
 /**
+ * Create a list of triangles from a given polygon.
+ * 
+ * @param pgon the polygon to divide into trianlges
+ * @param nTgls placeholder for the number of generated triangles
+ * 
+ * @return the list of triangles generated
+ */
+Triangle *polygon_toTriangles(Polygon *pgon, int *nTgls);
+
+/**
  * Compare two triangles.
  * 
  * @param one the first to compare
@@ -262,25 +272,10 @@ void polygon_drawFill(Polygon *pgon, Image *src, DrawState *ds);
  * 
  * @param pgon the polygon to draw
  * @param src the image to draw
- * @param color the color to use
  * 
  * @return void
  */
-void polygon_drawFillB(Polygon *pgon, Image *src, Color color);
-
-/**
- * Fills a polygon using barycentric coords and blends the pixel
- * colors using the alpha, beta, and gamma values.
- * 
- * @param pgon the polygon to draw
- * @param src the image to draw on
- * @param ac the A point color
- * @param bc the B point color
- * @param cc the C point color
- * 
- * @return void
- */
-void polygon_blendFillB(Polygon *pgon, Image *src, Color ac, Color bc, Color cc);
+void polygon_drawFillB(Polygon *pgon, Image *src);
 
 /**
  * Gets the furthest point right.

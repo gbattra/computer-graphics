@@ -613,14 +613,6 @@ void module_draw(
                 polygon_copy(pgon, &el->obj.polygon);
 
                 matrix_xformPolygon(&ltm, pgon);
-
-                // printf("----\n");
-                // for (int i = 0; i < pgon->nVertex; i++)
-                // {
-                //     vector_print(&pgon->nlist[i], stdout);
-                // }
-                // printf("----\n");
-
                 matrix_xformPolygon(gtm, pgon);
 
                 polygon_shade(pgon, ds, light);

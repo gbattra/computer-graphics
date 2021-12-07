@@ -21,6 +21,11 @@ typedef enum
     ShadePhong
 } ShadeMethod;
 
+typedef enum {
+    ScanlineFill,
+    BarycentricFill
+} FillMethod;
+
 typedef struct
 {
     Color color;
@@ -29,6 +34,7 @@ typedef struct
     Color surface;
     float surfaceCoeff;
     ShadeMethod shade;
+    FillMethod fill;
     int zBuffer;
     Point viewer;
 } DrawState;
@@ -119,4 +125,13 @@ void drawstate_free(DrawState *ds);
  */
 void drawstate_setShade(DrawState *ds, ShadeMethod sm);
 
+/**
+ * Set the fill method on the draw state.
+ * 
+ * @param ds the draw state to update
+ * @param fm the fill method to set
+ * 
+ * @return void
+ */
+void drawstate_setFill(DrawState *ds, FillMethod fm);
 #endif

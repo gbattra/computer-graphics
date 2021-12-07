@@ -52,13 +52,10 @@ static double barycentric_coord(double x, double y, Point *top0, Point *top1, Po
  * 
  * @param pgon the polygon to draw
  * @param src the image to draw on
- * @param ac the A point color
- * @param bc the B point color
- * @param cc the C point color
  *
  * @return void
  */
-static void polygon_fillB(Polygon *pgon, Image *src, Color ac, Color bc, Color cc)
+static void polygon_fillB(Polygon *pgon, Image *src)
 {
     if (pgon->nVertex != 3)
     {
@@ -84,6 +81,10 @@ static void polygon_fillB(Polygon *pgon, Image *src, Color ac, Color bc, Color c
     Point *b = &pgon->vlist[1];
     Point *c = &pgon->vlist[2];
 
+    Color *ac = &pgon->clist[0];
+    Color *bc = &pgon->clist[1];
+    Color *cc = &pgon->clist[2];
+
     for (int i = minY; i < maxY; i++)
     {
         FPixel *row = &src->data[(i * src->cols)];
@@ -99,20 +100,24 @@ static void polygon_fillB(Polygon *pgon, Image *src, Color ac, Color bc, Color c
             if ((0 <= alpha) && (alpha <= 1) && (0 <= beta) && (beta <= 1) && (0 <= gamma) && (gamma <= 1))
             {
                 FPixel *pix = &row[j];
-                pix->rgb[0] = (alpha * ac.c[0]) + (beta * bc.c[0]) + (gamma * cc.c[0]);
-                pix->rgb[1] = (alpha * ac.c[1]) + (beta * bc.c[1]) + (gamma * cc.c[1]);
-                pix->rgb[2] = (alpha * ac.c[2]) + (beta * bc.c[2]) + (gamma * cc.c[2]);
+
+                double z = (alpha * a->val[2]) + (beta * b->val[2]) + (gamma * c->val[2]);
+                if (z < pix->z) return;
+
+                pix->rgb[0] = (alpha * ac->c[0]) + (beta * bc->c[0]) + (gamma * cc->c[0]);
+                pix->rgb[1] = (alpha * ac->c[1]) + (beta * bc->c[1]) + (gamma * cc->c[1]);
+                pix->rgb[2] = (alpha * ac->c[2]) + (beta * bc->c[2]) + (gamma * cc->c[2]);
             }
         }
     }
 }
 
-void polygon_drawFillB(Polygon *pgon, Image *src, Color color)
+void polygon_drawFillB(Polygon *pgon, Image *src)
 {
-    polygon_fillB(pgon, src, color, color, color);
-}
-
-void polygon_blendFillB(Polygon *pgon, Image *src, Color ac, Color bc, Color cc)
-{
-    polygon_fillB(pgon, src, ac, bc, cc);
+    int nTgls;
+    Triangle *triangles = polygon_toTriangles(pgon, &nTgls);
+    for (int t = 0; t < nTgls; t++)
+    {
+        polygon_fillB(&triangles[t], src);
+    }
 }

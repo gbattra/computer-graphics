@@ -19,6 +19,7 @@ DrawState *drawstate_create(void)
     color_copy(&ds->body, &c);
     color_copy(&ds->surface, &c);
     ds->shade = ShadeDepth;
+    ds->fill = ScanlineFill;
     point_copy(&ds->viewer, &p);
     ds->zBuffer = 1;
     ds->surfaceCoeff = 0;
@@ -63,9 +64,15 @@ void drawstate_copy(DrawState *to, DrawState *from)
     color_copy(&to->body, &from->body);
     color_copy(&to->surface, &from->surface);
     to->shade = from->shade;
+    to->fill = from->fill;
     point_copy(&to->viewer, &from->viewer);
     to->zBuffer = from->zBuffer;
     to->surfaceCoeff = from->surfaceCoeff;
+}
+
+void drawstate_setFill(DrawState *ds, FillMethod fm)
+{
+    ds->fill = fm;
 }
 
 void drawstate_free(DrawState *ds)

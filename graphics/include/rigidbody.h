@@ -17,6 +17,7 @@
 
 typedef struct
 {
+    int useGravity;
     double mass;
     double friction;
     LinkedList *forces;
@@ -36,6 +37,7 @@ Rigidbody *rigidbody_create(void);
 /**
  * Create a rigidbody with params.
  * 
+ * @param useGravity should we apply gravity to the rb
  * @param mass the mass of the rigidbody
  * @param friction the friction coeff of the rigidbody
  * @param pos the position of the rigidbody
@@ -46,6 +48,7 @@ Rigidbody *rigidbody_create(void);
  * @return pointer to the new rigidbody instance
  */
 Rigidbody *rigidbody_createp(
+    int useGravity,
     double mass,
     double friction,
     Point *pos,
@@ -92,6 +95,16 @@ void rigidbody_setPosition(Rigidbody *rb, Point *pos);
  * @return void
  */
 void rigidbody_setVelocity(Rigidbody *rb, Vector *vel);
+
+/**
+ * Set flag on using gravity.
+ * 
+ * @param rb the rigidbody to update
+ * @param useGravity the use gravity flag
+ * 
+ * @return void
+ */
+void rigidbody_setUseGravity(Rigidbody *rb, int useGravity);
 
 /**
  * Set the orientation of the rigidbody.
@@ -149,6 +162,6 @@ void rigidbody_tick(Rigidbody *rb);
  * 
  * @return void
  */
-void rigidobdy_render(Rigidbody *rb, Module *md);
+void rigidbody_render(Rigidbody *rb, Module *md);
 
 #endif

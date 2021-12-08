@@ -6,15 +6,18 @@
  */
 
 #include "rigidbody.h"
+#include "physics.h"
 
 
 Rigidbody *rigidbody_create(void)
 {
     Rigidbody *rb = (Rigidbody *) malloc(sizeof(Rigidbody));
+    rb->useGravity = 1;
     rb->mass = 0.0;
     rb->friction = 0.0;
     rb->md = module_create();
     rb->forces = ll_new();
+
     point_set3D(&rb->position, 0, 0, 0);
     vector_set(&rb->velocity, 0, 0, 0);
     quaternion_set(&rb->orientation, 0, 0, 0, 0);
@@ -23,6 +26,7 @@ Rigidbody *rigidbody_create(void)
 }
 
 Rigidbody *rigidbody_createp(
+    int useGravity,
     double mass,
     double friction,
     Point *pos,
@@ -31,10 +35,12 @@ Rigidbody *rigidbody_createp(
     Module *md)
 {
     Rigidbody *rb = (Rigidbody *) malloc(sizeof(Rigidbody));
+    rb->useGravity = 1;
     rb->mass = mass;
     rb->friction = friction;
     rb->md = md;
     rb->forces = ll_new();
+
     point_copy(&rb->position, pos);
     vector_copy(&rb->velocity, vel);
     quaternion_copy(&rb->orientation, q);
@@ -89,12 +95,12 @@ void rigidbody_free(Rigidbody *rb)
     {
         force_free(curr);
     }
-
     free(rb);
 }
 
-void rigidobdy_render(Rigidbody *rb, Module *md)
+void rigidbody_render(Rigidbody *rb, Module *md)
 {
+    module_translate(md, rb->position.val[0], rb->position.val[1], rb->position.val[2]);
     module_module(md, rb->md);
 }
 
@@ -103,11 +109,13 @@ void rigidbody_tick(Rigidbody *rb)
     Vector newVel;
     vector_copy(&newVel, &rb->velocity);
 
+    // apply gravity
+    if (rb->useGravity)
+        newVel.val[1] -= (GRAVITY * DELTA_TIME);
+
     Force *f = (Force *) ll_pop(rb->forces);
     while (f != NULL)
-    {
         force_apply(f, rb->mass, &newVel, &rb->orientation, &newVel);
-    }
 
     // apply friction
     vector_set(

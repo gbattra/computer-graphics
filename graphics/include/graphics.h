@@ -31,5 +31,10 @@
 #include "drawstate.h"
 #include "lighting.h"
 #include "module.h"
+#include "quaternion.h"
+#include "physics.h"
+#include "force.h"
+#include "rigidbody.h"
+
 int readPLY(char filename[], int *nPolygons, Polygon **plist, Color **clist, int estNormals);
 #endif

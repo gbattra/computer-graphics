@@ -98,6 +98,8 @@ float image_geta(Image *src, int i, int j)
 
 float image_getz(Image *src, int i, int j)
 {
+    if (i < 0 || i >= src->rows || j < 0 || j >= src->cols) return 0.0;
+    
     return src->data[(i * src->cols) + j].z;
 }
 
@@ -137,7 +139,7 @@ void image_reset(Image *src)
         {
             FPixel *pix = &src->data[(i * src->cols) + j];
             pix->a = 1.0;
-            pix->z = 1.0;
+            pix->z = 0.0;
             pix->rgb[0] = 0.0;
             pix->rgb[1] = 0.0;
             pix->rgb[2] = 0.0;

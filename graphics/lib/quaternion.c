@@ -18,5 +18,5 @@ void quaternion_set(Quaternion *q, double x, double y, double z, double w)
 
 void quaternion_copy(Quaternion *to, Quaternion *from)
 {
-    quaternion_set(&to, from->x, from->y, from->z, from->w);
+    quaternion_set(to, from->x, from->y, from->z, from->w);
 }

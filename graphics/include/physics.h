@@ -8,6 +8,7 @@
 #ifndef PHYSICS
 #define PHYSICS
 
-#define DELTA_TIME 0.1
+#define DELTA_TIME 0.02
+#define GRAVITY 9.8
 
 #endif

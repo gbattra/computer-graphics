@@ -54,7 +54,7 @@ void force_apply(
         force->direction.val[2] * acc * DELTA_TIME);
     
     vector_set(
-        &new_vel,
+        &newVel,
         vel->val[0] + fVel.val[0],
         vel->val[1] + fVel.val[1],
         vel->val[2] + fVel.val[2]);

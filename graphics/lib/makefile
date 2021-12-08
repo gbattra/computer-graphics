@@ -30,7 +30,7 @@ BINDIR =../bin
 # put all of the relevant include files here
 _DEPS = ppmIO.h graphics.h image.h fractals.h noise.h point.h line.h circle.h elipse.h polyline.h stack.h floodfill.h \
 		polygon.h cube.h list.h vector.h matrix.h view.h drawstate.h module.h curve.h pyramid.h \
-		cone.h sphere.h lighting.h quaternion.h  physics.h force.h rigidbody.h
+		cone.h sphere.h lighting.h quaternion.h physics.h force.h rigidbody.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
@@ -38,7 +38,7 @@ DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 # put a list of all the object files (with .o endings)
 _COMMON = ppmIO.o image.o fractals.o noise.o point.o line.o circle.o elipse.o polyline.o stack.o floodfill.o \
 		  polygon.o cube.o list.o scanline.o barycentric.o vector.o matrix.o view.o drawstate.o module.o \
-		  curve.o pyramid.o cone.o sphere.o lighting.o quaternion.o physics.o force.o rigidbody.o
+		  curve.o pyramid.o cone.o sphere.o lighting.o quaternion.o force.o rigidbody.o
 
 # convert them to point to the right place
 COMMON = $(patsubst %,$(ODIR)/%,$(_COMMON))

@@ -18,6 +18,8 @@ Rigidbody *rigidbody_create(void)
     point_set3D(&rb->position, 0, 0, 0);
     vector_set(&rb->velocity, 0, 0, 0);
     quaternion_set(&rb->orientation, 0, 0, 0, 0);
+
+    return rb;
 }
 
 Rigidbody *rigidbody_createp(
@@ -36,6 +38,8 @@ Rigidbody *rigidbody_createp(
     point_copy(&rb->position, pos);
     vector_copy(&rb->velocity, vel);
     quaternion_copy(&rb->orientation, q);
+
+    return rb;
 }
 
 void rigidbody_setMass(Rigidbody *rb, double mass)
@@ -68,7 +72,7 @@ void rigidbody_setModule(Rigidbody *rb, Module *md)
     rb->md = md;
 }
 
-static void force_compare(const void *one, const void *two)
+static int force_compare(const void *one, const void *two)
 {
     return 1;
 }

@@ -8,6 +8,6 @@
 #ifndef PHYSICS
 #define PHYSICS
 
-#define DELTA_TIME 0.1;
+#define DELTA_TIME 0.1
 
 #endif

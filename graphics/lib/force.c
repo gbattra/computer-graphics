@@ -44,7 +44,7 @@ void force_apply(
     Vector *newVel)
 {
     double acc = force->power / mass;
-    
+
     Vector fVel;
     vector_normalize(&force->direction);
     vector_set(

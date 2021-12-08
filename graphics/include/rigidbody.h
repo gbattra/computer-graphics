@@ -45,7 +45,7 @@ Rigidbody *rigidbody_create(void);
  * 
  * @return pointer to the new rigidbody instance
  */
-Rigidbody *rigidbody_create(
+Rigidbody *rigidbody_createp(
     double mass,
     double friction,
     Point *pos,
@@ -112,6 +112,16 @@ void rigidbody_setOrientation(Rigidbody *rb, Quaternion *q);
  * @return void
  */
 void rigidbody_setModule(Rigidbody *rb, Module *md);
+
+/**
+ * Add a force to the rigidbody.
+ * 
+ * @param rb the rb to update
+ * @param f the force to add
+ * 
+ * @return void
+ */
+void rigidbody_addForce(Rigidbody *rb, Force *f);
 
 /**
  * Free the rb from mem.

@@ -13,6 +13,7 @@
         "cone.h": "c",
         "quaternion.h": "c",
         "force.h": "c",
-        "physics.h": "c"
+        "physics.h": "c",
+        "rigidbody.h": "c"
     }
 }

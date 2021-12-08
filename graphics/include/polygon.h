@@ -275,7 +275,7 @@ void polygon_drawFill(Polygon *pgon, Image *src, DrawState *ds);
  * 
  * @return void
  */
-void polygon_drawFillB(Polygon *pgon, Image *src);
+void polygon_drawFillB(Polygon *pgon, Image *src, DrawState *ds);
 
 /**
  * Gets the furthest point right.

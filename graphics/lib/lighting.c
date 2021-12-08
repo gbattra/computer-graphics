@@ -128,8 +128,8 @@ static void point_light(
     double beta = vector_dot(&H, N);
     double beta_prime = pow(beta, s);
 
-    if (oneSided == 1 && theta < 0) return;
-    if ((theta < 0 && sigma > 0) || (theta > 0 && sigma < 0)) return;
+    // if (oneSided == 1 && theta < 0) return;
+    // if ((theta < 0 && sigma > 0) || (theta > 0 && sigma < 0)) return;
     if (oneSided == 0 && theta < 0)
     {
         beta *= -1.0;

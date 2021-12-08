@@ -122,9 +122,9 @@ void polygon_toLines(Polygon *pgon, Line *lines)
 void polygon_clear(Polygon *pgon)
 {
     pgon->nVertex = 0;
-    if (pgon->vlist) free(pgon->vlist);
-    if (pgon->nlist) free(pgon->nlist);
-    if (pgon->clist) free(pgon->clist);
+    // if (pgon->vlist) free(pgon->vlist);
+    // if (pgon->nlist) free(pgon->nlist);
+    // if (pgon->clist) free(pgon->clist);
     polygon_init(pgon);
 }
 
@@ -411,7 +411,7 @@ void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light
     }
 
     if (ds->fill == ScanlineFill) polygon_drawFill(pgon, src, ds);
-    else if (ds->fill == BarycentricFill) polygon_drawFillB(pgon, src);
+    else if (ds->fill == BarycentricFill) polygon_drawFillB(pgon, src, ds);
 }
 
 Triangle *polygon_toTriangles(Polygon *pgon, int *nTgls)

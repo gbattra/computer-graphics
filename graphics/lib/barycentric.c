@@ -47,7 +47,7 @@ static double barycentric_coord(double x, double y, Point *top0, Point *top1, Po
     return numerator / denominator;
 }
 
-void polygon_drawFillB(Polygon *pgon, Image *src)
+void polygon_drawFillB(Polygon *pgon, Image *src, DrawState *ds)
 {
     if (pgon->nVertex != 3)
         printf("%s\n", "Invalid polygon does not have exactly 3 vertices");
@@ -92,10 +92,19 @@ void polygon_drawFillB(Polygon *pgon, Image *src)
 
                 FPixel pix;
                 pix.a = 1.0;
-                pix.rgb[0] = (alpha * ac->c[0]) + (beta * bc->c[0]) + (gamma * cc->c[0]);
-                pix.rgb[1] = (alpha * ac->c[1]) + (beta * bc->c[1]) + (gamma * cc->c[1]);
-                pix.rgb[2] = (alpha * ac->c[2]) + (beta * bc->c[2]) + (gamma * cc->c[2]);
                 pix.z = z;
+                if (ds->shade == ShadeDepth)
+                {
+                    pix.rgb[0] = (1.0 - (1.0/z)) * ds->color.c[0];
+                    pix.rgb[1] = (1.0 - (1.0/z)) * ds->color.c[1];
+                    pix.rgb[2] = (1.0 - (1.0/z)) * ds->color.c[2];
+                } else
+                {
+                    pix.rgb[0] = (alpha * ac->c[0]) + (beta * bc->c[0]) + (gamma * cc->c[0]);
+                    pix.rgb[1] = (alpha * ac->c[1]) + (beta * bc->c[1]) + (gamma * cc->c[1]);
+                    pix.rgb[2] = (alpha * ac->c[2]) + (beta * bc->c[2]) + (gamma * cc->c[2]);
+                }
+
                 image_setf(src, i, j, pix);
             }
         }

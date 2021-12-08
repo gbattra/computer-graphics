@@ -12,19 +12,8 @@
 #include "quaternion.h"
 #include "vector.h"
 
-/**
- * Defines the type of force.
- */
-typedef enum
-{
-    ForceConstant,
-    ForceHit
-} ForceType;
-
-
 typedef struct
 {
-    ForceType type;
     Vector direction;
     double power;
 } Force;
@@ -39,13 +28,12 @@ Force *force_create(void);
 /**
  * Create a foce struct with params.
  * 
- * @param type the type of the force
  * @param dir the direction of the force (unit vector)
  * @param power the power of the force
  * 
  * @return pointer to the force struct
  */
-Force *force_createp(ForceType type, Vector *dir, double power);
+Force *force_createp(Vector *dir, double power);
 
 /**
  * Free the force from mem.

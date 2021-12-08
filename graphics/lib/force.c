@@ -14,17 +14,15 @@
 Force *force_create(void)
 {
     Force *force = (Force *) malloc(sizeof(Force));
-    force->type = ForceHit;
     force->power = 0.0;
     vector_set(&force->direction, 0.0, 0.0, 0.0);
 
     return force;
 }
 
-Force *force_createp(ForceType type, Vector *dir, double power)
+Force *force_createp(Vector *dir, double power)
 {
     Force *force = (Force *) malloc(sizeof(Force));
-    force->type = type;
     force->power = power;
     vector_copy(&force->direction, dir);
 

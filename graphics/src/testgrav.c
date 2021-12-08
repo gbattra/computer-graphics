@@ -22,14 +22,14 @@ int main(int argc, char *argv[])
 
     rows = 900;
     cols = 900;
-    nFrames = 35;
+    nFrames = 25;
 
     color_set( &White, 1.0, 1.0, 1.0 );
     color_set( &Grey, 0.6, 0.62, 0.64 );
     color_set( &DkGrey, 0.1, 0.1, 0.1 );
 
-	float d = 50;
-	point_set3D(&view.vrp, d, -d/2.5, d);
+	float d = 30;
+	point_set3D(&view.vrp, d, -d/2.7, d);
 	vector_set( &(view.vpn), -d, 0, -d);
 	vector_set( &(view.vup), 0.0, 1.0, 0.0 );
 	view.d = 1.5;

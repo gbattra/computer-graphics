@@ -94,6 +94,7 @@ void rigidbody_free(Rigidbody *rb)
     while (curr != NULL)
     {
         force_free(curr);
+        curr =  (Force *) ll_pop(rb->forces);
     }
     free(rb);
 }
@@ -113,9 +114,13 @@ void rigidbody_tick(Rigidbody *rb)
     if (rb->useGravity)
         newVel.val[1] -= (GRAVITY * DELTA_TIME);
 
+    // apply forces
     Force *f = (Force *) ll_pop(rb->forces);
-    while (f != NULL)
+    while (f)
+    {
         force_apply(f, rb->mass, &newVel, &rb->orientation, &newVel);
+        f = ll_pop(rb->forces);
+    }
 
     // apply friction
     vector_set(

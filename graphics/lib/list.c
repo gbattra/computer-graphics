@@ -146,7 +146,7 @@ void *ll_pop( LinkedList *ll ) {
  */
 void ll_delete( LinkedList *ll, void (*freefunc)(const void *) ) {
 	Node *p, *q;
-	p = ll->root;
+	p = ll_pop(ll);
 	while( p != NULL ) {
 		q = p->next;
 		if(freefunc && p->data)

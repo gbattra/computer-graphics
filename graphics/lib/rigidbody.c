@@ -78,6 +78,11 @@ void rigidbody_setModule(Rigidbody *rb, Module *md)
     rb->md = md;
 }
 
+void rigidbody_setUseGravity(Rigidbody *rb, int useGravity)
+{
+    rb->useGravity = useGravity;
+}
+
 static int force_compare(const void *one, const void *two)
 {
     return 1;
@@ -101,6 +106,7 @@ void rigidbody_free(Rigidbody *rb)
 
 void rigidbody_render(Rigidbody *rb, Module *md)
 {
+    module_identity(md);
     module_translate(md, rb->position.val[0], rb->position.val[1], rb->position.val[2]);
     module_module(md, rb->md);
 }

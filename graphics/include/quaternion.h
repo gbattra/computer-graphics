@@ -16,6 +16,7 @@ typedef struct
 /**
  * Set the x y z w vals of the quat.
  * 
+ * @param q the quat to update
  * @param x the x val
  * @param y the y val
  * @param z the z val
@@ -23,7 +24,7 @@ typedef struct
  * 
  * @return void
  */
-void quaternion_set(double x, double y, double z, double w);
+void quaternion_set(Quaternion *q, double x, double y, double z, double w);
 
 /**
  * Copy from one quat to another.

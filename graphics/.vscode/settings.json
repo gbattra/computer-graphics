@@ -10,6 +10,9 @@
         "polygon.h": "c",
         "stdlib.h": "c",
         "list.h": "c",
-        "cone.h": "c"
+        "cone.h": "c",
+        "quaternion.h": "c",
+        "force.h": "c",
+        "physics.h": "c"
     }
 }

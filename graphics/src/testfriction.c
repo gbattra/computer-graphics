@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
     rows = 900;
     cols = 900;
-    nFrames = 40;
+    nFrames = 70;
 
     color_set( &White, 1.0, 1.0, 1.0 );
     color_set( &Grey, 0.6, 0.62, 0.64 );
@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
         module_color(sphere, White);
         module_bodyColor(sphere, White);
         module_surfaceColor(sphere, DkGrey);
+        module_scale(sphere, 2, 2, 2);
         module_sphere(sphere, 4, 1);
         rigidbody_setModule(rb, sphere);
 

@@ -75,11 +75,13 @@ int main(int argc, char *argv[])
         module_color(sphere, White);
         module_bodyColor(sphere, White);
         module_surfaceColor(sphere, DkGrey);
+        module_scale(sphere, 2, 2, 2);
         module_sphere(sphere, 4, 1);
         rigidbody_setModule(rb, sphere);
 
         if (gravFlag < 0)
             rigidbody_addForce(rb, countergrav);
+
         rigidbody_tick(rb);
         rigidbody_render(rb, md);
 

@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
         module_color(sphere, White);
         module_bodyColor(sphere, White);
         module_surfaceColor(sphere, DkGrey);
+        module_scale(sphere, 1.5, 1.5, 1.5);
         module_sphere(sphere, 4, 1);
         
         rigidbody_setModule(rb, sphere);

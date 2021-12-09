@@ -131,9 +131,13 @@ void rigidbody_tick(Rigidbody *rb)
     // apply friction
     vector_set(
         &newVel,
-        newVel.val[0] - (newVel.val[0] * rb->friction),
-        newVel.val[1] - (newVel.val[1] * rb->friction),
-        newVel.val[2] - (newVel.val[2] * rb->friction));
+        newVel.val[0] - (rb->friction * DELTA_TIME),
+        newVel.val[1] - (rb->friction * DELTA_TIME),
+        newVel.val[2] - (rb->friction * DELTA_TIME));
+        
+    if (newVel.val[0] < 0) newVel.val[0] = 0;
+    if (newVel.val[1] < 0) newVel.val[1] = 0;
+    if (newVel.val[2] < 0) newVel.val[2] = 0;
     
     vector_copy(&rb->velocity, &newVel);
     point_set3D(

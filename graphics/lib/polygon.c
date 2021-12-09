@@ -405,7 +405,6 @@ void polygon_drawShade(Polygon *pgon, Image *src, DrawState *ds, Lighting *light
 {
     if (ds->shade == ShadeFrame)
     {
-        printf("frame\n");
         polygon_draw(pgon, src, ds->color);
         return;
     }

@@ -62,21 +62,22 @@ int main(int argc, char *argv[])
     vector_set(&windDir, 1, 0, 0);
     Force *wind = force_createp(&windDir, 60);
     rigidbody_addForce(rb, wind);
+    
+    Module *sphere;
+    sphere = module_create();
+    module_color(sphere, White);
+    module_bodyColor(sphere, White);
+    module_surfaceColor(sphere, DkGrey);
+    module_scale(sphere, 1.5, 1.5, 1.5);
+    module_sphere(sphere, 4, 1);
+    
+    rigidbody_setModule(rb, sphere);
 
     for (int i = 0; i < nFrames; i++)
     {
         Module *md;
         md = module_create();
 
-        Module *sphere;
-        sphere = module_create();
-        module_color(sphere, White);
-        module_bodyColor(sphere, White);
-        module_surfaceColor(sphere, DkGrey);
-        module_scale(sphere, 1.5, 1.5, 1.5);
-        module_sphere(sphere, 4, 1);
-        
-        rigidbody_setModule(rb, sphere);
         rigidbody_tick(rb);
         rigidbody_render(rb, md);
 

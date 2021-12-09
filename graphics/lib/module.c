@@ -85,7 +85,7 @@ Element *element_init(ObjectType type, void *obj)
 
 void element_delete(Element *el)
 {
-    if (el->type == ObjModule) module_delete(el->obj.module);
+    // if (el->type == ObjModule) module_delete(el->obj.module);
     if (el->next) element_delete(el->next);
     free(el);
 }

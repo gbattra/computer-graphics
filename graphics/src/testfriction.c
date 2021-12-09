@@ -13,9 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-    float friction = atof(argv[1]);
-    if( friction < 0 || friction > 1 )
-        return 1;
+    double friction = atof(argv[1]);
 
     int rows, cols, nFrames;
     Matrix VTM, GTM;
